@@ -116,6 +116,7 @@ public class CraftBayPlugin extends JavaPlugin {
 		c.addDefault("minincrement", Integer.valueOf(5));
 		c.addDefault("herochat.enable", Boolean.valueOf(false));
 		c.addDefault("herochat.channel", "Trade");
+		c.addDefault("herochat.password", "");
 		c.addDefault("channelchat.enable", Boolean.valueOf(false));
 		c.addDefault("channelchat.channel", "Trade");
 		c.options().copyDefaults(true);
