@@ -369,7 +369,7 @@ public class AuctionCommand implements CommandExecutor {
                                         plugin.warn(sender, "Invalid item argument: \"" + arg + "\"!");
                                         return;
                                 }
-                                // amount
+                                // amount, optional
                                 if (args.hasNext()) {
                                         arg = args.next();
                                         int amount = 1;
@@ -384,9 +384,6 @@ public class AuctionCommand implements CommandExecutor {
                                                 return;
                                         }
                                         lot.setAmount(amount);
-                                } else {
-                                        plugin.warn(sender, "Not enough arguments!");
-                                        return;
                                 }
                         }
                 } else {
