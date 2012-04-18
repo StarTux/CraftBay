@@ -1,3 +1,9 @@
+1.0.1
+
+* Check Herochat permissions
+* Add password support for Herochat
+* Make amount for bank auctions optional
+
 1.0
 
 * Initial release
