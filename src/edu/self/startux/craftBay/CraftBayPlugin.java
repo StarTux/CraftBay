@@ -24,12 +24,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-import java.util.logging.StreamHandler;
 import net.milkbowl.vault.economy.Economy;
 import edu.self.startux.craftBay.chat.BukkitChat;
 import edu.self.startux.craftBay.chat.ChannelChat;
@@ -57,14 +53,6 @@ public class CraftBayPlugin extends JavaPlugin {
 
 	public void onEnable() {
                 logger = Logger.getLogger("edu.self.startux.craftBay");
-                try {
-                        File dataFolder = getDataFolder();
-                        if (!dataFolder.exists()) dataFolder.mkdir();
-                        File logFile = new File(dataFolder, "auction.log");
-                        logger.addHandler(new StreamHandler(new FileOutputStream(logFile, true), getFormatter()));
-                } catch (IOException ioe) {
-                        log("failed to open log file!", Level.WARNING);
-                }
                 AuctionCommand executor = new AuctionCommand(this);
 		getCommand("auction").setExecutor(executor);
 		getCommand("bid").setExecutor(executor);
@@ -78,15 +66,6 @@ public class CraftBayPlugin extends JavaPlugin {
 		}
                 setupChat();
 	}
-
-        private Formatter getFormatter() {
-                for (Logger logger = getLogger(); logger != null; logger = logger.getParent()) {
-                        Handler[] handlers = logger.getHandlers();
-                        if (handlers.length == 0) continue;
-                        return handlers[0].getFormatter();
-                }
-                return new SimpleFormatter();
-        }
 
         private void setupChat() {
                 do {
