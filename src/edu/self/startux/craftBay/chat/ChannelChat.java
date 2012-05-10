@@ -6,7 +6,7 @@
  * CraftBay is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * (at your option) any later version.
  *
  * CraftBay is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,12 +21,12 @@ package edu.self.startux.craftBay.chat;
 
 import com.feildmaster.channelchat.channel.Channel;
 import com.feildmaster.channelchat.channel.ChannelManager;
-import java.util.List;
 import edu.self.startux.craftBay.CraftBayPlugin;
+import java.util.List;
+import java.util.logging.Level;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import java.util.logging.Level;
 
 /**
  * Provide ChannelChat functionality
@@ -41,7 +41,7 @@ public class ChannelChat implements ChatPlugin {
 
         @Override
         public boolean enable(ConfigurationSection section) {
-                String channelName = section.getString("channelchat");
+                String channelName = section.getString("channel");
 		Plugin p = plugin.getServer().getPluginManager().getPlugin("ChannelChat");
                 if (p == null) {
                         plugin.log("ChannelChat system could not be loaded!", Level.WARNING);
@@ -59,7 +59,7 @@ public class ChannelChat implements ChatPlugin {
         @Override
         public void broadcast(List<String> lines) {
                 for (String line : lines) {
-                        channel.sendMessage(plugin.getTag() + " " + line);
+                        channel.sendMessage(line);
                 }
         }
 
@@ -76,6 +76,6 @@ public class ChannelChat implements ChatPlugin {
 
         @Override
         public boolean isListening(Player player) {
-                return true;
+                return channel.isMember(player);
         }
 }
