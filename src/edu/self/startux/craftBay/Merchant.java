@@ -6,7 +6,7 @@
  * CraftBay is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * (at your option) any later version.
  *
  * CraftBay is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,8 +19,10 @@
 
 package edu.self.startux.craftBay;
 
-import org.bukkit.inventory.ItemStack;
+import java.util.List;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * This class is an abstract representation of a participant in an
@@ -30,7 +32,7 @@ import org.bukkit.command.CommandSender;
  * Primary motif for creating this abstraction is to manage both
  * players and The Bank in the same way.
  */
-public interface Merchant {
+public interface Merchant extends ConfigurationSerializable {
         /**
          * Get the name of this Merchant.
          * @return the name
@@ -67,24 +69,28 @@ public interface Merchant {
         /**
          * Remove an ItemStack from this merchant's inventory.
          * @param lot the ItemStack
+         * @return true if the item could be taken, false otherwise
          */
-        public void takeItem(ItemStack lot);
+        public boolean takeItem(ItemStack lot);
 
         /**
          * Add an ItemStack to this merchant's inventory.
          * @param lot the ItemStack
+         * @return true if the item could be given, false otherwise
          */
-        public void giveItem(ItemStack lot);
+        public boolean giveItem(ItemStack lot);
 
         /**
          * Send a message to this merchant.
          * @param msg the message
          */
         public void msg(String msg);
+        public void msg(List<String> msg);
 
         /**
          * Send a warning to this merchant.
          * @param msg the warning
          */
         public void warn(String msg);
+        public void warn(List<String> msg);
 }
