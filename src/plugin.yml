@@ -1,6 +1,6 @@
 name: CraftBay
 main: edu.self.startux.craftBay.CraftBayPlugin
-version: 1.0.1
+version: 1.1
 author: StarTux
 description: Auction off your items
 depend: [Vault]
@@ -8,7 +8,7 @@ softdepend: [ChannelChat, Herochat]
 commands:
   auction:
     description: Auction interface
-    usage: /<command> ? - get help
+    usage: /<command> - get more information
     aliases: [auc]
     permission: auction.info
   bid:
