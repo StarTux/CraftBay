@@ -1,0 +1,84 @@
+tag: 'Auction:'
+help:
+- <h>Auction Help
+- <dfl>/auc <hl>?<dfl> <h>Auction help
+- <dfl>/auc <s>i<hl>nfo <h>Display auction information
+- <dfl>/auc <s>b<hl>id <dfl>[<hl>amount<dfl>] <h>Place a bid
+- <dfl>/bid <dfl>[<hl>amount<dfl>] <h>Place a bid
+- <dfl>/auc <s>s<hl>tart <dfl>\<<hl>item<dfl>\> <dfl>\<<hl>amount<dfl>\> <dfl>[<hl>price<dfl>] <h>Auction an item
+- <dfl>/auc <hl>hand <dfl>[<hl>amount<dfl>] [<hl>price<dfl>] <h>Auction the item in your hand
+- <dfl>/auc <s>e<hl>nd <dfl>[<hl>delay<dfl>] <h>End current auction
+- <dfl>/auc <hl>listen<dfl>|<hl>ignore <h>Listen to or ignore auctions
+- <dfl>/auc <hl>history <dfl>[<hl>page<dfl>] <h>View past or queued auctions
+adminhelp:
+- <adm>/auc <s>c<admhi>ancel <h>Cancel current auction
+- <adm>/auc <admhi>bank <adm>\<<admhi>item<adm>\> \<<admhi>amount<adm>\> <adm>[<admhi>price<adm>] [<admhi>time<adm>] <h>Auction spawned items
+- <adm>/auc <admhi>bankbid <adm>\<<admhi>amount<adm>\> <h>Place a bid on behalf of the bank
+- <adm>/auc <admhi>spam <h>Broadcast a brief auction info
+command:
+  noentry: 'No such command: "{command}"!'
+  noperm: "You don't have permission!"
+commands:
+  listen:
+    alreadylisten: You are already listening to auctions!
+    alreadyignore: You are already ignoring auctions!
+    listenerror: An error occured trying to perform this command!
+    ignoreerror: An error occured trying to perform this command!
+    listensuccess: Listening to auctions
+    ignoresuccess: Ignoring auctions
+  history:
+    noentry: '<warn>No such id: {id}'
+  parse:
+    notaplayer: '<warn>Only players can do that!'
+    nocurrentauction: '<warn>No auction running!'
+    argstoosmall: '<warn>Not enough arguments!'
+    argstoobig: '<warn>Too many arguments!'
+    notanumber: '<warn>Number expected: "{arg}"!'
+    nosuchitem: '<warn>Invalid item: "{arg}"!'
+    illegalitem: '<warn>Invalid item: "{arg}"!'
+auction:
+  state:
+    config: Configuration
+    warmup: Warmup
+    running: Running
+    ended: Ended
+  info:
+    head: '<h>Auction Information'
+    owner: '<dfl>Auctioneer: <hl>{owner}'
+    item: '<dfl>Item: <hl>{itemdesc}'
+    winner: '<dfl>Winning: <hl>winner<dfl> for <hl>{price}'
+    nowinner: '<dfl>Minimal bid: <hl>{minbid}'
+    time: '<dfl>Time left: <hl>{timeleft}'
+    state: '<dfl>State: <hl>{state}'
+    help: '<dfl>Type <hl>/auc ?<dfl> for a list of commands.'
+  bid:
+    ownauction: "<warn>You can't bid on your own auction!"
+    underbidself: '<warn>You have already made a larger bid!'
+    bidtoosmall: '<warn>You must bid at least <admhi>{minbid}<warn>!'
+    toopoor: '<warn>You do not have enough money!'
+    win: '<dfl>Your bid for {bid} has been accepted!'
+    fail: '<dfl>Your bid for {bid} has been accepted!'
+  end:
+    notowner: 'You are not the owner of this auction!'
+    delaytoolong: 'You can only shorten your auction!'
+    winner: '<dfl>Enjoy your <hl>{itemdesc}<dfl> for <hl>{price}<dfl>!'
+    ownersell: '<dfl>Your <hl>{itemdesc}<dfl> has been sold to <hl>{winner}<dfl> for <hl>{price}<dfl>.'
+    ownerreturn: '<dfl>Your <hl>{itemdesc}<dfl> has been returned to you.'
+    ownerpaymenterror: '<warn>Error processing payment. Auction canceled.'
+    winnerpaymenterror: '<warn>Error processing payment. Auction canceled.'
+  cancel:
+    toowner: '<warn>Your auction has been canceled!'
+  announce:
+    newprice: '<dfl>Price for <hl>{itemdesc}<dfl> is now <hl>{price}<dfl> for <hl>{winner}<dfl>'
+    newwinner: '<hl>{winner}<dfl> beats {player}. Price <hl>{price}'
+    underbid: '<dfl>{player} raises but <hl>{winner}<dfl> is higher. Price <hl>{price}'
+    winner: '<hl>{winner}<dfl> buys <hl>{itemdesc}<dfl> for <hl>{price}<dfl>.'
+    nobid: '<dfl>Auction for <hl>{itemdesc}<dfl> ended with no bids.'
+    cancel: '<admin>Auction canceled by <adminhi>{player}<admin>!'
+item:
+  enchanted: Enchanted
+history:
+  head: '<h>Auction History'
+  queue: '<shd>[{id}] {owner} {item}'
+  current: '<h>[{id}] {owner} {item}'
+  history: '<dfl>[<hl>{id}<dfl>] {owner} <hl>{item}'
