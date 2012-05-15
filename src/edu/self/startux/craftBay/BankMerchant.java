@@ -6,7 +6,7 @@
  * CraftBay is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * (at your option) any later version.
  *
  * CraftBay is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,12 +19,17 @@
 
 package edu.self.startux.craftBay;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 
 public class BankMerchant implements Merchant {
-        private static BankMerchant instance = new BankMerchant();
+        private static BankMerchant instance = null;
 
         public static BankMerchant getInstance() {
+                if (instance == null) instance = new BankMerchant();
                 return instance;
         }
 
@@ -52,15 +57,22 @@ public class BankMerchant implements Merchant {
         }
 
         @Override
-        public void takeItem(ItemStack lot) {}
+        public boolean takeItem(ItemStack lot) {
+                return true;
+        }
+
         @Override
-        public void giveItem(ItemStack lot) {}
+        public boolean giveItem(ItemStack lot) {
+                return true;
+        }
 
         @Override
         public void msg(String msg) {}
+        public void msg(List<String> msg) {}
 
         @Override
         public void warn(String msg) {}
+        public void warn(List<String> msg) {}
 
         @Override
         public boolean equals(Object o) {
@@ -71,5 +83,14 @@ public class BankMerchant implements Merchant {
                         return true;
                 }
                 return false;
+        }
+
+        @Override
+        public Map<String, Object> serialize() {
+                return new HashMap<String, Object>();
+        }
+
+        public static BankMerchant deserialize(Map<String, Object> map) {
+                return getInstance();
         }
 }
