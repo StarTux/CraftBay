@@ -1,0 +1,13 @@
+auctiontime: 900
+spaminterval: 120
+minincrement: 5
+maxqueue: 10
+maxhistory: 10
+lang: en_US
+herochat:
+        enable: false
+        channel: Trade
+        password: ''
+channelchat:
+        enable: false
+        channel: Trade
