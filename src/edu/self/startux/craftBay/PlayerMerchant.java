@@ -6,7 +6,7 @@
  * CraftBay is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * (at your option) any later version.
  *
  * CraftBay is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,19 +19,31 @@
 
 package edu.self.startux.craftBay;
 
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.entity.Player;
-import org.bukkit.command.CommandSender;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class PlayerMerchant implements Merchant {
         private CraftBayPlugin plugin;
-        private Player player;
+        private OfflinePlayer player;
 
-        public PlayerMerchant(CraftBayPlugin plugin, Player player) {
+        public PlayerMerchant(OfflinePlayer player) {
                 this.plugin = plugin;
                 this.player = player;
+        }
+
+        public Player getPlayer() {
+                return player.getPlayer();
+        }
+
+        private CraftBayPlugin getPlugin() {
+                return CraftBayPlugin.getInstance();
         }
 
         @Override
@@ -41,7 +53,7 @@ public class PlayerMerchant implements Merchant {
 
         @Override
         public boolean hasAmount(int amount) {
-                if (plugin.getEco().getBalance(player.getName()) < amount) {
+                if (getPlugin().getEco().getBalance(player.getName()) < amount) {
                         return false;
                 }
                 return true;
@@ -52,7 +64,7 @@ public class PlayerMerchant implements Merchant {
                 if (amount < 0) {
                         throw new IllegalArgumentException("give amount must be positive!");
                 }
-                plugin.getEco().depositPlayer(player.getName(), amount);
+                getPlugin().getEco().depositPlayer(player.getName(), amount);
         }
 
         @Override
@@ -60,11 +72,12 @@ public class PlayerMerchant implements Merchant {
                 if (amount < 0) {
                         throw new IllegalArgumentException("take amount must be positive!");
                 }
-                plugin.getEco().withdrawPlayer(player.getName(), amount);
+                getPlugin().getEco().withdrawPlayer(player.getName(), amount);
         }
 
         @Override
         public boolean hasItem(ItemStack stack) {
+                Player player = getPlayer();
                 Map<Integer, ? extends ItemStack> ret = player.getInventory().all(stack.getType());
                 int found = 0;
                 for (ItemStack slot : ret.values()) {
@@ -79,8 +92,9 @@ public class PlayerMerchant implements Merchant {
         }
 
         @Override
-        public void takeItem(ItemStack stack) {
-                if (stack == null) return;
+        public boolean takeItem(ItemStack stack) {
+                if (stack == null) return true;
+                Player player = getPlayer();
                 Map<Integer, ? extends ItemStack> ret = player.getInventory().all(stack.getType());
                 int needed = stack.getAmount();
                 for (Map.Entry<Integer, ? extends ItemStack> entry : ret.entrySet()) {
@@ -99,11 +113,14 @@ public class PlayerMerchant implements Merchant {
                                 }
                         }
                 }
+                return true;
         }
 
         @Override
-        public void giveItem(ItemStack stack) {
-                if (stack == null) return;
+        public boolean giveItem(ItemStack stack) {
+                if (stack == null) return true;
+                Player player = getPlayer();
+                if (player == null) return false;
                 int due = stack.getAmount();
                 int stackSize = stack.getMaxStackSize();
                 if (stackSize < 1) {
@@ -126,16 +143,31 @@ public class PlayerMerchant implements Merchant {
                 if (!player.isOnline()) {
                         player.saveData();
                 }
+                return true;
         }
 
         @Override
         public void msg(String msg) {
-                plugin.msg(player, msg);
+                if (getPlayer() == null) return;
+                getPlugin().msg(getPlayer(), msg);
+        }
+
+        @Override
+        public void msg(List<String> msg) {
+                if (getPlayer() == null) return;
+                getPlugin().msg(getPlayer(), msg);
         }
 
         @Override
         public void warn(String msg) {
-                plugin.warn(player, msg);
+                if (getPlayer() == null) return;
+                getPlugin().warn(getPlayer(), msg);
+        }
+
+        @Override
+        public void warn(List<String> msg) {
+                if (getPlayer() == null) return;
+                getPlugin().warn(getPlayer(), msg);
         }
 
         @Override
@@ -182,4 +214,15 @@ public class PlayerMerchant implements Merchant {
 		return true;
 	}
 
+        @Override
+        public Map<String, Object> serialize() {
+                Map<String, Object> result = new HashMap<String, Object>();
+                result.put("player", player);
+                return result;
+        }
+
+        @SuppressWarnings("unchecked")
+        public static PlayerMerchant deserialize(Map<String, Object> map) {
+                return new PlayerMerchant((OfflinePlayer)map.get("player"));
+        }
 }
