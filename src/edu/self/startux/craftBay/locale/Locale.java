@@ -62,14 +62,15 @@ public class Locale {
                         } else {
                                 continue;
                         }
-                        map.put(key, message);
+                        map.put(key.toLowerCase(), message);
                         // System.out.println(key);
                         // System.out.println(message.toString());
                 }
         }
 
         public Message getMessage(String key) {
-                Message result = map.get(key);
+                if (key == null) return new Message();
+                Message result = map.get(key.toLowerCase());
                 if (result == null) {
                         System.err.println("Locale key not found: " + key);
                         return new Message();
