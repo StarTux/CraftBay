@@ -19,22 +19,59 @@
 
 package edu.self.startux.craftBay;
 
-public class AuctionHouse {
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.Listener;
+
+public class AuctionHouse implements Listener {
         private CraftBayPlugin plugin;
+        private long lastUID;
 
         public AuctionHouse(CraftBayPlugin plugin) {
                 this.plugin = plugin;
         }
 
         public void enable() {
+                plugin.getServer().getPluginManager().registerEvents(this, plugin);
         }
 
-        public Auction createAuction(Merchant owner, Item item) {
-                if (!item.has(owner)) {
-                        owner.warn("You do not have enough " + item.getName() + "!");
+        public Auction createAuction(Merchant owner, Item item, int startingBid) {
+                if (!plugin.getAuctionScheduler().canQueue()) {
+                        owner.warn(plugin.getLocale().getMessage("auction.create.QueueFull").set(owner));
                         return null;
                 }
+                if (!item.has(owner)) {
+                        owner.warn(plugin.getLocale().getMessage("auction.create.NotEnoughItems"));
+                        return null;
+                }
+                int fee = plugin.getConfig().getInt("auctionfee");
+                if (startingBid > plugin.getConfig().getInt("startingbid")) {
+                        int tax = (plugin.getConfig().getInt("auctiontax") * (startingBid - plugin.getConfig().getInt("startingbid"))) / 100;
+                        fee += tax;
+                }
+                if (fee > 0) {
+                        if (!owner.hasAmount(fee)) {
+                                owner.warn(plugin.getLocale().getMessage("auction.create.FeeTooHigh").set(owner).set("fee", new MoneyAmount(fee)));
+                                return null;
+                        }
+                        owner.takeAmount(fee);
+                        owner.msg(plugin.getLocale().getMessage("auction.create.FeeDebited").set(owner).set("fee", new MoneyAmount(fee)));
+                }
                 item = item.take(owner);
-                return new TimedAuction(plugin, owner, item);
+                Auction auction = new TimedAuction(plugin, owner, item);
+                long uid = System.currentTimeMillis();
+                if (uid == lastUID) uid += 1;
+                lastUID = Math.max(uid, lastUID);
+                auction.setUID(uid);
+                auction.setState(AuctionState.QUEUED);
+                if (startingBid != 0) auction.setStartingBid(startingBid);
+                plugin.getAuctionScheduler().queueAuction(auction);
+                return auction;
+        }
+
+        @EventHandler(priority = EventPriority.LOWEST)
+        public void onPlayerJoin(PlayerJoinEvent event) {
+                ItemDelivery.deliverAll();
         }
 }
