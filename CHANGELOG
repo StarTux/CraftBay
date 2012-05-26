@@ -1,3 +1,21 @@
+1.1
+
+* Remove custom logfile
+* Remove confusing 'h' shortcut for "hand" subcommand
+* Add auction queue for future auctions
+* Add auction history for past auctions
+* Remove "admininfo" subcommand
+* Add "history" subcommand (replaces admininfo)
+* Make auctions survive server restart
+* Add custom messages, localizations
+* Add auction fee (flat) and tax (fraction of starting bid)
+* Make colors configurable
+* Add denial for starting auctions in creative mode
+
+1.0.2
+
+* Fix ChannelChat
+
 1.0.1
 
 * Check Herochat permissions
