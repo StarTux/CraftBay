@@ -26,20 +26,24 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.logging.Level;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class AuctionScheduler implements Runnable {
         private CraftBayPlugin plugin;
-        private int maxQueue = 10;
-        private int maxHistory = 10;
+        private int maxQueue;
+        private int maxHistory;
         private LinkedList<Auction> queue = new LinkedList<Auction>();
         private LinkedList<Auction> history = new LinkedList<Auction>();
-        private LinkedList<ItemDelivery> deliveries = new LinkedList<ItemDelivery>();
         private Auction current;
         private int taskid = -1;
         private FileConfiguration conf;
+        private int nextAuctionId = 0;
+        private LinkedList<ItemDelivery> deliveries = new LinkedList<ItemDelivery>();
+        private Map<Integer, Auction> idMap = new HashMap<Integer, Auction>();
+        private Map<Long, Auction> uidMap = new HashMap<Long, Auction>();
 
         private File getSaveFile() {
                 File folder = plugin.getDataFolder();
@@ -62,13 +66,33 @@ public class AuctionScheduler implements Runnable {
                 save();
         }
 
+        private void addAuction(Auction auction) {
+                idMap.put(auction.getId(), auction);
+                uidMap.put(auction.getUID(), auction);
+        }
+
+        private void removeAuction(Auction auction) {
+                idMap.remove(auction.getId());
+                uidMap.remove(auction.getId());
+        }
+
+        public Auction getById(int id) {
+                return idMap.get(id);
+        }
+
+        public Auction getByUID(long uid) {
+                return uidMap.get(uid);
+        }
+
         public void queueAuction(Auction auction) {
+                auction.setId(nextAuctionId++);
+                addAuction(auction);
                 queue.addFirst(auction);
                 soon();
         }
 
-        public void queueDelivery(ItemDelivery delivery) {
-                deliveries.add(delivery);
+        public boolean unqueueAuction(Auction auction) {
+                return queue.remove(auction);
         }
 
         public void soon() {
@@ -83,25 +107,33 @@ public class AuctionScheduler implements Runnable {
         public void run() {
                 taskid = -1;
                 schedule();
-                // System.out.println("queue: " + + queue.size());
-                // System.out.println("history: " + history.size());
-                // System.out.println("current: " + (current == null ? "null " : "some"));
+        }
+
+        private void historyAuction(Auction auction) {
+                history.addFirst(auction);
+                while (history.size() > maxHistory) {
+                        removeAuction(history.removeLast());
+                }
         }
 
         public void schedule() {
-                for (Iterator<ItemDelivery> it = deliveries.iterator(); it.hasNext();) {
-                        ItemDelivery delivery = it.next();
-                        if (delivery.deliver()) it.remove();
-                }
+                ItemDelivery.deliverAll();
                 if (current != null) {
-                        if (current.getState() != AuctionState.ENDED) return;
-                        history.addFirst(current);
-                        while (history.size() > maxHistory) history.removeLast();
-                        current = null;
+                        if (current.getState() == AuctionState.ENDED || current.getState() == AuctionState.CANCELED) {
+                                historyAuction(current);
+                                current = null;
+                        } else if (current.getState() == AuctionState.QUEUED) {
+                                current.start();
+                        }
                 }
-                if (!queue.isEmpty()) {
-                        current = queue.removeLast();
-                        if (current != null) current.start();
+                while (current == null && !queue.isEmpty()) {
+                        Auction next = queue.removeLast();
+                        if (next.getState() == AuctionState.CANCELED) {
+                                historyAuction(next);
+                        } else {
+                                current = next;
+                                current.start();
+                        }
                 }
         }
 
@@ -109,10 +141,35 @@ public class AuctionScheduler implements Runnable {
                 return current;
         }
 
+
+        public List<Auction> getQueue() {
+                return new ArrayList<Auction>(queue);
+        }
+
+        public List<Auction> getHistory() {
+                return new ArrayList<Auction>(history);
+        }
+
+        public boolean canQueue() {
+                return queue.size() < maxQueue;
+        }
+
+        public void queueDelivery(ItemDelivery delivery) {
+                deliveries.add(delivery);
+        }
+
+        public void checkDeliveries() {
+                for (Iterator<ItemDelivery> it = deliveries.iterator(); it.hasNext();) {
+                        ItemDelivery delivery = it.next();
+                        if (delivery.deliver()) it.remove();
+                }
+        }
+
         private void save() {
                 conf.set("current", current);
                 conf.set("queue", new ArrayList<Object>(queue));
                 conf.set("history", new ArrayList<Object>(history));
+                conf.set("deliveries", new ArrayList<Object>(deliveries));
                 try {
                         conf.save(getSaveFile());
                 } catch (IOException ioe) {
@@ -125,23 +182,24 @@ public class AuctionScheduler implements Runnable {
         private void load() {
                 conf = YamlConfiguration.loadConfiguration(getSaveFile());
                 if (conf.getList("history") != null) history = new LinkedList<Auction>((List<Auction>)conf.getList("history"));
-               if (conf.getList("queue") != null) queue = new LinkedList<Auction>((List<Auction>)conf.getList("queue"));
-                 if (conf.get("current") != null) current = (Auction)conf.get("current");
-                if (current != null) current.start();
-        }
-
-        public List<Auction> getQueue() {
-                return new ArrayList(queue);
-        }
-
-        public List<Auction> getHistory() {
-                return new ArrayList(history);
-        }
-
-        public Auction getById(int id) {
-                if (current.getId() == id) return current;
-                for (Auction auction : history) if (auction.getId() == id) return auction;
-                for (Auction auction : queue) if (auction.getId() == id) return auction;
-                return null;
+                else history = new LinkedList<Auction>();
+                if (conf.getList("queue") != null) queue = new LinkedList<Auction>((List<Auction>)conf.getList("queue"));
+                else queue = new LinkedList<Auction>();
+                if (conf.get("current") != null) {
+                        current = (Auction)conf.get("current");
+                        current.start();
+                } else {
+                        current = null;
+                }
+                int i = history.size() - 1;
+                for (Auction auction : history) auction.setId(i--);
+                if (current != null) current.setId(history.size());
+                i = history.size() + queue.size() - (current == null ? 1 : 0);
+                for (Auction auction : queue) auction.setId(i--);
+                nextAuctionId = history.size() + queue.size() + (current != null ? 1 : 0);
+                for (Auction auction : queue) addAuction(auction);
+                if (current != null) addAuction(current);
+                for (Auction auction : history) addAuction(auction);
+                if (conf.get("deliveries") != null) deliveries = new LinkedList<ItemDelivery>((List<ItemDelivery>)conf.getList("deliveries"));
         }
 }
