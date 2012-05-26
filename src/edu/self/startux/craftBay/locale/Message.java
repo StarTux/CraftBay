@@ -21,6 +21,8 @@ package edu.self.startux.craftBay.locale;
 
 import edu.self.startux.craftBay.Auction;
 import edu.self.startux.craftBay.Merchant;
+import edu.self.startux.craftBay.MoneyAmount;
+import edu.self.startux.craftBay.event.AuctionBidEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -186,11 +188,12 @@ public class Message {
         public Message set(Auction auction) {
                 set("id", auction.getId());
                 set("item", auction.getItem().getName());
+                set("itemshort", auction.getItem().getShortDescription());
                 set("itemdesc", auction.getItem().getDescription());
                 set("owner", auction.getOwner().getName());
                 if (auction.getWinner() != null) set("winner", auction.getWinner().getName());
-                set("minbid", auction.getMinimalBid());
-                set("price", auction.getWinningBid());
+                set("minbid", new MoneyAmount(auction.getMinimalBid()));
+                set("price", new MoneyAmount(auction.getWinningBid()));
                 set("state", auction.getState());
                 set("timeleft", auction.getTimeLeft());
                 return this;
@@ -218,6 +221,15 @@ public class Message {
                 return this;
         }
 
+        public Message set(AuctionBidEvent bidEvent) {
+                set(bidEvent.getAuction());
+                set(bidEvent.getBidder());
+                set("bid", bidEvent.getAmount());
+                if (bidEvent.getOldWinner() != null) set("oldwinner", bidEvent.getOldWinner().getName());
+                set("oldprice", bidEvent.getOldPrice());
+                return this;
+        }
+
         @Override
         protected Message clone() {
                 return new Message(this);
@@ -227,7 +239,7 @@ public class Message {
         public String toString() {
                 StringBuilder sb = new StringBuilder();
                 for (String line : compileNoColor()) sb.append(line).append('\n');
-                sb.setLength(sb.length() - 1);
+                if (sb.length() > 0) sb.setLength(sb.length() - 1);
                 return sb.toString();
         }
 }
