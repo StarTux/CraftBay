@@ -60,7 +60,7 @@ public class Bid implements Comparable<Bid>, ConfigurationSerializable {
         @Override
         public Map<String, Object> serialize() {
                 Map<String, Object> result = new HashMap<String, Object>();
-                result.put("bidder", bidder);
+                result.put("bidder", bidder.clone());
                 result.put("amount", amount);
                 return result;
         }
