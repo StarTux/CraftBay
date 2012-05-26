@@ -19,6 +19,7 @@
 
 package edu.self.startux.craftBay;
 
+import edu.self.startux.craftBay.locale.Message;
 import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -86,6 +87,7 @@ public interface Merchant extends ConfigurationSerializable {
          */
         public void msg(String msg);
         public void msg(List<String> msg);
+        public void msg(Message msg);
 
         /**
          * Send a warning to this merchant.
@@ -93,4 +95,8 @@ public interface Merchant extends ConfigurationSerializable {
          */
         public void warn(String msg);
         public void warn(List<String> msg);
+        public void warn(Message msg);
+
+        public boolean isListening();
+        public Merchant clone();
 }

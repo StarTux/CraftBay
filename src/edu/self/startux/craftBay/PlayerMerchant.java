@@ -19,6 +19,7 @@
 
 package edu.self.startux.craftBay;
 
+import edu.self.startux.craftBay.locale.Message;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,12 +31,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerMerchant implements Merchant {
-        private CraftBayPlugin plugin;
         private OfflinePlayer player;
 
-        public PlayerMerchant(OfflinePlayer player) {
-                this.plugin = plugin;
+        private PlayerMerchant(OfflinePlayer player) {
                 this.player = player;
+        }
+
+        public static PlayerMerchant getByPlayer(OfflinePlayer player) {
+                return new PlayerMerchant(player);
         }
 
         public Player getPlayer() {
@@ -124,7 +127,7 @@ public class PlayerMerchant implements Merchant {
                 int due = stack.getAmount();
                 int stackSize = stack.getMaxStackSize();
                 if (stackSize < 1) {
-                        stackSize = 64;
+                        stackSize = 1;
                 }
                 while (due > 0) {
                         ItemStack other = new ItemStack(stack);
@@ -159,6 +162,12 @@ public class PlayerMerchant implements Merchant {
         }
 
         @Override
+        public void msg(Message msg) {
+                if (getPlayer() == null) return;
+                getPlugin().msg(getPlayer(), msg);
+        }
+
+        @Override
         public void warn(String msg) {
                 if (getPlayer() == null) return;
                 getPlugin().warn(getPlayer(), msg);
@@ -166,6 +175,12 @@ public class PlayerMerchant implements Merchant {
 
         @Override
         public void warn(List<String> msg) {
+                if (getPlayer() == null) return;
+                getPlugin().warn(getPlayer(), msg);
+        }
+
+        @Override
+        public void warn(Message msg) {
                 if (getPlayer() == null) return;
                 getPlugin().warn(getPlayer(), msg);
         }
@@ -224,5 +239,17 @@ public class PlayerMerchant implements Merchant {
         @SuppressWarnings("unchecked")
         public static PlayerMerchant deserialize(Map<String, Object> map) {
                 return new PlayerMerchant((OfflinePlayer)map.get("player"));
+        }
+
+        @Override
+        public boolean isListening() {
+                Player player = getPlayer();
+                if (player == null) return false;
+                return getPlugin().getChatPlugin().isListening(player);
+        }
+
+        @Override
+        public Merchant clone() {
+                return new PlayerMerchant(player);
         }
 }

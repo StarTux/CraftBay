@@ -19,6 +19,7 @@
 
 package edu.self.startux.craftBay;
 
+import edu.self.startux.craftBay.locale.Message;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,11 +69,17 @@ public class BankMerchant implements Merchant {
 
         @Override
         public void msg(String msg) {}
+        @Override
         public void msg(List<String> msg) {}
+        @Override
+        public void msg(Message msg) {}
 
         @Override
         public void warn(String msg) {}
+        @Override
         public void warn(List<String> msg) {}
+        @Override
+        public void warn(Message msg) {}
 
         @Override
         public boolean equals(Object o) {
@@ -92,5 +99,15 @@ public class BankMerchant implements Merchant {
 
         public static BankMerchant deserialize(Map<String, Object> map) {
                 return getInstance();
+        }
+
+        @Override
+        public boolean isListening() {
+                return true;
+        }
+
+        @Override
+        public Merchant clone() {
+                return new BankMerchant();
         }
 }
