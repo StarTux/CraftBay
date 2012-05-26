@@ -23,8 +23,9 @@ import edu.self.startux.craftBay.chat.BukkitChat;
 import edu.self.startux.craftBay.chat.ChannelChat;
 import edu.self.startux.craftBay.chat.ChatPlugin;
 import edu.self.startux.craftBay.chat.HeroChat;
-import edu.self.startux.craftBay.locale.Locale;
 import edu.self.startux.craftBay.locale.Color;
+import edu.self.startux.craftBay.locale.Locale;
+import edu.self.startux.craftBay.locale.Message;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -66,6 +67,7 @@ public class CraftBayPlugin extends JavaPlugin {
                 ConfigurationSerialization.registerClass(Bid.class);
                 ConfigurationSerialization.registerClass(PlayerMerchant.class);
                 ConfigurationSerialization.registerClass(BankMerchant.class);
+                ConfigurationSerialization.registerClass(ItemDelivery.class);
                 executor = new AuctionCommand(this);
 		getCommand("auction").setExecutor(executor);
 		getCommand("bid").setExecutor(executor);
@@ -76,8 +78,8 @@ public class CraftBayPlugin extends JavaPlugin {
 			return;
 		}
                 setupChat();
-                locale = new Locale(this, "en_US");
-                tag = locale.getMessage("tag").toString();
+                locale = new Locale(this, getConfig().getString("lang"));
+                tag = locale.getMessage("Tag").toString();
                 announcer = new AuctionAnnouncer(this);
                 announcer.enable();
                 house = new AuctionHouse(this);
@@ -85,6 +87,7 @@ public class CraftBayPlugin extends JavaPlugin {
                 scheduler = new AuctionScheduler(this);
                 scheduler.enable();
                 scheduler.soon();
+                Color.configure(getConfig().getConfigurationSection("colors"));
 	}
 
 	public void onDisable() {
@@ -160,6 +163,10 @@ public class CraftBayPlugin extends JavaPlugin {
 		sender.sendMessage(Color.ERROR + tag + " " + msg);
 	}
 
+        public void warn(CommandSender sender, Message msg) {
+                warn(sender, msg.compile());
+        }
+
         public void msg(CommandSender sender, List<String> lines) {
                 if (lines.isEmpty()) return;
                 lines.set(0, Color.DEFAULT + tag + " " + lines.get(0));
@@ -171,6 +178,10 @@ public class CraftBayPlugin extends JavaPlugin {
 	public void msg(CommandSender sender, String msg) {
 		sender.sendMessage(Color.DEFAULT + tag + " " + msg);
 	}
+
+        public void msg(CommandSender sender, Message msg) {
+                msg(sender, msg.compile());
+        }
 
         public void log(String msg, Level level) {
                 logger.log(level, "[CraftBay] " + msg);
@@ -199,11 +210,23 @@ public class CraftBayPlugin extends JavaPlugin {
                 broadcast(list);
 	}
 
+        public void broadcast(Message msg) {
+                broadcast(msg.compile());
+        }
+
         public ChatPlugin getChatPlugin() {
                 return chatPlugin;
         }
 
         public Locale getLocale() {
                 return locale;
+        }
+
+        public Message getMessage(String key) {
+                return locale.getMessage(key);
+        }
+
+        public Message getMessages(String... keys) {
+                return locale.getMessages(keys);
         }
 }
