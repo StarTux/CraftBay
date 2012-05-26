@@ -19,12 +19,13 @@
 
 package edu.self.startux.craftBay.chat;
 
+import edu.self.startux.craftBay.CraftBayPlugin;
+import edu.self.startux.craftBay.locale.Message;
 import java.util.HashSet;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import edu.self.startux.craftBay.CraftBayPlugin;
 
 public class BukkitChat implements ChatPlugin {
         private HashSet<String> ignoreList = new HashSet<String>();
@@ -48,6 +49,11 @@ public class BukkitChat implements ChatPlugin {
                                 }
                         }
                 }
+        }
+        
+        @Override
+        public void broadcast(Message msg) {
+                broadcast(msg.compile());
         }
 
         @Override

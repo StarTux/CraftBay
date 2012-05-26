@@ -25,6 +25,7 @@ import com.dthielke.herochat.ChannelManager;
 import com.dthielke.herochat.Chatter;
 import com.dthielke.herochat.Herochat;
 import edu.self.startux.craftBay.CraftBayPlugin;
+import edu.self.startux.craftBay.locale.Message;
 import java.util.List;
 import java.util.logging.Level;
 import org.bukkit.configuration.ConfigurationSection;
@@ -73,6 +74,11 @@ public class HeroChat implements ChatPlugin {
                                 chatter.getPlayer().sendMessage(line);
                         }
                 }
+        }
+
+        @Override
+        public void broadcast(Message msg) {
+                broadcast(msg.compile());
         }
 
         @Override

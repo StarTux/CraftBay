@@ -19,6 +19,7 @@
 
 package edu.self.startux.craftBay.chat;
 
+import edu.self.startux.craftBay.locale.Message;
 import java.util.List;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -36,6 +37,12 @@ public interface ChatPlugin {
          * @param lines the list of lines
          */
         public void broadcast(List<String> lines);
+
+        /**
+         * Broadcast a message to everyone
+         * @param msg the message
+         */
+        public void broadcast(Message msg);
 
         /**
          * Set whether a player is listening or not

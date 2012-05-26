@@ -22,6 +22,7 @@ package edu.self.startux.craftBay.chat;
 import com.feildmaster.channelchat.channel.Channel;
 import com.feildmaster.channelchat.channel.ChannelManager;
 import edu.self.startux.craftBay.CraftBayPlugin;
+import edu.self.startux.craftBay.locale.Message;
 import java.util.List;
 import java.util.logging.Level;
 import org.bukkit.configuration.ConfigurationSection;
@@ -61,6 +62,11 @@ public class ChannelChat implements ChatPlugin {
                 for (String line : lines) {
                         channel.sendMessage(line);
                 }
+        }
+
+        @Override
+        public void broadcast(Message msg) {
+                broadcast(msg.compile());
         }
 
         @Override
