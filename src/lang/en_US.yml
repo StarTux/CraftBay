@@ -1,84 +1,142 @@
-tag: 'Auction:'
+# Formatting
+# default: <default> <dfl>
+# header: <header> <head> <hd> <h>
+# highlight: <highlight> <hl> <hi>
+# shadow: <shadow> <dark> <shade> <shd>
+# shortcut: <shortcut> <sc> <s>
+# admin: <admin> <adm>
+# adminhighlight: <adminhighlight> <adminhi> <admhl> <admhi>
+# error: <error> <err>
+# warn: <warning> <warn> <wrn>
+
+Tag: 'Auction:'
+# Command help, accessed via "/auc help"
 help:
-- <h>Auction Help
-- <dfl>/auc <hl>?<dfl> <h>Auction help
-- <dfl>/auc <s>i<hl>nfo <h>Display auction information
-- <dfl>/auc <s>b<hl>id <dfl>[<hl>amount<dfl>] <h>Place a bid
-- <dfl>/bid <dfl>[<hl>amount<dfl>] <h>Place a bid
-- <dfl>/auc <s>s<hl>tart <dfl>\<<hl>item<dfl>\> <dfl>\<<hl>amount<dfl>\> <dfl>[<hl>price<dfl>] <h>Auction an item
-- <dfl>/auc <hl>hand <dfl>[<hl>amount<dfl>] [<hl>price<dfl>] <h>Auction the item in your hand
-- <dfl>/auc <s>e<hl>nd <dfl>[<hl>delay<dfl>] <h>End current auction
-- <dfl>/auc <hl>listen<dfl>|<hl>ignore <h>Listen to or ignore auctions
-- <dfl>/auc <hl>history <dfl>[<hl>page<dfl>] <h>View past or queued auctions
+  Header: '<h>Auction Help'
+  Help: '<dfl>/auc <hl>?<dfl> <h>Auction help'
+  Info: '<dfl>/auc <s>i<hl>nfo <h>Display auction information'
+  Bid: '<dfl>/auc <s>b<hl>id <dfl>[<hl>amount<dfl>] <h>Place a bid'
+  BidShort: '<dfl>/bid <dfl>[<hl>amount<dfl>] <h>Place a bid'
+  Start: '<dfl>/auc <s>s<hl>tart <dfl>\<<hl>item<dfl>\> <dfl>\<<hl>amount<dfl>\> <dfl>[<hl>price<dfl>] <h>Auction an item'
+  Hand: '<dfl>/auc <hl>hand <dfl>[<hl>amount<dfl>] [<hl>price<dfl>] <h>Auction the item in your hand'
+  End: '<dfl>/auc <s>e<hl>nd <dfl>[<hl>delay<dfl>] <h>End current auction'
+  Listen: '<dfl>/auc <hl>listen<dfl>|<hl>ignore <h>Listen to or ignore auctions'
+  History: '<dfl>/auc <hl>history <dfl>[<hl>id<dfl>] <h>View past or queued auctions'
+  Cancel: '<dfl>/auc <s>c<hl>ancel <dfl>[<hl>id<dfl>] <h>Cancel an auction'
+# Admin command help, accessed via "/auc help" for admins
 adminhelp:
-- <adm>/auc <s>c<admhi>ancel <h>Cancel current auction
-- <adm>/auc <admhi>bank <adm>\<<admhi>item<adm>\> \<<admhi>amount<adm>\> <adm>[<admhi>price<adm>] [<admhi>time<adm>] <h>Auction spawned items
-- <adm>/auc <admhi>bankbid <adm>\<<admhi>amount<adm>\> <h>Place a bid on behalf of the bank
-- <adm>/auc <admhi>spam <h>Broadcast a brief auction info
+  Bank: '<adm>/auc <admhi>bank <adm>\<<admhi>item<adm>\> \<<admhi>amount<adm>\> <adm>[<admhi>price<adm>] [<admhi>time<adm>] <h>Auction spawned items'
+  BankBid: '<adm>/auc <admhi>bankbid <adm>\<<admhi>amount<adm>\> <h>Place a bid on behalf of the bank'
+  Spam: '<adm>/auc <admhi>spam <h>Broadcast a brief auction info'
+# Error messages during command line parsing
+# Environment:
+#  player - the name of the player issuing the command
+#  cmd - the issued subcommand
+#  arg - the erroneous argument (if applicable)
 command:
-  noentry: 'No such command: "{command}"!'
-  noperm: "You don't have permission!"
+  NoEntry: '<warn>No such command: "{cmd}"!'
+  NoPerm: "<warn>You don't have permission!"
+  NotAPlayer: '<warn>Only players can do that!'
+  NoCurrentAuction: '<warn>No auction running!'
+  ArgsTooSmall: '<warn>Not enough arguments!'
+  ArgsTooBig: '<warn>Too many arguments!'
+  NotANumber: '<warn>Number expected: "{arg}"!'
+  NoSuchItem: '<warn>Invalid item: "{arg}"!'
+  IllegalItem: '<warn>Invalid item: "{arg}"!'
+# Error messages from commands
+# Environment:
+#   player - the name of the player issuing the command
+#   auction variables where applicable, see auction.*
+#   arg - the erroneous argument, if applicable
 commands:
-  listen:
-    alreadylisten: You are already listening to auctions!
-    alreadyignore: You are already ignoring auctions!
-    listenerror: An error occured trying to perform this command!
-    ignoreerror: An error occured trying to perform this command!
-    listensuccess: Listening to auctions
-    ignoresuccess: Ignoring auctions
-  history:
-    noentry: '<warn>No such id: {id}'
-  parse:
-    notaplayer: '<warn>Only players can do that!'
-    nocurrentauction: '<warn>No auction running!'
-    argstoosmall: '<warn>Not enough arguments!'
-    argstoobig: '<warn>Too many arguments!'
-    notanumber: '<warn>Number expected: "{arg}"!'
-    nosuchitem: '<warn>Invalid item: "{arg}"!'
-    illegalitem: '<warn>Invalid item: "{arg}"!'
-auction:
-  state:
-    config: Configuration
-    warmup: Warmup
-    running: Running
-    ended: Ended
-  info:
-    head: '<h>Auction Information'
-    owner: '<dfl>Auctioneer: <hl>{owner}'
-    item: '<dfl>Item: <hl>{itemdesc}'
-    winner: '<dfl>Winning: <hl>winner<dfl> for <hl>{price}'
-    nowinner: '<dfl>Minimal bid: <hl>{minbid}'
-    time: '<dfl>Time left: <hl>{timeleft}'
-    state: '<dfl>State: <hl>{state}'
-    help: '<dfl>Type <hl>/auc ?<dfl> for a list of commands.'
   bid:
-    ownauction: "<warn>You can't bid on your own auction!"
-    underbidself: '<warn>You have already made a larger bid!'
-    bidtoosmall: '<warn>You must bid at least <admhi>{minbid}<warn>!'
-    toopoor: '<warn>You do not have enough money!'
-    win: '<dfl>Your bid for {bid} has been accepted!'
-    fail: '<dfl>Your bid for {bid} has been accepted!'
+    BidNegative: '<warn>Positive bid expected!'
+  bankbid:
+    BidNegative: '<warn>Positive bid expected!'
+  listen:
+    AlreadyListen: You are already listening to auctions!
+    AlreadyIgnore : You are already ignoring auctions!
+    ListenError: An error occured trying to perform this command!
+    IgnoreError: An error occured trying to perform this command!
+    ListenSuccess: Listening to auctions
+    IgnoreSuccess: Ignoring auctions
+  history:
+    NoEntry: '<warn>No such id: {id}'
+  start:
+    HandEmpty: '<warn>There is nothing in your hand!'
+    AmountTooSmall: '<warn>Positive amount expected!'
+    PriceTooLow: '<warn>Positive starting bid expected!'
+    CreativeDenial: '<warn>You cannot start auctions in creative mode!'
   end:
-    notowner: 'You are not the owner of this auction!'
-    delaytoolong: 'You can only shorten your auction!'
-    winner: '<dfl>Enjoy your <hl>{itemdesc}<dfl> for <hl>{price}<dfl>!'
-    ownersell: '<dfl>Your <hl>{itemdesc}<dfl> has been sold to <hl>{winner}<dfl> for <hl>{price}<dfl>.'
-    ownerreturn: '<dfl>Your <hl>{itemdesc}<dfl> has been returned to you.'
-    ownerpaymenterror: '<warn>Error processing payment. Auction canceled.'
-    winnerpaymenterror: '<warn>Error processing payment. Auction canceled.'
+    NotOwner: '<warn>You are not the owner of this auction!'
+    DelayTooLong: '<warn>You can only shorten your auction!'
+    DelayNegative: '<warn>Positive delay expected!'
   cancel:
-    toowner: '<warn>Your auction has been canceled!'
+    NoEntry: '<warn>Auction with ID {arg} not found!'
+    NotOwner: '<warn>You are not the owner of this auction!'
+# Error messages from auctions
+# Environment (where applicable):
+#   id - the auction id
+#   item - the item name
+#   itemshort - a short description of the item (with amount and "Enchanted" if so)
+#   itemdesc - a long description of the item (with id, damage and enchantments)
+#   owner - the owner's name
+#   winner - the winner, if any
+#   minbid - the starting bid
+#   price - the current price
+#   state - the state of this auction
+#   timeleft - the remaining auction duration
+#   fee - the total fee (only in Fee* nodes)
+auction:
+  create:
+    QueueFull: '<warn>Wait until other auctions have ended!'
+    NotEnoughItems: '<warn>You do not have enough {item}!'
+    FeeTooHigh: '<warn>You cannot afford the fee of <hl>{fee}<dfl>!'
+    FeeDebited: '<dfl>Your account has been debited <hl>{fee}<dfl>.'
+  state:
+    Queued: Queued
+    Running: Running
+    Canceled: Canceled
+    Ended: Ended
+  info:
+    Header: '<h>Auction Information'
+    Owner: '<dfl>Auctioneer: <hl>{owner}'
+    Item: '<dfl>Item: <hl>{itemdesc}'
+    Winner: '<dfl>Winning: <hl>{winner}<dfl> for <hl>{price}'
+    NoWinner: '<dfl>Minimal bid: <hl>{minbid}'
+    Time: '<dfl>Time left: <hl>{timeleft}'
+    State: '<dfl>State: <hl>{state}'
+    Help: '<dfl>Type <hl>/auc ?<dfl> for a list of commands.'
+  bid:
+    IsOwner: "<warn>You can't bid on your own auction!"
+    UnderbidSelf: '<warn>You have already made a larger bid!'
+    BidTooSmall: '<warn>You must bid at least <admhi>{minbid}<warn>!'
+    TooPoor: '<warn>You do not have enough money!'
+    Win: '<dfl>Your bid for {bid} has been accepted!'
+    Fail: '<dfl>Your bid for {bid} has been accepted!'
+  end:
+    Winner: '<dfl>Enjoy your <hl>{itemshort}<dfl> for <hl>{price}<dfl>!'
+    OwnerSell: '<dfl>Your <hl>{itemshort}<dfl> has been sold to <hl>{winner}<dfl> for <hl>{price}<dfl>.'
+    OwnerReturn: '<dfl>Your <hl>{itemshort}<dfl> has been returned to you.'
+    OwnerPaymentError: '<warn>Error processing payment. Auction canceled.'
+    WinnerPaymentError: '<warn>Error processing payment. Auction canceled.'
+  cancel:
+    ToOwner: '<warn>Your auction has been canceled!'
   announce:
-    newprice: '<dfl>Price for <hl>{itemdesc}<dfl> is now <hl>{price}<dfl> for <hl>{winner}<dfl>'
-    newwinner: '<hl>{winner}<dfl> beats {player}. Price <hl>{price}'
-    underbid: '<dfl>{player} raises but <hl>{winner}<dfl> is higher. Price <hl>{price}'
-    winner: '<hl>{winner}<dfl> buys <hl>{itemdesc}<dfl> for <hl>{price}<dfl>.'
-    nobid: '<dfl>Auction for <hl>{itemdesc}<dfl> ended with no bids.'
-    cancel: '<admin>Auction canceled by <adminhi>{player}<admin>!'
+    NewPrice: '<dfl>Price for <hl>{itemshort}<dfl> is now <hl>{price}<dfl> for <hl>{winner}<dfl>'
+    NewWinner: '<hl>{winner}<dfl> beats {oldwinner}. Price <hl>{price}'
+    UnderBid: '<dfl>{player} raises but <hl>{winner}<dfl> is higher. Price <hl>{price}'
+    Winner: '<hl>{winner}<dfl> buys <hl>{itemshort}<dfl> for <hl>{price}<dfl>.'
+    PaymentError: <warn>{winner} cannot afford the {price} he bid. Punish him!'
+    NoBid: '<dfl>Auction for <hl>{itemshort}<dfl> ended with no bids.'
+    Cancel: '<admin>Auction canceled by <adminhi>{player}<admin>!'
+# Special item string not covered by Vault
 item:
-  enchanted: Enchanted
+  Enchanted: Enchanted
+# Display of the history.
+# Environment: see auction.*
 history:
-  head: '<h>Auction History'
-  queue: '<shd>[{id}] {owner} {item}'
-  current: '<h>[{id}] {owner} {item}'
-  history: '<dfl>[<hl>{id}<dfl>] {owner} <hl>{item}'
+  Header: '<h>Auction History'
+  Queue: '<shd>[{id}] {owner} {itemshort}'
+  Current: '<h>[{id}] {owner} {itemshort}'
+  History: '<dfl>[<hl>{id}<dfl>] {owner} <hl>{itemshort}'
