@@ -19,6 +19,11 @@
 
 package edu.self.startux.craftBay;
 
+import edu.self.startux.craftBay.event.AuctionTickEvent;
+import edu.self.startux.craftBay.event.AuctionBidEvent;
+import edu.self.startux.craftBay.event.AuctionEndEvent;
+import edu.self.startux.craftBay.event.AuctionStartEvent;
+import edu.self.startux.craftBay.locale.Message;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,63 +31,30 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.logging.Level;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class TimedAuction extends AbstractAuction implements Runnable {
-	private CraftBayPlugin plugin;
+public class TimedAuction extends AbstractAuction {
 	private int timeLeft;
-        private Item item;
-	private Merchant owner;
         private int minbid;
-        private int spamInterval = 120;
         private int minIncrement = 5;
-	private int taskid = -1;
-        private int id = 0;
-        private static int nextId = 0;
         private LinkedList<Bid> bids = new LinkedList<Bid>();
+        private ItemDelivery delivery;
 
 	public TimedAuction(CraftBayPlugin plugin, Merchant owner, Item item) {
-                this.plugin = plugin;
-                this.owner = owner;
-                this.item = item;
-                minbid = plugin.getConfig().getInt("minincrement");
+                super(plugin, owner, item);
+                minbid = plugin.getConfig().getInt("startingbid");
                 timeLeft = plugin.getConfig().getInt("auctiontime");
-                id = nextId++;
-                spamInterval = plugin.getConfig().getInt("spaminterval");
                 minIncrement = plugin.getConfig().getInt("minincrement");
-                state = AuctionState.RUNNING;
 	}
 
         @Override
-        public int getId() {
-                return id;
-        }
-
-        @Override
-        public AuctionState getState() {
-                return state;
-        }
-
-        @Override
-        public Item getItem() {
-                return item;
-        }
-
-        @Override
-        public Merchant getOwner() {
-                return owner;
-        }
-
-        @Override
         public void start() {
-                taskid = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, this, 0l, 20l);
-                if (taskid == -1) {
-                        plugin.log("TimedAuction failed scheduleSyncRepeatingTask()", Level.SEVERE);
-                }
-                plugin.getChatPlugin().broadcast(plugin.getLocale().getMessages("auction.info.head", "auction.info.owner", "auction.info.item", "auction.info.nowinner", "auction.info.time", "auction.info.help").set(this).compile());
+                scheduleTick(true);
+                setState(AuctionState.RUNNING);
+                AuctionStartEvent event = new AuctionStartEvent(this);
+                getPlugin().getServer().getPluginManager().callEvent(event);
         }
 
         @Override
@@ -106,58 +78,47 @@ public class TimedAuction extends AbstractAuction implements Runnable {
         }
 
 	@Override
-	public void run() {
-                if (timeLeft == 0) {
-			stop();
-                        plugin.getAuctionScheduler().soon();
+	public void tick() {
+                if (timeLeft <= 0) {
+			end();
+                        getPlugin().getAuctionScheduler().soon();
                         return;
                 }
                 timeLeft -= 1;
+                getPlugin().getServer().getPluginManager().callEvent(new AuctionTickEvent(this));
         }
 
-        private void end() {
-                Merchant winner = getWinner();
-		if (winner == null) {
-                        ItemDelivery.schedule(owner, item, this);
-                        owner.msg(plugin.getLocale().getMessage("auction.end.ownerreturn").set(this).compile());
-			plugin.broadcast(plugin.getLocale().getMessage("auction.announce.nobid").set(this).compile());
-                        plugin.log("[" + id + "] END return(no bids)");
-                        return;
+        @Override
+        public void end() {
+                setState(AuctionState.ENDED);
+                stop();
+                AuctionEndEvent event = new AuctionEndEvent(this);
+		if (getWinner() == null) {
+                        delivery = ItemDelivery.schedule(getOwner(), getItem(), this);
+                } else if (!getWinner().hasAmount(getWinningBid())) {
+                        delivery = ItemDelivery.schedule(getOwner(), getItem(), this);
+                        event.setPaymentError(true);
+                } else {
+                        getWinner().takeAmount(getWinningBid());
+                        getOwner().giveAmount(getWinningBid());
+                        delivery = ItemDelivery.schedule(getWinner(), getItem(), this);
                 }
-                if (!winner.hasAmount(getEffectiveBid())) {
-                        ItemDelivery.schedule(owner, item, this);
-                        owner.msg(plugin.getLocale().getMessage("auction.end.ownerpaymenterror").set(this).compile());
-                        winner.msg(plugin.getLocale().getMessage("auction.end.winnerpaymenterror").set(this).compile());
-                        plugin.log("[" + id + "] END return(payment error) winner(" + winner.getName() + "), price(" + getEffectiveBid() + ")");
-                        return;
-                }
-                winner.takeAmount(getEffectiveBid());
-                owner.giveAmount(getEffectiveBid());
-                ItemDelivery.schedule(winner, item, this);
-                plugin.broadcast(plugin.getLocale().getMessage("auction.announce.nobid").set(this).compile());
-                winner.msg(plugin.getLocale().getMessage("auction.end.winner").set(this).compile());
-                owner.msg(plugin.getLocale().getMessage("auction.end.ownersell").set(this).compile());
-                plugin.log("[" + id + "] END winner(" + winner.getName() + "), price(" + getEffectiveBid() + ")");
-                return;
+                getPlugin().getServer().getPluginManager().callEvent(event);
+                getPlugin().getAuctionScheduler().soon();
         }
 
         @Override
 	public void stop() {
-                end();
-                if (taskid != -1) {
-                        plugin.getServer().getScheduler().cancelTask(taskid);
-                        taskid = -1;
-                }
-                state = AuctionState.ENDED;
+                scheduleTick(false);
         }
 
         @Override
         public void cancel() {
-                owner.warn(plugin.getLocale().getMessage("auction.cancel.toowner").set(this).compile());
-                ItemDelivery.schedule(owner, item, this);
-                plugin.getServer().getScheduler().cancelTask(taskid);
-                taskid = -1;
-                state = AuctionState.ENDED;
+                if (getState() != AuctionState.RUNNING && getState() != AuctionState.QUEUED) return;
+                delivery = ItemDelivery.schedule(getOwner(), getItem(), this);
+                setState(AuctionState.CANCELED);
+                stop();
+                getPlugin().getAuctionScheduler().soon();
 	}
 
         @Override
@@ -168,13 +129,13 @@ public class TimedAuction extends AbstractAuction implements Runnable {
                 return bids.getFirst().getBidder();
         }
 
-        private int getBid(Merchant merchant) throws IllegalArgumentException {
+        private int getBid(Merchant merchant) {
                 for (Bid bid : bids) {
                         if (merchant.equals(bid.getBidder())) {
                                 return bid.getAmount();
                         }
                 }
-                throw new IllegalArgumentException("Merchant `" + merchant.getName() + "' never placed a bid");
+                return 0;
         }
 
         /**
@@ -187,16 +148,12 @@ public class TimedAuction extends AbstractAuction implements Runnable {
                 return bids.getFirst().getAmount();
         }
 
-        @Override
-        public int getWinningBid() {
-                return getEffectiveBid();
-        }
-
         /**
          * Get the amount that the current winner would have to
          * pay, should he win.
          */
-        private int getEffectiveBid() {
+        @Override
+        public int getWinningBid() {
                 if (bids.isEmpty()) return 0;
                 Merchant winner = getWinner();
                 if (bids.size() == 1) return minbid;
@@ -215,7 +172,7 @@ public class TimedAuction extends AbstractAuction implements Runnable {
         @Override
         public int getMinimalBid() {
                 if (bids.isEmpty()) return minbid;
-                return getEffectiveBid() + minIncrement;
+                return getWinningBid() + minIncrement;
         }
 
         /**
@@ -239,52 +196,40 @@ public class TimedAuction extends AbstractAuction implements Runnable {
         
         @Override
 	public boolean bid(Merchant bidder, int bid) {
-		if (bidder.equals(owner) && bidder != BankMerchant.getInstance()) {
-			bidder.warn(plugin.getLocale().getMessage("auction.bid.ownauction").set(this, bidder).compile());
+		if (bidder.equals(getOwner()) && !bidder.equals(BankMerchant.getInstance())) {
+			bidder.warn(getPlugin().getMessage("auction.bid.IsOwner").set(this, bidder));
 			return false;
 		}
 		if (bidder.equals(getWinner()) && bid <= getMaxBid() && bidder != BankMerchant.getInstance()) {
-			bidder.warn(plugin.getLocale().getMessage("auction.bid.underbidself").set(this, bidder).compile());
+			bidder.warn(getPlugin().getMessage("auction.bid.UnderbidSelf").set(this, bidder));
 		 	return false;
 		}
                 if (bid < getMinimalBid()) {
-			bidder.warn(plugin.getLocale().getMessage("auction.bid.bidtoosmall").set(this, bidder).compile());
+			bidder.warn(getPlugin().getMessage("auction.bid.BidTooSmall").set(this, bidder));
                         return false;
                 }
                 if (!bidder.hasAmount(bid)) {
-			bidder.warn(plugin.getLocale().getMessage("auction.bid.toopoor").set(this, bidder).compile());
+			bidder.warn(getPlugin().getMessage("auction.bid.TooPoor").set(this, bidder));
                         return false;
                 }
-                int oldAmount = getEffectiveBid();
+                int oldPrice = getWinningBid();
                 Merchant oldWinner = getWinner();
                 addBid(new Bid(bidder, bid));
-                int newAmount = getEffectiveBid();
-                Merchant newWinner = getWinner();
-                if (oldWinner == null || (newAmount != oldAmount && oldWinner.equals(bidder))) {
-                        // overbid, first winner or overbid yourself with price change (corner case)
-                        bidder.msg(plugin.getLocale().getMessage("auction.bid.win").set(this, bidder).compile());
-                        plugin.broadcast(plugin.getLocale().getMessage("auction.announce.newprice").set(this, bidder).compile());
-                } else if (!newWinner.equals(oldWinner)) {
-                        // new beats old
-                        bidder.msg(plugin.getLocale().getMessage("auction.bid.win").set(this, bidder).compile());
-                        plugin.broadcast(plugin.getLocale().getMessage("auction.announce.newwinner").set(this, bidder).compile());
-                } else if (newAmount != oldAmount) {
-                        // underbid
-                        bidder.msg(plugin.getLocale().getMessage("auction.bid.fail").set(this, bidder).compile());
-                        plugin.broadcast(plugin.getLocale().getMessage("auction.announce.underbid").set(this, bidder).compile());
-                }
+                AuctionBidEvent event = new AuctionBidEvent(this, bidder, bid, oldWinner, oldPrice);
+                getPlugin().getServer().getPluginManager().callEvent(event);
                 return true;
         }
 
         @Override
         public Map<String, Object> serialize() {
                 Map<String, Object> result = new HashMap<String, Object>();
-                result.put("owner", owner);
+                result.put("owner", getOwner().clone());
                 result.put("minbid", minbid);
                 result.put("timeleft", timeLeft);
-                result.put("state", state.ordinal());
-                result.put("item", item);
+                result.put("state", getState().name());
+                result.put("item", getItem().clone());
                 result.put("bids", bids);
+                result.put("uid", getUID());
                 return result;
         }
 
@@ -296,8 +241,9 @@ public class TimedAuction extends AbstractAuction implements Runnable {
                 TimedAuction result = new TimedAuction(plugin, owner, item);
                 result.timeLeft = (Integer)map.get("timeleft");
                 result.minbid = (Integer)map.get("minbid");
-                result.state = AuctionState.values()[(Integer)map.get("state")];
+                result.setState(AuctionState.getByName((String)map.get("state")));
                 result.bids = new LinkedList<Bid>((List<Bid>)map.get("bids"));
+                result.setUID((Long)map.get("uid"));
                 return result;
         }
 }
