@@ -20,13 +20,18 @@
 package edu.self.startux.craftBay;
 
 public enum AuctionState {
-        CONFIG,
-        WARMUP,
+        QUEUED,
         RUNNING,
+        CANCELED,
         ENDED;
 
         @Override
         public String toString() {
-                return CraftBayPlugin.getInstance().getLocale().getMessage("auction.state." + name().toLowerCase()).toString();
+                return CraftBayPlugin.getInstance().getLocale().getMessage("auction.state." + name()).toString();
+        }
+
+        public static AuctionState getByName(String name) {
+                for (AuctionState as : values()) if (as.name().equalsIgnoreCase(name)) return as;
+                return null;
         }
 }
