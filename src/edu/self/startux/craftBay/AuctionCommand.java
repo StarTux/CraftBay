@@ -20,6 +20,8 @@
 package edu.self.startux.craftBay;
 
 import edu.self.startux.craftBay.chat.ChatPlugin;
+import edu.self.startux.craftBay.event.AuctionCancelEvent;
+import edu.self.startux.craftBay.locale.Message;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -96,7 +98,7 @@ public class AuctionCommand implements CommandExecutor {
                                         continue paramLoop;
                                 } else if (paramType.equals(Player.class)) {
                                         if (!(sender instanceof Player)) {
-                                                parent.plugin.warn(sender, plugin.getLocale().getMessage("commands.parse.notaplayer").set(sender).compile());
+                                                parent.plugin.warn(sender, plugin.getMessage("command.NotAPlayer").set(sender).set("cmd", name));
                                                 return false;
                                         }
                                         params[i] = (Player)sender;
@@ -104,7 +106,7 @@ public class AuctionCommand implements CommandExecutor {
                                 } else if (paramType.equals(Auction.class)) {
                                         Auction auction = parent.plugin.getAuction();
                                         if (auction == null) {
-                                                parent.plugin.warn(sender, plugin.getLocale().getMessage("commands.parse.nocurrentauction").set(sender).compile());
+                                                parent.plugin.warn(sender, plugin.getMessage("command.NoCurrentAuction").set(sender).set("cmd", name));
                                                 return false;
                                         }
                                         params[i] = auction;
@@ -113,7 +115,7 @@ public class AuctionCommand implements CommandExecutor {
                                 if (!args.hasNext()) {
                                         avoided += 1;
                                         if (avoided > optionalArgc) {
-                                                parent.plugin.warn(sender, plugin.getLocale().getMessage("commands.parse.argstoosmall").set(sender).compile());
+                                                parent.plugin.warn(sender, plugin.getMessage("command.ArgsTooSmall").set(sender).set("cmd", name));
                                                 return false;
                                         }
                                         arg = null;
@@ -130,7 +132,7 @@ public class AuctionCommand implements CommandExecutor {
                                         try {
                                                 params[i] = Integer.parseInt(arg);
                                         } catch (NumberFormatException e) {
-                                                parent.plugin.warn(sender, plugin.getLocale().getMessage("commands.parse.nonumber").set(sender).set("arg", arg).compile());
+                                                parent.plugin.warn(sender, plugin.getMessage("command.NotANumber").set(sender).set("cmd", name).set("arg", arg));
                                                 return false;
                                         }
                                 } else if (paramType.equals(int.class)) {
@@ -141,7 +143,7 @@ public class AuctionCommand implements CommandExecutor {
                                         try {
                                                 params[i] = Integer.parseInt(arg);
                                         } catch (NumberFormatException e) {
-                                                parent.plugin.warn(sender, plugin.getLocale().getMessage("commands.parse.nonumber").set(sender).set("arg", arg).compile());
+                                                parent.plugin.warn(sender, plugin.getMessage("command.NotANumber").set(sender).set("cmd", name).set("arg", arg));
                                                 return false;
                                         }
                                 } else if (paramType.equals(ItemStack.class)) {
@@ -151,19 +153,19 @@ public class AuctionCommand implements CommandExecutor {
                                         }
                                         ItemInfo item = Items.itemByString(arg);
                                         if (item == null) {
-                                                parent.plugin.warn(sender, plugin.getLocale().getMessage("commands.parse.nosuchitem").set(sender).set("arg", arg).compile());
+                                                parent.plugin.warn(sender, plugin.getMessage("command.NoSuchItem").set(sender).set("cmd", name).set("arg", arg));
                                                 return false;
                                         }
                                         ItemStack stack = item.toStack();
                                         if (stack == null || stack.getType().equals(Material.AIR)) {
-                                                parent.plugin.warn(sender, plugin.getLocale().getMessage("commands.parse.illegalitem").set(sender).set("arg", arg).compile());
+                                                parent.plugin.warn(sender, plugin.getMessage("command.IllegalItem").set(sender).set("cmd", name).set("arg", arg));
                                                 return false;
                                         }
                                         params[i] = stack;
                                 }
                         }
                         if (args.hasNext()) {
-                                parent.plugin.warn(sender, plugin.getLocale().getMessage("commands.parse.argstoobig").set(sender).compile());
+                                parent.plugin.warn(sender, plugin.getMessage("command.ArgsTooBig").set(sender).set("cmd", name));
                                 return false;
                         }
                         try {
@@ -213,11 +215,11 @@ public class AuctionCommand implements CommandExecutor {
                 }
                 CommandAttribute attr = commandMap.get(arg.toLowerCase());
                 if (attr == null) {
-                        plugin.warn(sender, plugin.getLocale().getMessage("command.noentry").set("command", arg).compile());
+                        plugin.warn(sender, plugin.getMessage("command.NoEntry").set("cmd", arg));
                         return true;
                 }
                 if (!attr.checkPermission(sender)) {
-                        plugin.warn(sender, plugin.getLocale().getMessage("command.noentry").set("command", arg).compile());
+                        plugin.warn(sender, plugin.getMessage("command.NoPerm").set("cmd", arg));
                         return true;
                 }
                 try {
@@ -232,30 +234,38 @@ public class AuctionCommand implements CommandExecutor {
 
         @SubCommand(perm = "info", shortcut = true)
         public void info(CommandSender sender, Auction auction) {
-                plugin.msg(sender, plugin.getLocale().getMessages("auction.info.head", "auction.info.owner", "auction.info.item", (auction.getWinner() != null ? "auction.info.winner" : "auction.info.nowinner"), (auction.getState() != AuctionState.ENDED ? "auction.info.time" : "auction.info.state"), "auction.info.help").set(auction, sender).compile());
+                plugin.msg(sender, plugin.getMessages("auction.info.Header", "auction.info.Owner", "auction.info.Item", (auction.getWinner() != null ? "auction.info.Winner" : "auction.info.NoWinner"), (auction.getState() == AuctionState.RUNNING ? "auction.info.Time" : "auction.info.State"), "auction.info.Help").set(auction, sender));
         }
 
         @SubCommand(perm = "bid", shortcut = true, optional = 1)
         public void bid(Player player, Auction auction, Integer amount) {
                 if (amount == null) amount = auction.getMinimalBid();
-                auction.bid(new PlayerMerchant(player), amount);
+                if (amount < 0) {
+                        plugin.warn(player, plugin.getMessage("commands.bid.BidNegative").set(auction, player).set("arg", amount));
+                        return;
+                }
+                auction.bid(PlayerMerchant.getByPlayer(player), amount);
         }
         
         @SubCommand(perm = "start", shortcut = true, optional = 1)
         public void end(CommandSender sender, Auction auction, Integer delay) {
                 if (!auction.getOwner().equals(sender)) {
                         if (!sender.hasPermission("auction.admin") && !sender.isOp()) {
-                                plugin.warn(sender, plugin.getLocale().getMessage("auction.end.notowner").set(auction, sender).compile());
+                                plugin.warn(sender, plugin.getMessage("commands.end.NotOwner").set(auction, sender));
                                 return;
                         }
                 }
                 if (delay == null) {
-                        auction.stop();
+                        auction.end();
                         plugin.getAuctionScheduler().soon();
                 } else {
+                        if (delay < 0) {
+                                plugin.warn(sender, plugin.getMessage("commands.end.DelayNegative").set(auction, sender).set("arg", delay));
+                                return;
+                        }
                         if (delay > auction.getTimeLeft()) {
                                 if (!sender.hasPermission("auction.admin") && !sender.isOp()) {
-                                        plugin.warn(sender, plugin.getLocale().getMessage("auction.end.delaytoolong").set(auction, sender).compile());
+                                        plugin.warn(sender, plugin.getMessage("commands.end.DelayTooLong").set(auction, sender).set("arg", delay));
                                         return;
                                 }
                         }
@@ -263,16 +273,31 @@ public class AuctionCommand implements CommandExecutor {
                 }
         }
 
-        @SubCommand(perm = "admin", shortcut = true)
-        public void cancel(CommandSender sender, Auction auction) {
+        @SubCommand(perm = "start", shortcut = true, optional = 1)
+        public void cancel(CommandSender sender, Auction auction, Integer id) {
+                if (id != null) {
+                        auction = plugin.getAuctionScheduler().getById(id);
+                        if (auction == null) {
+                                plugin.warn(sender, plugin.getMessage("commands.cancel.NoEntry").set(sender).set("arg", id));
+                                return;
+                        }
+                }
+                if (!auction.getOwner().equals(sender) && !sender.hasPermission("auction.admin") && !sender.isOp()) {
+                        plugin.warn(sender, plugin.getMessage("commands.cancel.NotOwner").set(auction, sender));
+                        return;
+                }
                 auction.cancel();
-                plugin.getAuctionScheduler().soon();
-                plugin.broadcast(plugin.getLocale().getMessage("auction.announce.cancel").set(auction, sender).compile());
+                AuctionCancelEvent event = new AuctionCancelEvent(auction, sender);
+                plugin.getServer().getPluginManager().callEvent(event);
         }
 
         @SubCommand(perm = "admin")
         public void bankBid(CommandSender sender, Auction auction, Integer amount) {
                 if (amount == null) amount = auction.getMinimalBid();
+                if (amount < 0) {
+                        plugin.warn(sender, plugin.getMessage("commands.bankbid.BidNegative").set(auction, sender).set("arg", amount));
+                        return;
+                }
                 auction.bid(BankMerchant.getInstance(), amount);
         }
         
@@ -280,112 +305,152 @@ public class AuctionCommand implements CommandExecutor {
         public void listen(Player player) {
                 ChatPlugin chatPlugin = plugin.getChatPlugin();
                 if (chatPlugin.isListening(player)) {
-                        plugin.msg(player, plugin.getLocale().getMessage("commands.listen.alreadylisten").set(player).compile());
+                        plugin.msg(player, plugin.getMessage("commands.listen.AlreadyListen").set(player));
                         return;
                 }
                 boolean ret = plugin.getChatPlugin().listen(player, true);
                 if (!ret) {
-                        plugin.msg(player, plugin.getLocale().getMessage("commands.listen.listenerror").set(player).compile());
+                        plugin.msg(player, plugin.getMessage("commands.listen.ListenError").set(player));
                         return;
                 }
-                plugin.msg(player, plugin.getLocale().getMessage("commands.listen.listensuccess").set(player).compile());
+                plugin.msg(player, plugin.getMessage("commands.listen.ListenSuccess").set(player));
         }
 
         @SubCommand(perm = "info")
         public void ignore(Player player) {
                 ChatPlugin chatPlugin = plugin.getChatPlugin();
                 if (!chatPlugin.isListening(player)) {
-                        plugin.msg(player, plugin.getLocale().getMessage("commands.listen.alreadyignore").set(player).compile());
+                        plugin.msg(player, plugin.getMessage("commands.listen.AlreadyIgnore").set(player));
                         return;
                 }
                 boolean ret = plugin.getChatPlugin().listen(player, false);
                 if (!ret) {
-                        plugin.msg(player, plugin.getLocale().getMessage("commands.listen.ignoreerror").set(player).compile());
+                        plugin.msg(player, plugin.getMessage("commands.listen.IgnoreError").set(player));
                         return;
                 }
-                plugin.msg(player, plugin.getLocale().getMessage("commands.listen.ignoresuccess").set(player).compile());
+                plugin.msg(player, plugin.getMessage("commands.listen.IgnoreSuccess").set(player));
         }
 
         @SubCommand(perm = "start", shortcut = true, optional = 2)
         public void start(Player player, ItemStack stack, Integer amount, Integer price) {
+                if (player.getGameMode() == GameMode.CREATIVE && plugin.getConfig().getBoolean("denycreative") && !player.hasPermission("auction.admin") && !player.isOp()) {
+                        plugin.warn(player, plugin.getMessage("commands.start.CreativeDenial").set(player));
+                        return;
+                }
                 if (amount == null) amount = 1;
+                if (amount < 1) {
+                        plugin.warn(player, plugin.getMessage("commands.start.AmountTooSmall").set(player).set("arg", amount));
+                        return;
+                }
                 stack.setAmount(amount);
-                Merchant merchant = new PlayerMerchant(player);
+                Merchant merchant = PlayerMerchant.getByPlayer(player);
                 Item item = new RealItem(stack);
-                Auction auction = plugin.getAuctionHouse().createAuction(merchant, item);
+                if (price == null) price = 0;
+                if (price < 0) {
+                        plugin.warn(player, plugin.getMessage("commands.start.PriceTooLow").set(player).set("arg", price));
+                        return;
+                }
+                Auction auction = plugin.getAuctionHouse().createAuction(merchant, item, price);
                 if (auction == null) return;
-                if (price != null) auction.setStartingBid(price);
-                plugin.getAuctionScheduler().queueAuction(auction);
         }
 
         @SubCommand(perm = "admin", optional = 3)
         public void bank(CommandSender sender, ItemStack stack, Integer amount, Integer price, Integer time) {
                 if (amount == null) amount = 1;
+                if (amount < 1) {
+                        plugin.warn(sender, plugin.getMessage("commands.start.AmountTooSmall").set(sender).set("arg", amount));
+                        return;
+                }
                 stack.setAmount(amount);
                 Merchant merchant = BankMerchant.getInstance();
                 RealItem item = new RealItem(stack);
-                Auction auction = plugin.getAuctionHouse().createAuction(merchant, item);
+                if (price == null) price = 0;
+                if (price < 0) {
+                        plugin.warn(sender, plugin.getMessage("commands.start.PriceTooLow").set(sender).set("arg", amount));
+                        return;
+                }
+                Auction auction = plugin.getAuctionHouse().createAuction(merchant, item, price);
                 if (auction == null) return;
-                if (time != null) auction.setTimeLeft(time);
-                if (price != null) auction.setStartingBid(price);
-                plugin.getAuctionScheduler().queueAuction(auction);
+                if (time != null) {
+                        if (time < 0) {
+                                plugin.warn(sender, plugin.getMessage("commands.bank.TimeNegative").set(sender).set("arg", time));
+                                // go on
+                        } else {
+                                auction.setTimeLeft(time);
+                        }
+                }
         }
 
         @SubCommand(perm = "start", optional = 2)
         public void hand(Player player, Integer amount, Integer price) {
+                if (player.getGameMode() == GameMode.CREATIVE && plugin.getConfig().getBoolean("denycreative") && !player.hasPermission("auction.admin") && !player.isOp()) {
+                        plugin.warn(player, plugin.getMessage("commands.start.CreativeDenial").set(player));
+                        return;
+                }
                 HandItem item;
                 try {
                         item = new HandItem(player);
                 } catch (IllegalArgumentException iae) {
-                        plugin.warn(player, "There is nothing in your hand!");
+                        plugin.warn(player, plugin.getMessage("commands.start.HandEmpty"));
                         return;
                 }
-                if (amount != null) item.setAmount(amount);
-                Merchant merchant = new PlayerMerchant(player);
-                Auction auction = plugin.getAuctionHouse().createAuction(merchant, item);
+                if (amount != null) {
+                        if (amount < 1) {
+                                plugin.warn(player, plugin.getMessage("commands.start.AmountTooSmall").set(player).set("arg", amount));
+                                return;
+                        }
+                        item.setAmount(amount);
+                }
+                if (price == null) price = 0;
+                if (price < 0) {
+                        plugin.warn(player, plugin.getMessage("commands.start.PriceTooLow").set(player).set("arg", price));
+                        return;
+                }
+                Merchant merchant = PlayerMerchant.getByPlayer(player);
+                Auction auction = plugin.getAuctionHouse().createAuction(merchant, item, price);
                 if (auction == null) return;
-                if (price != null) auction.setStartingBid(price);
-                plugin.getAuctionScheduler().queueAuction(auction);
-                plugin.msg(player, "success!");
         }
 
         @SubCommand(perm = "info", optional = 1, aliases = { "hist" })
         public void history(CommandSender sender, Integer id) {
                 List<String> msg = new ArrayList<String>();
-                msg.addAll(plugin.getLocale().getMessage("history.head").set(sender).compile());
+                msg.addAll(plugin.getMessage("history.Header").set(sender).compile());
                 if (id == null) {
                         for (Auction auction : plugin.getAuctionScheduler().getQueue()) {
-                                msg.addAll(plugin.getLocale().getMessage("history.queue").set(auction).compile());
+                                msg.addAll(plugin.getMessage("history.Queue").set(auction).compile());
                         }
                         {
                                 Auction auction = plugin.getAuctionScheduler().getCurrentAuction();
                                 if (auction != null) {
-                                        msg.addAll(plugin.getLocale().getMessage("history.current").set(auction).compile());
+                                        msg.addAll(plugin.getMessage("history.Current").set(auction).compile());
                                 }
                         }
                         for (Auction auction : plugin.getAuctionScheduler().getHistory()) {
-                                msg.addAll(plugin.getLocale().getMessage("history.history").set(auction).compile());
+                                msg.addAll(plugin.getMessage("history.History").set(auction).compile());
                         }
                         plugin.msg(sender, msg);
                         return;
                 }
                 Auction auction = plugin.getAuctionScheduler().getById(id);
                 if (auction == null) {
-                        plugin.warn(sender, plugin.getLocale().getMessage("commands.history.noentry").set(sender).set("auctionid", id).compile());
+                        plugin.warn(sender, plugin.getMessage("commands.history.NoEntry").set(sender).set("id", id));
                         return;
                 }
-                info(sender, auction);
+                plugin.msg(sender, plugin.getMessages("auction.info.Header", "auction.info.Owner", "auction.info.Item", (auction.getWinner() != null ? "auction.info.Winner" : "auction.info.NoWinner"), "auction.info.State").set(auction, sender));
         }
 
         @SubCommand(perm = "admin")
         public void spam(CommandSender sender, Auction auction) {
         }
 
-        @SubCommand(name = "?", aliases = { "h", "help" })
+        @SubCommand(aliases = { "h", "?" })
         public void help(CommandSender sender) {
-                List<String> msg = plugin.getLocale().getMessage("help").compile();
+                String[] cmds = { "Header", "Help", "Info", "Bid", "BidShort", "Start", "Hand", "End", "Listen", "History", "Cancel" };
+                Message msg = new Message();
+                for (String cmd : cmds) msg.append(plugin.getMessage("help." + cmd));
                 if (sender.hasPermission("auction.admin") || sender.isOp()) {
-                        msg.addAll(plugin.getLocale().getMessage("adminhelp").compile());
+                        String[] admcmds = { "Bank", "BankBid", "Spam" };
+                        for (String cmd : admcmds) msg.append(plugin.getMessage("adminhelp." + cmd));
                 }
                 plugin.msg(sender, msg);
         }
