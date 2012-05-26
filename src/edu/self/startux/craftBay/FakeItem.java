@@ -34,8 +34,18 @@ public class FakeItem implements Item {
         }
 
         @Override
+        public Item clone() {
+                return new FakeItem(name);
+        }
+
+        @Override
         public String getName() {
                 return name;
+        }
+
+        @Override
+        public String getShortDescription() {
+                return Color.HIGHLIGHT.toString() + name;
         }
 
         @Override

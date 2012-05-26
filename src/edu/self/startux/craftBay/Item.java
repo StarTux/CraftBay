@@ -32,14 +32,14 @@ public interface Item extends ConfigurationSerializable {
         public String getName();
 
         /**
+         * Get a short formatted description
+         */
+        public String getShortDescription();
+
+        /**
          * Get a fully formatted description
          */
         public String getDescription();
-
-        // /**
-        //  * Get a fully formatted list of enchantments
-        //  */
-        // public String getEnchantments();
 
         /**
          * Check if a merchant has this item
@@ -61,4 +61,6 @@ public interface Item extends ConfigurationSerializable {
          * @return true if the item could be given to merchant, false otherwise
          */
         public boolean give(Merchant merchant);
+
+        public Item clone();
 }

@@ -40,11 +40,17 @@ public class RealItem implements Item {
                 if (stack.getType() == Material.AIR) throw new IllegalArgumentException();
         }
 
+        @Override
+        public Item clone() {
+                return new RealItem(stack.clone());
+        }
+
         public void setAmount(int amount) {
                 stack.setAmount(amount);
         }
 
-        private String getItemName() {
+        @Override
+        public String getName() {
                 try {
                         return Items.itemByStack(stack).getName();
                 } catch (NullPointerException npe) {
@@ -53,15 +59,15 @@ public class RealItem implements Item {
         }
 
         @Override
-        public String getName() {
+        public String getShortDescription() {
                 StringBuilder sb = new StringBuilder();
                 if (stack.getAmount() > 1) {
                         sb.append(Color.HIGHLIGHT).append(stack.getAmount()).append(Color.DEFAULT).append("x");
                 }
                 if (!stack.getEnchantments().isEmpty()) {
-                        sb.append(Color.HIGHLIGHT).append(CraftBayPlugin.getInstance().getLocale().getMessage("item.enchanted").toString()).append(" ");
+                        sb.append(Color.HIGHLIGHT).append(CraftBayPlugin.getInstance().getLocale().getMessage("item.Enchanted").toString()).append(" ");
                 }
-                sb.append(Color.HIGHLIGHT).append(getItemName());
+                sb.append(Color.HIGHLIGHT).append(getName());
                 return sb.toString();
         }
 
@@ -71,7 +77,7 @@ public class RealItem implements Item {
                 if (stack.getAmount() > 1) {
                         sb.append(Color.HIGHLIGHT).append(stack.getAmount()).append(Color.DEFAULT).append("x");
                 }
-                sb.append(Color.HIGHLIGHT).append(getItemName());
+                sb.append(Color.HIGHLIGHT).append(getName());
                 sb.append(Color.DEFAULT).append(" [").append(Color.HIGHLIGHT).append(stack.getTypeId()).append(Color.DEFAULT).append(":").append(Color.HIGHLIGHT).append((int)stack.getDurability()).append(Color.DEFAULT).append("]");
                 Map<Enchantment, Integer> enchantments = stack.getEnchantments();
                 if (!enchantments.isEmpty()) {
