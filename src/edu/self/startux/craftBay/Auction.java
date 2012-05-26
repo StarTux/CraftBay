@@ -31,10 +31,20 @@ public interface Auction extends ConfigurationSerializable {
         public int getId();
 
         /**
+         * The AuctionScheduler should set the id with this method.
+         * @param id the id
+         */
+        public void setId(int id);
+
+        public long getUID();
+        public void setUID(long uid);
+
+        /**
          * Get the state of this auction
          * @return the state
          */
         public AuctionState getState();
+        public void setState(AuctionState state);
 
         /**
          * Get the item that is being auctioned
@@ -67,9 +77,14 @@ public interface Auction extends ConfigurationSerializable {
 	public boolean bid(Merchant bidder, int bid);
 
         /**
-         * End this auction legitimately.
+         * Stop this auction.
          */
         public void stop();
+
+        /**
+         * End this auction legitmately.
+         */
+        public void end();
 
         /**
          * Cancel this auction.
