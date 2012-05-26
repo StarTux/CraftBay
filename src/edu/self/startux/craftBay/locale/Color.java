@@ -19,19 +19,23 @@
 
 package edu.self.startux.craftBay.locale;
 
-import org.bukkit.ChatColor;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
+import edu.self.startux.craftBay.CraftBayPlugin;
 
 public class Color {
-        public static Color DEFAULT = new Color(new String[]{ "FOO", "DEFAULT", "DFL" }, ChatColor.BLUE);
-        public static Color HEADER = new Color(new String[]{ "HEADER", "H" }, ChatColor.YELLOW);
+        public static Color DEFAULT = new Color(new String[]{ "DEFAULT", "DFL" }, ChatColor.BLUE);
+        public static Color HEADER = new Color(new String[]{ "HEADER", "HEAD", "HD", "H" }, ChatColor.YELLOW);
         public static Color HIGHLIGHT = new Color(new String[]{ "HIGHLIGHT", "HL", "HI" }, ChatColor.AQUA);
         public static Color SHADOW = new Color(new String[]{ "SHADOW", "DARK", "SHADE", "SHD" }, ChatColor.DARK_GRAY);
-        public static Color SHOTCUT = new Color(new String[]{ "SHORTCUT", "S" }, ChatColor.WHITE);
+        public static Color SHORTCUT = new Color(new String[]{ "SHORTCUT", "SC", "S" }, ChatColor.WHITE);
         public static Color ADMIN = new Color(new String[]{ "ADMIN", "ADM" }, ChatColor.DARK_RED);
         public static Color ADMINHIGHLIGHT = new Color(new String[]{ "ADMINHIGHLIGHT", "ADMINHI", "ADMHL", "ADMHI" }, ChatColor.RED);
-        public static Color ERROR = new Color(new String[]{ "ERROR", "ERR", "WARN" }, ChatColor.RED);
+        public static Color ERROR = new Color(new String[]{ "ERROR", "ERR" }, ChatColor.DARK_RED);
+        public static Color WARN = new Color(new String[]{ "WARNING", "WARN", "WRN" }, ChatColor.RED);
 
         private static Map<String, Color> nameMap;
         private ChatColor chatColor;
@@ -54,5 +58,32 @@ public class Color {
         @Override
         public String toString() {
                 return chatColor.toString();
+        }
+
+        public static ChatColor getChatColorByName(String name) {
+                for (ChatColor col : ChatColor.values()) if (col.name().equalsIgnoreCase(name)) return col;
+                throw new IllegalArgumentException("No such ChatColor: " + name);
+        }
+
+        public static void configure(ConfigurationSection section) {
+                if (section == null) return;
+                for (String key : section.getKeys(false)) {
+                        Color color = getByName(key);
+                        if (color == null) {
+                                CraftBayPlugin.getInstance().log("Unknown color key: " + key, Level.WARNING);
+                                continue;
+                        }
+                        String value = section.getString(key);
+                        try {
+                                if (value.length() == 1) {
+                                        color.setColor(ChatColor.getByChar(value));
+                                } else {
+                                        color.setColor(getChatColorByName(value));
+                                }
+                        } catch (Exception e) {
+                                CraftBayPlugin.getInstance().log("Unknown color value: " + value, Level.WARNING);
+                                continue;
+                        }
+                }
         }
 }
