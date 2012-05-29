@@ -151,20 +151,13 @@ public class CraftBayPlugin extends JavaPlugin {
                 return scheduler;
         }
 
-        public void warn(CommandSender sender, List<String> lines) {
+        public void warn(CommandSender sender, Message msg) {
+                List<String> lines = msg.compile();
                 if (lines.isEmpty()) return;
                 lines.set(0, Color.ERROR + tag + " " + lines.get(0));
                 for (String line : lines) {
                         sender.sendMessage(line);
                 }
-        }
-
-	public void warn(CommandSender sender, String msg) {
-		sender.sendMessage(Color.ERROR + tag + " " + msg);
-	}
-
-        public void warn(CommandSender sender, Message msg) {
-                warn(sender, msg.compile());
         }
 
         public void msg(CommandSender sender, List<String> lines) {
@@ -174,10 +167,6 @@ public class CraftBayPlugin extends JavaPlugin {
                         sender.sendMessage(line);
                 }
         }
-
-	public void msg(CommandSender sender, String msg) {
-		sender.sendMessage(Color.DEFAULT + tag + " " + msg);
-	}
 
         public void msg(CommandSender sender, Message msg) {
                 msg(sender, msg.compile());
@@ -195,23 +184,11 @@ public class CraftBayPlugin extends JavaPlugin {
                 return tag;
         }
 
-        public void broadcast(List<String> lines) {
-                // for (String line : lines) {
-                //         getServer().getConsoleSender().sendMessage(line);
-                // }
+        public void broadcast(Message msg) {
+                List<String> lines = msg.compile();
                 if (lines.isEmpty()) return;
                 lines.set(0, Color.DEFAULT + tag + " " + lines.get(0));
                 chatPlugin.broadcast(lines);
-        }
-
-	public void broadcast(String msg) {
-                List<String> list = new ArrayList<String>(1);
-                list.add(msg);
-                broadcast(list);
-	}
-
-        public void broadcast(Message msg) {
-                broadcast(msg.compile());
         }
 
         public ChatPlugin getChatPlugin() {
