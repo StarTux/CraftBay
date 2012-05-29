@@ -23,13 +23,19 @@ import edu.self.startux.craftBay.event.AuctionBidEvent;
 import edu.self.startux.craftBay.event.AuctionCancelEvent;
 import edu.self.startux.craftBay.event.AuctionEndEvent;
 import edu.self.startux.craftBay.event.AuctionStartEvent;
+import edu.self.startux.craftBay.event.AuctionTickEvent;
 import edu.self.startux.craftBay.locale.Message;
+import java.util.Date;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 public class AuctionAnnouncer implements Listener {
         private CraftBayPlugin plugin;
+        private int broadcastTimer;
+        private int reminderTimer;
+        private int reminderInterval;
+        private int broadcastInterval;
 
         public AuctionAnnouncer(CraftBayPlugin plugin) {
                 this.plugin = plugin;
@@ -37,35 +43,77 @@ public class AuctionAnnouncer implements Listener {
 
         public void enable() {
                 plugin.getServer().getPluginManager().registerEvents(this, plugin);
+                loadConfig();
         }
 
-        private boolean announce(Message msg, boolean force) {
-                plugin.broadcast(msg);
-                return true;
+        public void loadConfig() {
+                reminderInterval = plugin.getConfig().getInt("reminderinterval");
+                broadcastInterval = plugin.getConfig().getInt("spamprotection");
+        }
+
+        public void reloadConfig() {
+                loadConfig();
+        }
+
+        private boolean announce(Message msg, boolean force, boolean noTouch) {
+                if (force || broadcastTimer <= 0) {
+                        plugin.broadcast(msg);
+                        if (!noTouch) {
+                                broadcastTimer = broadcastInterval;
+                                reminderTimer = reminderInterval;
+                        }
+                        return true;
+                }
+                return false;
         }
 
         private boolean announce(Message msg) {
-                return announce(msg, false);
+                return announce(msg, false, false);
         }
 
-        private void announce(Message msg, Message pm, Merchant merchant, boolean force) {
-                if (!announce(msg) || !merchant.isListening()) {
+        private void announce(Message msg, Message pm, Merchant merchant, boolean force, boolean noTouch) {
+                if (!announce(msg, force, noTouch) || !merchant.isListening()) {
                         merchant.msg(pm);
                 }
         }
 
         private void announce(Message msg, Message pm, Merchant merchant) {
-                announce(msg, pm, merchant, false);
+                announce(msg, pm, merchant, false, false);
+        }
+
+        @EventHandler(priority = EventPriority.LOWEST)
+        public void onAuctionTick(AuctionTickEvent event) {
+                Auction auction = event.getAuction();
+                int[] alerts = { 10, 5, 4, 3, 2, 1 };
+                for (int i : alerts) {
+                        if (auction.getTimeLeft() == i) {
+                                Message msg;
+                                msg = plugin.getMessage(auction.getWinner() == null ? "auction.alert.NoWinner" : "auction.alert.Winner");
+                                announce(msg.set(auction), true, true);
+                                reminderTimer = reminderInterval;
+                                break;
+                        }
+                }
+                if (reminderTimer <= 0 && broadcastTimer <= 0) {
+                        Message msg;
+                        msg = plugin.getMessage(auction.getWinner() == null ? "auction.reminder.NoWinner" : "auction.reminder.Winner");
+                        announce(msg.set(auction), true, true);
+                        reminderTimer = reminderInterval;
+                }
+                if (broadcastTimer > 0) broadcastTimer -= 1;
+                if (reminderTimer > 0) reminderTimer -= 1;
         }
 
         @EventHandler(priority = EventPriority.LOWEST)
         public void onAuctionStart(AuctionStartEvent event) {
                 Auction auction = event.getAuction();
-                String[] infos = { "Header", "Owner", "Item", "NoWinner", "Time", "Help" };
+                String[] infos = { "Header", "Owner", (auction.getItem() instanceof FakeItem ? "FakeItem" : "RealItem"), "NoWinner", "Time", "Help" };
                 Message msg = new Message();
                 for (String info : infos) msg.append(plugin.getMessage("auction.info." + info));
                 msg.set(auction);
-                announce(msg, true);
+                announce(msg, true, true);
+                broadcastTimer = 0;
+                reminderTimer = reminderInterval;
         }
 
         @EventHandler(priority = EventPriority.LOWEST)
@@ -79,17 +127,24 @@ public class AuctionAnnouncer implements Listener {
                         // overbid, first winner or overbid yourself with price change (corner case)
                         Message msg = plugin.getMessage("auction.announce.NewPrice").set(event);
                         Message pm = plugin.getMessage("auction.bid.Win").set(event);
-                        announce(msg, pm, event.getBidder());
+                        announce(msg, pm, event.getBidder(), false, false);
                 } else if (!newWinner.equals(oldWinner)) {
                         // new beats old
                         Message msg = plugin.getMessage("auction.announce.NewWinner").set(event);
-                        Message pm = plugin.getMessage("auction.bid.Win").set(event);
-                        announce(msg, pm, event.getBidder());
+                        boolean announced = announce(msg, false, false);
+                        if (!announced || !newWinner.isListening()) {
+                                Message pmWinner = plugin.getMessage("auction.bid.Win").set(event);
+                                newWinner.msg(pmWinner);
+                        }
+                        if (!announced || !oldWinner.isListening()) {
+                                Message pmLoser = plugin.getMessage("auction.bid.ToLoser").set(event);
+                                oldWinner.msg(pmLoser);
+                        }
                 } else if (newPrice != oldPrice) {
                         // underbid
                         Message msg = plugin.getMessage("auction.announce.UnderBid").set(event);
                         Message pm = plugin.getMessage("auction.bid.Fail").set(event);
-                        announce(msg, pm, event.getBidder());
+                        announce(msg, pm, event.getBidder(), false, false);
                 }
         }
 
@@ -103,10 +158,10 @@ public class AuctionAnnouncer implements Listener {
                 } else if (event.getAuction().getWinner() == null) {
 			Message msg = plugin.getMessage("auction.announce.NoBid").set(auction);
                         Message pm = plugin.getMessage("auction.end.OwnerReturn").set(auction);
-                        announce(msg, pm, auction.getOwner(), true);
+                        announce(msg, pm, auction.getOwner(), true, false);
                 } else {
                         Message msg = plugin.getMessage("auction.announce.Winner").set(auction);
-                        announce(msg, true);
+                        announce(msg, true, false);
                         if (!auction.getWinner().isListening()) {
                                 Message pm = plugin.getMessage("auction.end.Winner").set(auction);
                                 auction.getWinner().msg(pm);
@@ -121,8 +176,13 @@ public class AuctionAnnouncer implements Listener {
         @EventHandler(priority = EventPriority.LOWEST)
         public void onAuctionCancel(AuctionCancelEvent event) {
                 Auction auction = event.getAuction();
-                Message msg = plugin.getMessage("auction.announce.Cancel").set(auction, event.getSender());
-                Message pm = plugin.getMessage("auction.cancel.ToOwner").set(auction, event.getSender());
-                announce(msg, pm, auction.getOwner(), true);
+                if (auction.getState() == AuctionState.RUNNING) {
+                        Message msg = plugin.getMessage("auction.announce.Cancel").set(auction, event.getSender());
+                        Message pm = plugin.getMessage("auction.cancel.ToOwner").set(auction, event.getSender());
+                        announce(msg, pm, auction.getOwner(), true, true);
+                } else {
+                        Message pm = plugin.getMessage("auction.cancel.ToOwner");
+                        auction.getOwner().msg(pm.set(auction, event.getSender()));
+                }
         }
 }
