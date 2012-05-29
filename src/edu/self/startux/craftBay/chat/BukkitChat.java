@@ -50,11 +50,6 @@ public class BukkitChat implements ChatPlugin {
                         }
                 }
         }
-        
-        @Override
-        public void broadcast(Message msg) {
-                broadcast(msg.compile());
-        }
 
         @Override
         public boolean listen(Player player, boolean on) {

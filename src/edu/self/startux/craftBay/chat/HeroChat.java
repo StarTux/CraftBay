@@ -77,11 +77,6 @@ public class HeroChat implements ChatPlugin {
         }
 
         @Override
-        public void broadcast(Message msg) {
-                broadcast(msg.compile());
-        }
-
-        @Override
         public boolean listen(Player player, boolean on) {
                 Chatter chatter = Herochat.getChatterManager().getChatter(player);
                 if (on) {

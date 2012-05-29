@@ -39,12 +39,6 @@ public interface ChatPlugin {
         public void broadcast(List<String> lines);
 
         /**
-         * Broadcast a message to everyone
-         * @param msg the message
-         */
-        public void broadcast(Message msg);
-
-        /**
          * Set whether a player is listening or not
          * @param player the player
          * @param on true if the player should listen, false otherwise

@@ -65,11 +65,6 @@ public class ChannelChat implements ChatPlugin {
         }
 
         @Override
-        public void broadcast(Message msg) {
-                broadcast(msg.compile());
-        }
-
-        @Override
         public boolean listen(Player player, boolean on) {
                 if (on) {
                         channel.addMember(player);
