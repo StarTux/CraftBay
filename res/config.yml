@@ -1,7 +1,9 @@
 # The initial duration of any auction
 auctiontime: 900
 # The delay after which an auction reminder is broadcast
-spaminterval: 120
+reminderinterval: 60
+# The minimum delay between two messages
+spamprotection: 5
 # The minimal amount a player has to raise for
 minincrement: 5
 # The maximal amount of stored future auctions
