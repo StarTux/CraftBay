@@ -1,0 +1,39 @@
+name: CraftBay
+main: edu.self.startux.craftBay.CraftBayPlugin
+version: 1.1
+author: StarTux
+description: Auction off your items
+depend: [Vault]
+softdepend: [ChannelChat, Herochat]
+commands:
+  auction:
+    description: Auction interface
+    usage: /<command> - get more information
+    aliases: [auc]
+    permission: auction.info
+  bid:
+    description: Shortcut for /auction bid
+    usage: /<command> [amount] - bid an amount
+    permission: auction.bid
+permissions:
+  auction.*:
+    description: Get all permission nodes
+    default: false
+    children:
+      auction.default: false
+      auction.info: true
+      auction.bid: true
+      auction.start: true
+      auction.admin: true
+  auction.info:
+    description: Query information about the ongoing auction
+    default: true
+  auction.bid:
+    description: Bid on an auction
+    default: true
+  auction.start:
+    description: Start an auction
+    default: false
+  auction.admin:
+    description: Perform administrative commands
+    default: op
