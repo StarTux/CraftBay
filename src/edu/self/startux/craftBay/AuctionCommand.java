@@ -234,7 +234,7 @@ public class AuctionCommand implements CommandExecutor {
 
         @SubCommand(perm = "info", shortcut = true)
         public void info(CommandSender sender, Auction auction) {
-                plugin.msg(sender, plugin.getMessages("auction.info.Header", "auction.info.Owner", "auction.info.Item", (auction.getWinner() != null ? "auction.info.Winner" : "auction.info.NoWinner"), (auction.getState() == AuctionState.RUNNING ? "auction.info.Time" : "auction.info.State"), "auction.info.Help").set(auction, sender));
+                plugin.msg(sender, plugin.getMessages("auction.info.Header", "auction.info.Owner", (auction.getItem() instanceof FakeItem ? "auction.info.FakeItem" : "auction.info.RealItem"), (auction.getWinner() != null ? "auction.info.Winner" : "auction.info.NoWinner"), (auction.getState() == AuctionState.RUNNING ? "auction.info.Time" : "auction.info.State"), "auction.info.Help").set(auction, sender));
         }
 
         @SubCommand(perm = "bid", shortcut = true, optional = 1)
@@ -286,9 +286,9 @@ public class AuctionCommand implements CommandExecutor {
                         plugin.warn(sender, plugin.getMessage("commands.cancel.NotOwner").set(auction, sender));
                         return;
                 }
-                auction.cancel();
                 AuctionCancelEvent event = new AuctionCancelEvent(auction, sender);
                 plugin.getServer().getPluginManager().callEvent(event);
+                auction.cancel();
         }
 
         @SubCommand(perm = "admin")
@@ -351,7 +351,9 @@ public class AuctionCommand implements CommandExecutor {
                         return;
                 }
                 Auction auction = plugin.getAuctionHouse().createAuction(merchant, item, price);
-                if (auction == null) return;
+                if (auction != null) {
+                        merchant.msg(plugin.getMessage("commands.start.Success").set(auction, merchant));
+                }
         }
 
         @SubCommand(perm = "admin", optional = 3)
@@ -379,6 +381,7 @@ public class AuctionCommand implements CommandExecutor {
                                 auction.setTimeLeft(time);
                         }
                 }
+                plugin.msg(sender, plugin.getMessage("commands.start.Success").set(auction, sender));
         }
 
         @SubCommand(perm = "start", optional = 2)
@@ -408,7 +411,9 @@ public class AuctionCommand implements CommandExecutor {
                 }
                 Merchant merchant = PlayerMerchant.getByPlayer(player);
                 Auction auction = plugin.getAuctionHouse().createAuction(merchant, item, price);
-                if (auction == null) return;
+                if (auction != null) {
+                        merchant.msg(plugin.getMessage("commands.start.Success").set(auction, merchant));
+                }
         }
 
         @SubCommand(perm = "info", optional = 1, aliases = { "hist" })
@@ -436,7 +441,7 @@ public class AuctionCommand implements CommandExecutor {
                         plugin.warn(sender, plugin.getMessage("commands.history.NoEntry").set(sender).set("id", id));
                         return;
                 }
-                plugin.msg(sender, plugin.getMessages("auction.info.Header", "auction.info.Owner", "auction.info.Item", (auction.getWinner() != null ? "auction.info.Winner" : "auction.info.NoWinner"), "auction.info.State").set(auction, sender));
+                plugin.msg(sender, plugin.getMessages("auction.info.Header", "auction.info.Owner", (auction.getItem() instanceof FakeItem ? "auction.info.FakeItem" : "auction.info.RealItem"), (auction.getWinner() != null ? "auction.info.Winner" : "auction.info.NoWinner"), "auction.info.State").set(auction, sender));
         }
 
         @SubCommand(perm = "admin")
