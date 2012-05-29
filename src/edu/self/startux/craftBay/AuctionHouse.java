@@ -38,11 +38,11 @@ public class AuctionHouse implements Listener {
 
         public Auction createAuction(Merchant owner, Item item, int startingBid) {
                 if (!plugin.getAuctionScheduler().canQueue()) {
-                        owner.warn(plugin.getLocale().getMessage("auction.create.QueueFull").set(owner));
+                        owner.warn(plugin.getMessage("auction.create.QueueFull").set(owner));
                         return null;
                 }
                 if (!item.has(owner)) {
-                        owner.warn(plugin.getLocale().getMessage("auction.create.NotEnoughItems"));
+                        owner.warn(plugin.getMessage("auction.create.NotEnoughItems").set(item).set(owner));
                         return null;
                 }
                 int fee = plugin.getConfig().getInt("auctionfee");
@@ -52,11 +52,11 @@ public class AuctionHouse implements Listener {
                 }
                 if (fee > 0) {
                         if (!owner.hasAmount(fee)) {
-                                owner.warn(plugin.getLocale().getMessage("auction.create.FeeTooHigh").set(owner).set("fee", new MoneyAmount(fee)));
+                                owner.warn(plugin.getMessage("auction.create.FeeTooHigh").set(owner).set("fee", new MoneyAmount(fee)));
                                 return null;
                         }
                         owner.takeAmount(fee);
-                        owner.msg(plugin.getLocale().getMessage("auction.create.FeeDebited").set(owner).set("fee", new MoneyAmount(fee)));
+                        owner.msg(plugin.getMessage("auction.create.FeeDebited").set(owner).set("fee", new MoneyAmount(fee)));
                 }
                 item = item.take(owner);
                 Auction auction = new TimedAuction(plugin, owner, item);
