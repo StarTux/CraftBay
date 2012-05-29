@@ -1,3 +1,4 @@
 #!/bin/bash
 
-rm -rvf target/
+rm -rvf target/ CraftBay.jar
+rm -vf files libs
