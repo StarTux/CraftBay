@@ -84,8 +84,8 @@ public class TimedAuction extends AbstractAuction {
                         getPlugin().getAuctionScheduler().soon();
                         return;
                 }
-                timeLeft -= 1;
                 getPlugin().getServer().getPluginManager().callEvent(new AuctionTickEvent(this));
+                timeLeft -= 1;
         }
 
         @Override
@@ -192,6 +192,7 @@ public class TimedAuction extends AbstractAuction {
                                 return;
                         }
                 }
+                bids.addLast(bid);
         }
         
         @Override
