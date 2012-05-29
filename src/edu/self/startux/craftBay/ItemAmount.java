@@ -21,34 +21,60 @@ package edu.self.startux.craftBay;
 
 public class ItemAmount {
         public static enum Unit {
-                ITEM(1),
-                STACK(64),
-                CHEST(64 * 9 * 3),
-                DOUBLE_CHEST(64 * 9 * 6),
-                INVENTORY(64 * 9 * 4),
-                HAND,
-                ALL;
+                INVENTORY(9 * 4),
+                DOUBLE_CHEST(9 * 6),
+                CHEST(9 * 3),
+                STACK(1);
 
                 private int multiplier;
 
                 private Unit() {
-                        multiplier = -1;
+                        this(0);
                 }
 
                 private Unit(int multiplier) {
                         this.multiplier = multiplier;
                 }
 
-                public int getMultiplier() {
-                        return multiplier;
+                public int getMultiplier(int stackSize) {
+                        return multiplier * stackSize;
+                }
+
+                private String getNodeName() {
+                        if (this == DOUBLE_CHEST) return "doubleChest";
+                        return name().toLowerCase();
+                }
+
+                public String getMessageName(int amount) {
+                        if (amount == 1) return CraftBayPlugin.getInstance().getMessage("item." + getNodeName() + ".Singular").toString();
+                        return CraftBayPlugin.getInstance().getMessage("item." + getNodeName() + ".Plural").toString();
                 }
         }
 
-        private Unit unit;
         private int amount;
+        private int stackSize;
+
+        public ItemAmount(int amount, int stackSize) {
+                this.amount = amount;
+                this.stackSize = stackSize;
+        }
 
         public ItemAmount(int amount) {
-                unit = Unit.ITEM;
-                this.amount = amount;
+                this(amount, 1);
+        }
+
+        public int getInt() {
+                return amount;
+        }
+
+        @Override public String toString() {
+                if (stackSize < 16) return "" + amount;
+                for (Unit unit : Unit.values()) {
+                        if (amount % unit.getMultiplier(stackSize) == 0) {
+                                int count = amount / unit.getMultiplier(stackSize);
+                                return "" + count + " " + unit.getMessageName(count);
+                        }
+                }
+                return "" + amount;
         }
 }
