@@ -20,6 +20,9 @@
 package edu.self.startux.craftBay.locale;
 
 import edu.self.startux.craftBay.Auction;
+import edu.self.startux.craftBay.AuctionTime;
+import edu.self.startux.craftBay.CraftBayPlugin;
+import edu.self.startux.craftBay.Item;
 import edu.self.startux.craftBay.Merchant;
 import edu.self.startux.craftBay.MoneyAmount;
 import edu.self.startux.craftBay.event.AuctionBidEvent;
@@ -185,17 +188,26 @@ public class Message {
                 return this;
         }
 
+        public Message set(Item item) {
+                set("item", item.getName());
+                set("itemdesc", item.getDescription());
+                set("amount", item.getAmount());
+                set("totalamount", item.getAmount().getInt());
+                set("itemid", item.getId());
+                set("itemdamage", item.getDamage());
+                set("enchantments", item.getEnchantments());
+                return this;
+        }
+
         public Message set(Auction auction) {
                 set("id", auction.getId());
-                set("item", auction.getItem().getName());
-                set("itemshort", auction.getItem().getShortDescription());
-                set("itemdesc", auction.getItem().getDescription());
+                set(auction.getItem());
                 set("owner", auction.getOwner().getName());
                 if (auction.getWinner() != null) set("winner", auction.getWinner().getName());
                 set("minbid", new MoneyAmount(auction.getMinimalBid()));
                 set("price", new MoneyAmount(auction.getWinningBid()));
                 set("state", auction.getState());
-                set("timeleft", auction.getTimeLeft());
+                set("timeleft", new AuctionTime(auction.getTimeLeft()));
                 return this;
         }
 
