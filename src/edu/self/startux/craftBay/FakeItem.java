@@ -44,13 +44,28 @@ public class FakeItem implements Item {
         }
 
         @Override
-        public String getShortDescription() {
-                return Color.HIGHLIGHT.toString() + name;
+        public String getDescription() {
+                return getName();
         }
 
         @Override
-        public String getDescription() {
-                return Color.HIGHLIGHT.toString() + name;
+        public ItemAmount getAmount() {
+                return new ItemAmount(1);
+        }
+
+        @Override
+        public String getEnchantments() {
+                return "";
+        }
+
+        @Override
+        public int getId() {
+                return 0;
+        }
+
+        @Override
+        public int getDamage() {
+                return 0;
         }
 
         @Override

@@ -59,42 +59,49 @@ public class RealItem implements Item {
         }
 
         @Override
-        public String getShortDescription() {
+        public String getDescription() {
                 StringBuilder sb = new StringBuilder();
-                if (stack.getAmount() > 1) {
-                        sb.append(Color.HIGHLIGHT).append(stack.getAmount()).append(Color.DEFAULT).append("x");
-                }
                 if (!stack.getEnchantments().isEmpty()) {
-                        sb.append(Color.HIGHLIGHT).append(CraftBayPlugin.getInstance().getLocale().getMessage("item.Enchanted").toString()).append(" ");
+                        sb.append(CraftBayPlugin.getInstance().getMessage("item.enchanted." + (stack.getAmount() == 1 ? "Singular" : "Plural")).toString());
+                        sb.append(" ");
                 }
-                sb.append(Color.HIGHLIGHT).append(getName());
+                sb.append(getName());
                 return sb.toString();
         }
 
         @Override
-        public String getDescription() {
-                StringBuilder sb = new StringBuilder();
-                if (stack.getAmount() > 1) {
-                        sb.append(Color.HIGHLIGHT).append(stack.getAmount()).append(Color.DEFAULT).append("x");
-                }
-                sb.append(Color.HIGHLIGHT).append(getName());
-                sb.append(Color.DEFAULT).append(" [").append(Color.HIGHLIGHT).append(stack.getTypeId()).append(Color.DEFAULT).append(":").append(Color.HIGHLIGHT).append((int)stack.getDurability()).append(Color.DEFAULT).append("]");
+        public ItemAmount getAmount() {
+                return new ItemAmount(stack.getAmount(), stack.getMaxStackSize());
+        }
+
+        @Override
+        public String getEnchantments() {
                 Map<Enchantment, Integer> enchantments = stack.getEnchantments();
-                if (!enchantments.isEmpty()) {
-                        boolean comma = false;
-                        for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
-                                if (comma) {
-                                        sb.append(Color.DEFAULT).append(", ");
-                                } else {
-                                        sb.append(" ");
-                                        comma = true;
-                                }
-                                Enchantment enchantment = entry.getKey();
-                                int level = entry.getValue();
-                                sb.append(Color.HIGHLIGHT).append(getEnchantmentName(enchantment)).append(" ").append(roman(level));
+                if (enchantments.isEmpty()) return "";
+                boolean comma = false;
+                StringBuffer sb = new StringBuffer();
+                for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
+                        if (comma) {
+                                sb.append(Color.DEFAULT).append(" ");
+                        } else {
+                                sb.append(" ");
+                                comma = true;
                         }
+                        Enchantment enchantment = entry.getKey();
+                        int level = entry.getValue();
+                        sb.append(Color.HIGHLIGHT).append(getEnchantmentName(enchantment)).append(" ").append(roman(level));
                 }
                 return sb.toString();
+        }
+
+        @Override
+        public int getId() {
+                return stack.getTypeId();
+        }
+
+        @Override
+        public int getDamage() {
+                return stack.getDurability();
         }
 
         @Override

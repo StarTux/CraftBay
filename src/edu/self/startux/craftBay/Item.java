@@ -30,16 +30,12 @@ public interface Item extends ConfigurationSerializable {
          * @return the name
          */
         public String getName();
-
-        /**
-         * Get a short formatted description
-         */
-        public String getShortDescription();
-
-        /**
-         * Get a fully formatted description
-         */
         public String getDescription();
+
+        public ItemAmount getAmount();
+        public String getEnchantments();
+        public int getId();
+        public int getDamage();
 
         /**
          * Check if a merchant has this item
