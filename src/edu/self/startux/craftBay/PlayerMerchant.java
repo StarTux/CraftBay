@@ -150,33 +150,9 @@ public class PlayerMerchant implements Merchant {
         }
 
         @Override
-        public void msg(String msg) {
-                if (getPlayer() == null) return;
-                getPlugin().msg(getPlayer(), msg);
-        }
-
-        @Override
-        public void msg(List<String> msg) {
-                if (getPlayer() == null) return;
-                getPlugin().msg(getPlayer(), msg);
-        }
-
-        @Override
         public void msg(Message msg) {
                 if (getPlayer() == null) return;
                 getPlugin().msg(getPlayer(), msg);
-        }
-
-        @Override
-        public void warn(String msg) {
-                if (getPlayer() == null) return;
-                getPlugin().warn(getPlayer(), msg);
-        }
-
-        @Override
-        public void warn(List<String> msg) {
-                if (getPlayer() == null) return;
-                getPlugin().warn(getPlayer(), msg);
         }
 
         @Override

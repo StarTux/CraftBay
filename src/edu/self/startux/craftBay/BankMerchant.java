@@ -68,16 +68,8 @@ public class BankMerchant implements Merchant {
         }
 
         @Override
-        public void msg(String msg) {}
-        @Override
-        public void msg(List<String> msg) {}
-        @Override
         public void msg(Message msg) {}
 
-        @Override
-        public void warn(String msg) {}
-        @Override
-        public void warn(List<String> msg) {}
         @Override
         public void warn(Message msg) {}
 

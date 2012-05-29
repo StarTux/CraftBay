@@ -85,16 +85,12 @@ public interface Merchant extends ConfigurationSerializable {
          * Send a message to this merchant.
          * @param msg the message
          */
-        public void msg(String msg);
-        public void msg(List<String> msg);
         public void msg(Message msg);
 
         /**
          * Send a warning to this merchant.
          * @param msg the warning
          */
-        public void warn(String msg);
-        public void warn(List<String> msg);
         public void warn(Message msg);
 
         public boolean isListening();
