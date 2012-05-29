@@ -1,0 +1,20 @@
+#!/bin/bash
+
+loud() {
+       echo $@
+       $@
+}
+
+concat() {
+	read line
+	echo -n $line
+	while read line; do
+		echo -n $1$line
+	done
+}
+
+mkdir -vp target
+find lib -type f -name '*.jar' | concat : > libs
+find src -type f -name '*.java' > files
+loud javac -d target -classpath @libs @files
+loud jar cf CraftBay.jar -C res . -C target .
