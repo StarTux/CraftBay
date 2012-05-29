@@ -127,7 +127,7 @@ auction:
     NewWinner: '<hl>{winner}<dfl> beats {oldwinner}. Price <hl>{price}'
     UnderBid: '<dfl>{player} raises but <hl>{winner}<dfl> is higher. Price <hl>{price}'
     Winner: '<hl>{winner}<dfl> buys <hl>{itemshort}<dfl> for <hl>{price}<dfl>.'
-    PaymentError: <warn>{winner} cannot afford the {price} he bid. Punish him!'
+    PaymentError: '<warn>{winner} cannot afford the {price} he bid. Punish him!'
     NoBid: '<dfl>Auction for <hl>{itemshort}<dfl> ended with no bids.'
     Cancel: '<admin>Auction canceled by <adminhi>{player}<admin>!'
 # Special item string not covered by Vault
