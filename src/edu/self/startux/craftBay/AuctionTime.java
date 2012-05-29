@@ -29,9 +29,15 @@ public class AuctionTime {
         @Override
         public String toString() {
                 int minutes = time / 60;
-                if (minutes == 0) return String.format("%d" + CraftBayPlugin.getInstance().getMessage("item.Seconds"), time);
                 int seconds = time % 60;
-                if (seconds == 0) return String.format("%d" + CraftBayPlugin.getInstance().getMessage("item.Minutes"), minutes);
+                if (minutes == 0) {
+                        if (seconds == 1) return String.format("%d " + CraftBayPlugin.getInstance().getMessage("item.second.Singular"), seconds);
+                        return String.format("%d " + CraftBayPlugin.getInstance().getMessage("item.second.Plural"), seconds);
+                }
+                if (seconds == 0) {
+                        if (minutes == 1) return String.format("%d " + CraftBayPlugin.getInstance().getMessage("item.minute.Singular"), minutes);
+                        return String.format("%d " + CraftBayPlugin.getInstance().getMessage("item.minute.Plural"), minutes);
+                }
                 return String.format("%02d:%02d", minutes, seconds);
         }
 }
