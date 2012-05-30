@@ -21,6 +21,7 @@ package edu.self.startux.craftBay;
 
 import edu.self.startux.craftBay.chat.ChatPlugin;
 import edu.self.startux.craftBay.event.AuctionCancelEvent;
+import edu.self.startux.craftBay.event.AuctionTimeChangeEvent;
 import edu.self.startux.craftBay.locale.Message;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -255,22 +256,20 @@ public class AuctionCommand implements CommandExecutor {
                                 return;
                         }
                 }
-                if (delay == null) {
-                        auction.end();
-                        plugin.getAuctionScheduler().soon();
-                } else {
-                        if (delay < 0) {
-                                plugin.warn(sender, plugin.getMessage("commands.end.DelayNegative").set(auction, sender).set("arg", delay));
+                if (delay == null) delay = 0;
+                if (delay < 0) {
+                        plugin.warn(sender, plugin.getMessage("commands.end.DelayNegative").set(auction, sender).set("arg", delay));
+                        return;
+                }
+                if (delay > auction.getTimeLeft()) {
+                        if (!sender.hasPermission("auction.admin") && !sender.isOp()) {
+                                plugin.warn(sender, plugin.getMessage("commands.end.DelayTooLong").set(auction, sender).set("arg", delay));
                                 return;
                         }
-                        if (delay > auction.getTimeLeft()) {
-                                if (!sender.hasPermission("auction.admin") && !sender.isOp()) {
-                                        plugin.warn(sender, plugin.getMessage("commands.end.DelayTooLong").set(auction, sender).set("arg", delay));
-                                        return;
-                                }
-                        }
-                        auction.setTimeLeft(delay);
                 }
+                AuctionTimeChangeEvent event = new AuctionTimeChangeEvent(auction, sender, delay);
+                plugin.getServer().getPluginManager().callEvent(event);
+                auction.setTimeLeft(delay);
         }
 
         @SubCommand(perm = "start", shortcut = true, optional = 1)
