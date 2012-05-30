@@ -16,6 +16,7 @@ BUILD
 	(Linux)
 	- clone the repository
 		$ git clone 'git://github.com/StarTux/CraftBay.git'
+		$ cd CraftBay
 	- create the lib subdirectory
 		$ mkdir lib
 	- fetch all the dependencies and put them in lib/
