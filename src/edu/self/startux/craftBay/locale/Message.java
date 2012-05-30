@@ -26,6 +26,7 @@ import edu.self.startux.craftBay.Item;
 import edu.self.startux.craftBay.Merchant;
 import edu.self.startux.craftBay.MoneyAmount;
 import edu.self.startux.craftBay.event.AuctionBidEvent;
+import edu.self.startux.craftBay.event.AuctionTimeChangeEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -233,12 +234,19 @@ public class Message {
                 return this;
         }
 
-        public Message set(AuctionBidEvent bidEvent) {
-                set(bidEvent.getAuction());
-                set(bidEvent.getBidder());
-                set("bid", bidEvent.getAmount());
-                if (bidEvent.getOldWinner() != null) set("oldwinner", bidEvent.getOldWinner().getName());
-                set("oldprice", bidEvent.getOldPrice());
+        public Message set(AuctionBidEvent event) {
+                set(event.getAuction());
+                set(event.getBidder());
+                set("bid", event.getAmount());
+                if (event.getOldWinner() != null) set("oldwinner", event.getOldWinner().getName());
+                set("oldprice", event.getOldPrice());
+                return this;
+        }
+
+        public Message set(AuctionTimeChangeEvent event) {
+                set(event.getAuction());
+                set(event.getSender());
+                set("newtimeleft", new AuctionTime(event.getDelay()));
                 return this;
         }
 
