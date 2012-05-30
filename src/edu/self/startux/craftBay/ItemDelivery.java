@@ -81,7 +81,6 @@ public class ItemDelivery implements ConfigurationSerializable {
                 Map<String, Object> result = new HashMap<String, Object>();
                 result.put("recipient", recipient.clone());
                 result.put("item", item.clone());
-                if (auction != null) result.put("auction", auction.getUID());
                 result.put("created", creationDate.getTime());
                 return result;
         }
@@ -90,9 +89,6 @@ public class ItemDelivery implements ConfigurationSerializable {
                 Merchant recipient = (Merchant)map.get("recipient");
                 Item item = (Item)map.get("item");
                 Auction auction = null;
-                if (map.get("auction") != null) {
-                        auction = CraftBayPlugin.getInstance().getAuctionScheduler().getByUID((Long)map.get("auction"));
-                }
                 Date creationDate = new Date((Long)map.get("created"));
                 return new ItemDelivery(recipient, item, auction, creationDate);
         }

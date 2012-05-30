@@ -43,7 +43,6 @@ public class AuctionScheduler implements Runnable {
         private int nextAuctionId = 0;
         private LinkedList<ItemDelivery> deliveries = new LinkedList<ItemDelivery>();
         private Map<Integer, Auction> idMap = new HashMap<Integer, Auction>();
-        private Map<Long, Auction> uidMap = new HashMap<Long, Auction>();
 
         private File getSaveFile() {
                 File folder = plugin.getDataFolder();
@@ -68,20 +67,14 @@ public class AuctionScheduler implements Runnable {
 
         private void addAuction(Auction auction) {
                 idMap.put(auction.getId(), auction);
-                uidMap.put(auction.getUID(), auction);
         }
 
         private void removeAuction(Auction auction) {
                 idMap.remove(auction.getId());
-                uidMap.remove(auction.getId());
         }
 
         public Auction getById(int id) {
                 return idMap.get(id);
-        }
-
-        public Auction getByUID(long uid) {
-                return uidMap.get(uid);
         }
 
         public void queueAuction(Auction auction) {

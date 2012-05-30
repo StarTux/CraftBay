@@ -27,7 +27,6 @@ public abstract class AbstractAuction implements Auction, Runnable {
 	private Merchant owner;
         private int auctionId;
 	private int taskid = -1;
-        private long uid;
 
         public AbstractAuction(CraftBayPlugin plugin, Merchant owner, Item item) {
                 this.plugin = plugin;
@@ -57,15 +56,6 @@ public abstract class AbstractAuction implements Auction, Runnable {
         @Override
         public void setId(int id) {
                 auctionId = id;
-        }
-
-        @Override
-        public long getUID() {
-                return uid;
-        }
-
-        public void setUID(long uid) {
-                this.uid = uid;
         }
 
         @Override

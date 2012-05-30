@@ -36,9 +36,6 @@ public interface Auction extends ConfigurationSerializable {
          */
         public void setId(int id);
 
-        public long getUID();
-        public void setUID(long uid);
-
         /**
          * Get the state of this auction
          * @return the state

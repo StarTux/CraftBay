@@ -26,7 +26,6 @@ import org.bukkit.event.Listener;
 
 public class AuctionHouse implements Listener {
         private CraftBayPlugin plugin;
-        private long lastUID;
 
         public AuctionHouse(CraftBayPlugin plugin) {
                 this.plugin = plugin;
@@ -60,10 +59,6 @@ public class AuctionHouse implements Listener {
                 }
                 item = item.take(owner);
                 Auction auction = new TimedAuction(plugin, owner, item);
-                long uid = System.currentTimeMillis();
-                if (uid == lastUID) uid += 1;
-                lastUID = Math.max(uid, lastUID);
-                auction.setUID(uid);
                 auction.setState(AuctionState.QUEUED);
                 if (startingBid != 0) auction.setStartingBid(startingBid);
                 plugin.getAuctionScheduler().queueAuction(auction);
