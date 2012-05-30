@@ -124,25 +124,27 @@ auction:
     UnderbidSelf: '<warn>You have already made a larger bid!'
     BidTooSmall: '<warn>You must bid at least <admhi>{minbid}<warn>!'
     TooPoor: '<warn>You do not have enough money!'
-    Win: '<dfl>You are now winning this auction for {price}!'
-    Fail: '<dfl>{winner} is still winning but you raised the price to {price}!'
+    Win: '<dfl>You are now winning this auction for <hl>{price}<dfl>!'
+    Fail: '<hl>{winner}<dfl> is still winning but you raised the price to <hl>{price}<dfl>!'
     ToLoser: '<dfl>{winner} just beat you with {price}!'
+    NewPrice: '<dfl>Price for <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> is now <hl>{price}<dfl> for <hl>{winner}<dfl>'
+    NewWinner: '<hl>{winner}<dfl> beats {oldwinner}. Price <hl>{price}'
+    UnderBid: '<dfl>{player} raises but <hl>{winner}<dfl> is higher. Price <hl>{price}'
+    Winner: '<hl>{winner}<dfl> buys <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> for <hl>{price}<dfl>.'
   end:
     Winner: '<dfl>Enjoy your <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> for <hl>{price}<dfl>!'
     OwnerSell: '<dfl>Your <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> has been sold to <hl>{winner}<dfl> for <hl>{price}<dfl>.'
     OwnerReturn: '<dfl>Your <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> has been returned to you.'
     OwnerPaymentError: '<warn>Error processing payment. Auction canceled.'
     WinnerPaymentError: '<warn>Error processing payment. Auction canceled.'
-  cancel:
-    ToOwner: '<warn>Your auction has been canceled!'
-  announce:
-    NewPrice: '<dfl>Price for <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> is now <hl>{price}<dfl> for <hl>{winner}<dfl>'
-    NewWinner: '<hl>{winner}<dfl> beats {oldwinner}. Price <hl>{price}'
-    UnderBid: '<dfl>{player} raises but <hl>{winner}<dfl> is higher. Price <hl>{price}'
-    Winner: '<hl>{winner}<dfl> buys <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> for <hl>{price}<dfl>.'
     PaymentError: '<warn>{winner} cannot afford the {price} he bid. Punish him!'
     NoBid: '<dfl>Auction for <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> ended with no bids.'
-    Cancel: '<admin>Auction canceled by <adminhi>{player}<admin>!'
+    Manual: '<hl>{player}<dfl> endend the auction.'
+  cancel:
+    Announce: '<admin>Auction canceled by <adminhi>{player}<admin>!'
+    ToOwner: '<warn>Your auction has been canceled!'
+  time:
+    Change: '<hl>{player}<dfl> set the remaining time to <hl>{newtimeleft}<dfl>.'
 # Special item describing strings not covered by Vault
 item:
   enchanted:
