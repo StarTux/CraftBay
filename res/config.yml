@@ -18,6 +18,8 @@ startingbid: 10
 auctionfee: 0
 # The percentage of the additional starting price an auctioneer has to pay
 auctiontax: 0
+# The time a player has to wait between starting two auctions
+auctioneercooldown: 0
 # Prevent players from starting auctions while in creative mode
 denycreative: false
 # Herochat configuration
