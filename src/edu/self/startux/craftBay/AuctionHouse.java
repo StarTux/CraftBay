@@ -19,13 +19,18 @@
 
 package edu.self.startux.craftBay;
 
+import edu.self.startux.craftBay.event.AuctionEndEvent;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 public class AuctionHouse implements Listener {
         private CraftBayPlugin plugin;
+        private Map<String, Date> lastAuctions = new HashMap<String, Date>();
 
         public AuctionHouse(CraftBayPlugin plugin) {
                 this.plugin = plugin;
@@ -35,7 +40,39 @@ public class AuctionHouse implements Listener {
                 plugin.getServer().getPluginManager().registerEvents(this, plugin);
         }
 
+        public boolean checkCooldown(Merchant merchant) {
+                int cooldown = plugin.getConfig().getInt("auctioneercooldown");
+                if (cooldown == 0) return true;
+                if (merchant instanceof BankMerchant) return true;
+                Date date = lastAuctions.get(merchant.getName());
+                if (date == null) return true;
+                if (System.currentTimeMillis() - date.getTime() < cooldown * 1000) return false;
+                return true;
+        }
+
+        public int getCooldown(Merchant merchant) {
+                int cooldown = plugin.getConfig().getInt("auctioneercooldown");
+                if (cooldown == 0) return 0;
+                if (merchant instanceof BankMerchant) return 0;
+                Date date = lastAuctions.get(merchant.getName());
+                if (date == null) return 0;
+                int delay = (int)((System.currentTimeMillis() - date.getTime()) / 1000l);
+                int remain = cooldown - delay;
+                if (remain <= 0) return 0;
+                return remain;
+        }
+
+        public void touchCooldown(Merchant merchant) {
+                if (merchant instanceof BankMerchant) return;
+                lastAuctions.put(merchant.getName(), new Date());
+        }
+
         public Auction createAuction(Merchant owner, Item item, int startingBid) {
+                // check
+                if (!checkCooldown(owner)) {
+                        owner.warn(plugin.getMessage("auction.create.OwnerCooldown").set(owner).set("cooldown", new AuctionTime(getCooldown(owner))));
+                        return null;
+                }
                 if (!plugin.getAuctionScheduler().canQueue()) {
                         owner.warn(plugin.getMessage("auction.create.QueueFull").set(owner));
                         return null;
@@ -54,10 +91,15 @@ public class AuctionHouse implements Listener {
                                 owner.warn(plugin.getMessage("auction.create.FeeTooHigh").set(owner).set("fee", new MoneyAmount(fee)));
                                 return null;
                         }
+                }
+                // take
+                if (fee > 0) {
                         owner.takeAmount(fee);
                         owner.msg(plugin.getMessage("auction.create.FeeDebited").set(owner).set("fee", new MoneyAmount(fee)));
                 }
                 item = item.take(owner);
+                touchCooldown(owner);
+                // create
                 Auction auction = new TimedAuction(plugin, owner, item);
                 auction.setState(AuctionState.QUEUED);
                 if (startingBid != 0) auction.setStartingBid(startingBid);
@@ -68,5 +110,24 @@ public class AuctionHouse implements Listener {
         @EventHandler(priority = EventPriority.LOWEST)
         public void onPlayerJoin(PlayerJoinEvent event) {
                 ItemDelivery.deliverAll();
+        }
+
+        public void endAuction(Auction auction) {
+                AuctionEndEvent event = new AuctionEndEvent(auction);
+		if (auction.getWinner() == null) {
+                        ItemDelivery.schedule(auction.getOwner(), auction.getItem(), auction);
+                } else if (!auction.getWinner().hasAmount(auction.getWinningBid())) {
+                        ItemDelivery.schedule(auction.getOwner(), auction.getItem(), auction);
+                        event.setPaymentError(true);
+                } else {
+                        auction.getWinner().takeAmount(auction.getWinningBid());
+                        auction.getOwner().giveAmount(auction.getWinningBid());
+                        ItemDelivery.schedule(auction.getWinner(), auction.getItem(), auction);
+                }
+                plugin.getServer().getPluginManager().callEvent(event);
+        }
+
+        public void cancelAuction(Auction auction) {
+                ItemDelivery.schedule(auction.getOwner(), auction.getItem(), auction);
         }
 }
