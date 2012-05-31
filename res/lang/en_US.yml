@@ -5,9 +5,10 @@
 # shadow: <shadow> <dark> <shade> <shd>
 # shortcut: <shortcut> <sc> <s>
 # admin: <admin> <adm>
-# adminhighlight: <adminhighlight> <adminhi> <admhl> <admhi>
+# adminhighlight: <adminhighlight> <adminhigh> <adminhi> <admhl> <admhi>
 # error: <error> <err>
 # warn: <warning> <warn> <wrn>
+# warn: <warninghighlight> <warninghigh> <warnhigh> <warnhi> <wrnhi>
 
 Tag: 'Auction:'
 # Command help, accessed via "/auc help"
@@ -75,6 +76,7 @@ commands:
   cancel:
     NoEntry: '<warn>Auction with ID {arg} not found!'
     NotOwner: '<warn>You are not the owner of this auction!'
+    Running: '<warn>You cannot cancel a running auction!'
 # Error messages from auctions
 # Environment (where applicable):
 #   id - the auction id
@@ -95,9 +97,10 @@ commands:
 auction:
   create:
     QueueFull: '<warn>Wait until other auctions have ended!'
-    NotEnoughItems: '<warn>You do not have enough {itemdesc}!'
-    FeeTooHigh: '<warn>You cannot afford the fee of <hl>{fee}<dfl>!'
+    NotEnoughItems: '<warn>You do not have enough <warnhi>{itemdesc}<warn>!'
+    FeeTooHigh: '<warn>You cannot afford the fee of <warnhi>{fee}<warnhi>!'
     FeeDebited: '<dfl>Your account has been debited <hl>{fee}<dfl>.'
+    OwnerCooldown: '<warn>You have to wait <warnhi>{cooldown}<warn>!'
   state:
     Queued: Queued
     Running: Running
@@ -122,7 +125,7 @@ auction:
   bid:
     IsOwner: "<warn>You can't bid on your own auction!"
     UnderbidSelf: '<warn>You have already made a larger bid!'
-    BidTooSmall: '<warn>You must bid at least <admhi>{minbid}<warn>!'
+    BidTooSmall: '<warn>You must bid at least <warnhi>{minbid}<warn>!'
     TooPoor: '<warn>You do not have enough money!'
     Win: '<dfl>You are now winning this auction for <hl>{price}<dfl>!'
     Fail: '<hl>{winner}<dfl> is still winning but you raised the price to <hl>{price}<dfl>!'
@@ -130,14 +133,14 @@ auction:
     NewPrice: '<dfl>Price for <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> is now <hl>{price}<dfl> for <hl>{winner}<dfl>'
     NewWinner: '<hl>{winner}<dfl> beats {oldwinner}. Price <hl>{price}'
     UnderBid: '<dfl>{player} raises but <hl>{winner}<dfl> is higher. Price <hl>{price}'
-    Winner: '<hl>{winner}<dfl> buys <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> for <hl>{price}<dfl>.'
   end:
-    Winner: '<dfl>Enjoy your <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> for <hl>{price}<dfl>!'
+    ToWinner: '<dfl>Enjoy your <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> for <hl>{price}<dfl>!'
     OwnerSell: '<dfl>Your <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> has been sold to <hl>{winner}<dfl> for <hl>{price}<dfl>.'
     OwnerReturn: '<dfl>Your <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> has been returned to you.'
     OwnerPaymentError: '<warn>Error processing payment. Auction canceled.'
+    Winner: '<hl>{winner}<dfl> buys <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> for <hl>{price}<dfl>.'
     WinnerPaymentError: '<warn>Error processing payment. Auction canceled.'
-    PaymentError: '<warn>{winner} cannot afford the {price} he bid. Punish him!'
+    PaymentError: '<warnhi>{winner}<warn> cannot afford the <warnhi>{price}<warn> he bid. Punish him!'
     NoBid: '<dfl>Auction for <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> ended with no bids.'
     Manual: '<hl>{player}<dfl> endend the auction.'
   cancel:
