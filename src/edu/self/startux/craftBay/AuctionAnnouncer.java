@@ -162,9 +162,9 @@ public class AuctionAnnouncer implements Listener {
                         announce(msg, pm, auction.getOwner(), true, false);
                 } else {
                         Message msg = plugin.getMessage("auction.end.Winner").set(auction);
-                        announce(msg, true, false);
+                        announce(msg, true, true);
                         if (!auction.getWinner().isListening()) {
-                                Message pm = plugin.getMessage("auction.end.Winner").set(auction);
+                                Message pm = plugin.getMessage("auction.end.ToWinner").set(auction);
                                 auction.getWinner().msg(pm);
                         }
                         if (!auction.getOwner().isListening()) {
