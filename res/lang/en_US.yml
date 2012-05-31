@@ -115,6 +115,7 @@ auction:
     NoWinner: '<dfl>Minimal bid: <hl>{minbid}'
     Time: '<dfl>Time left: <hl>{timeleft}'
     State: '<dfl>State: <hl>{state}'
+    Fee: '<dfl>Fee: <hl>{fee}'
     Help: '<dfl>Type <hl>/auc ?<dfl> for a list of commands.'
   reminder:
     NoWinner: '<dfl>Auction for <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> ends in <hl>{timeleft}<dfl>. Price: <hl>{minbid}<dfl>.'
@@ -146,6 +147,7 @@ auction:
   cancel:
     Announce: '<admin>Auction canceled by <adminhi>{player}<admin>!'
     ToOwner: '<warn>Your auction has been canceled!'
+    FeeReturn: '<dfl>Your fee of <hl>{fee}<dfl> has been returned to you.'
   time:
     Change: '<hl>{player}<dfl> set the remaining time to <hl>{newtimeleft}<dfl>.'
 # Special item describing strings not covered by Vault
