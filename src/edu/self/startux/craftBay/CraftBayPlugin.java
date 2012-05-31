@@ -52,6 +52,7 @@ public class CraftBayPlugin extends JavaPlugin {
         private AuctionScheduler scheduler;
         private AuctionCommand executor;
         private Locale locale;
+        private AuctionLogger auctionLogger;
         private static CraftBayPlugin instance;
         
         public static CraftBayPlugin getInstance() {
@@ -78,14 +79,16 @@ public class CraftBayPlugin extends JavaPlugin {
 		}
                 setupChat();
                 announcer = new AuctionAnnouncer(this);
-                announcer.enable();
                 house = new AuctionHouse(this);
-                house.enable();
                 scheduler = new AuctionScheduler(this);
-                scheduler.enable();
+                auctionLogger = new AuctionLogger(this);
                 scheduler.soon();
                 loadAuctionConfig();
                 tag = locale.getMessage("Tag").toString();
+                auctionLogger.enable();
+                house.enable();
+                announcer.enable();
+                scheduler.enable();
 	}
 
 	public void onDisable() {
@@ -96,6 +99,7 @@ public class CraftBayPlugin extends JavaPlugin {
                 announcer = null;
                 house = null;
                 scheduler = null;
+                auctionLogger = null;
                 instance = null;
 	}
 

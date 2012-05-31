@@ -19,6 +19,7 @@
 
 package edu.self.startux.craftBay;
 
+import edu.self.startux.craftBay.event.AuctionCreateEvent;
 import edu.self.startux.craftBay.event.AuctionEndEvent;
 import java.util.Date;
 import java.util.HashMap;
@@ -105,6 +106,7 @@ public class AuctionHouse implements Listener {
                 if (startingBid != 0) auction.setStartingBid(startingBid);
                 auction.setFee(fee);
                 plugin.getAuctionScheduler().queueAuction(auction);
+                plugin.getServer().getPluginManager().callEvent(new AuctionCreateEvent(auction));
                 return auction;
         }
 

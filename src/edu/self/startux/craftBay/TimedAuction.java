@@ -181,6 +181,7 @@ public class TimedAuction extends AbstractAuction {
         
         @Override
 	public boolean bid(Merchant bidder, int bid) {
+                if (getState() != AuctionState.RUNNING) return false;
 		if (bidder.equals(getOwner()) && !bidder.equals(BankMerchant.getInstance())) {
 			bidder.warn(getPlugin().getMessage("auction.bid.IsOwner").set(this, bidder));
 			return false;
