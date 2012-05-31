@@ -28,7 +28,7 @@ help:
 adminhelp:
   Bank: '<adm>/auc <admhi>bank <adm>\<<admhi>item<adm>\> \<<admhi>amount<adm>\> <adm>[<admhi>price<adm>] [<admhi>time<adm>] <h>Auction spawned items'
   BankBid: '<adm>/auc <admhi>bankbid <adm>\<<admhi>amount<adm>\> <h>Place a bid on behalf of the bank'
-  Spam: '<adm>/auc <admhi>spam <h>Broadcast a brief auction info'
+  Reload: '<adm>/auc <admhi>reload <h>Reload configuration file'
 # Error messages during command line parsing
 # Environment:
 #  player - the name of the player issuing the command

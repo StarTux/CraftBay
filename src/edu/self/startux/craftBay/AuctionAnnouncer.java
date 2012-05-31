@@ -44,16 +44,11 @@ public class AuctionAnnouncer implements Listener {
 
         public void enable() {
                 plugin.getServer().getPluginManager().registerEvents(this, plugin);
-                loadConfig();
-        }
-
-        public void loadConfig() {
-                reminderInterval = plugin.getConfig().getInt("reminderinterval");
-                broadcastInterval = plugin.getConfig().getInt("spamprotection");
         }
 
         public void reloadConfig() {
-                loadConfig();
+                reminderInterval = plugin.getConfig().getInt("reminderinterval");
+                broadcastInterval = plugin.getConfig().getInt("spamprotection");
         }
 
         private boolean announce(Message msg, boolean force, boolean noTouch) {

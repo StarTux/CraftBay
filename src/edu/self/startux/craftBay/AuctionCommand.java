@@ -450,19 +450,20 @@ public class AuctionCommand implements CommandExecutor {
                 plugin.msg(sender, plugin.getMessages("auction.info.Header", "auction.info.Owner", (auction.getItem() instanceof FakeItem ? "auction.info.FakeItem" : "auction.info.RealItem"), (auction.getWinner() != null ? "auction.info.Winner" : "auction.info.NoWinner"), "auction.info.State").set(auction, sender));
         }
 
-        @SubCommand(perm = "admin")
-        public void spam(CommandSender sender, Auction auction) {
-        }
-
         @SubCommand(aliases = { "h", "?" })
         public void help(CommandSender sender) {
                 String[] cmds = { "Header", "Help", "Info", "Bid", "BidShort", "Start", "Hand", "End", "Listen", "History", "Cancel" };
                 Message msg = new Message();
                 for (String cmd : cmds) msg.append(plugin.getMessage("help." + cmd));
                 if (sender.hasPermission("auction.admin") || sender.isOp()) {
-                        String[] admcmds = { "Bank", "BankBid", "Spam" };
+                        String[] admcmds = { "Bank", "BankBid", "Reload" };
                         for (String cmd : admcmds) msg.append(plugin.getMessage("adminhelp." + cmd));
                 }
                 plugin.msg(sender, msg);
+        }
+
+        @SubCommand(perm = "admin")
+        public void reload(CommandSender sender) {
+                plugin.reloadAuctionConfig();
         }
 }

@@ -5,12 +5,13 @@
 * Add auction queue for future auctions
 * Add auction history for past auctions
 * Remove "admininfo" subcommand
-* Add "history" subcommand (replaces admininfo)
+* Add "history" subcommand
 * Make auctions survive server restart
 * Add custom messages, localizations
 * Add auction fee (flat) and tax (fraction of starting bid)
 * Make colors configurable
 * Add denial for starting auctions in creative mode
+* Add cooldown for players starting auctions
 
 1.0.2
 

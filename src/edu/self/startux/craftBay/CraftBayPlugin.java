@@ -71,15 +71,12 @@ public class CraftBayPlugin extends JavaPlugin {
                 executor = new AuctionCommand(this);
 		getCommand("auction").setExecutor(executor);
 		getCommand("bid").setExecutor(executor);
-		setupConfig();
 		if (!setupEconomy()) {
 			log("Failed to setup economy. CraftBay is not enabled!", Level.SEVERE);
 			setEnabled(false);
 			return;
 		}
                 setupChat();
-                locale = new Locale(this, getConfig().getString("lang"));
-                tag = locale.getMessage("Tag").toString();
                 announcer = new AuctionAnnouncer(this);
                 announcer.enable();
                 house = new AuctionHouse(this);
@@ -87,7 +84,8 @@ public class CraftBayPlugin extends JavaPlugin {
                 scheduler = new AuctionScheduler(this);
                 scheduler.enable();
                 scheduler.soon();
-                Color.configure(getConfig().getConfigurationSection("colors"));
+                loadAuctionConfig();
+                tag = locale.getMessage("Tag").toString();
 	}
 
 	public void onDisable() {
@@ -100,6 +98,19 @@ public class CraftBayPlugin extends JavaPlugin {
                 scheduler = null;
                 instance = null;
 	}
+
+        public void loadAuctionConfig() {
+		getConfig().options().copyDefaults(true);
+		saveConfig();
+                reloadAuctionConfig();
+        }
+
+        public void reloadAuctionConfig() {
+                reloadConfig();
+                locale = new Locale(this, getConfig().getString("lang"));
+                Color.configure(getConfig().getConfigurationSection("colors"));
+                announcer.reloadConfig();
+        }
 
         private void setupChat() {
                 do {
@@ -120,11 +131,6 @@ public class CraftBayPlugin extends JavaPlugin {
                         log("Falling back to default chat");
                 } while (false);
         }
-
-	private void setupConfig() {
-		getConfig().options().copyDefaults(true);
-		saveConfig();
-	}
 
 	private Boolean setupEconomy()
         {

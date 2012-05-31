@@ -33,8 +33,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class AuctionScheduler implements Runnable {
         private CraftBayPlugin plugin;
-        private int maxQueue;
-        private int maxHistory;
         private LinkedList<Auction> queue = new LinkedList<Auction>();
         private LinkedList<Auction> history = new LinkedList<Auction>();
         private Auction current;
@@ -56,8 +54,6 @@ public class AuctionScheduler implements Runnable {
         }
 
         public void enable() {
-                maxQueue = plugin.getConfig().getInt("maxqueue");
-                maxHistory = plugin.getConfig().getInt("maxhistory");
                 load();
         }
 
@@ -104,6 +100,7 @@ public class AuctionScheduler implements Runnable {
 
         private void historyAuction(Auction auction) {
                 history.addFirst(auction);
+                int maxHistory = plugin.getConfig().getInt("maxhistory");
                 while (history.size() > maxHistory) {
                         removeAuction(history.removeLast());
                 }
@@ -149,6 +146,7 @@ public class AuctionScheduler implements Runnable {
         }
 
         public boolean canQueue() {
+                int maxQueue = plugin.getConfig().getInt("maxqueue");
                 return queue.size() < maxQueue;
         }
 
