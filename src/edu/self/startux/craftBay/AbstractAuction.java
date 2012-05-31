@@ -27,6 +27,7 @@ public abstract class AbstractAuction implements Auction, Runnable {
 	private Merchant owner;
         private int auctionId;
 	private int taskid = -1;
+        private int fee;
 
         public AbstractAuction(CraftBayPlugin plugin, Merchant owner, Item item) {
                 this.plugin = plugin;
@@ -66,6 +67,16 @@ public abstract class AbstractAuction implements Auction, Runnable {
         @Override
         public Merchant getOwner() {
                 return owner;
+        }
+
+        @Override
+        public int getFee() {
+                return fee;
+        }
+
+        @Override
+        public void setFee(int fee) {
+                this.fee = fee;
         }
 
         protected void scheduleTick(boolean on) {

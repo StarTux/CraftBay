@@ -103,4 +103,7 @@ public interface Auction extends ConfigurationSerializable {
 
         public int getStartingBid();
         public void setStartingBid(int amount);
+
+        public int getFee();
+        public void setFee(int fee);
 }
