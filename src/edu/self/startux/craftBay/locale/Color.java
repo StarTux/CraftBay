@@ -33,9 +33,10 @@ public class Color {
         public static Color SHADOW = new Color(new String[]{ "SHADOW", "DARK", "SHADE", "SHD" }, ChatColor.DARK_GRAY);
         public static Color SHORTCUT = new Color(new String[]{ "SHORTCUT", "SC", "S" }, ChatColor.WHITE);
         public static Color ADMIN = new Color(new String[]{ "ADMIN", "ADM" }, ChatColor.DARK_RED);
-        public static Color ADMINHIGHLIGHT = new Color(new String[]{ "ADMINHIGHLIGHT", "ADMINHI", "ADMHL", "ADMHI" }, ChatColor.RED);
+        public static Color ADMINHIGHLIGHT = new Color(new String[]{ "ADMINHIGHLIGHT", "ADMINHIGH", "ADMINHI", "ADMHL", "ADMHI" }, ChatColor.RED);
         public static Color ERROR = new Color(new String[]{ "ERROR", "ERR" }, ChatColor.DARK_RED);
         public static Color WARN = new Color(new String[]{ "WARNING", "WARN", "WRN" }, ChatColor.RED);
+        public static Color WARNHIGHLIGHT = new Color(new String[]{ "WARNINGHIGHLIGHT", "WARNINGHIGH", "WARNHIGH", "WARNHI", "WRNHI" }, ChatColor.DARK_RED);
 
         private static Map<String, Color> nameMap;
         private ChatColor chatColor;
