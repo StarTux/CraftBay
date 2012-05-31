@@ -295,7 +295,7 @@ public class AuctionCommand implements CommandExecutor {
                 auction.cancel();
         }
 
-        @SubCommand(perm = "admin")
+        @SubCommand(perm = "admin", optional = 1)
         public void bankBid(CommandSender sender, Auction auction, Integer amount) {
                 if (amount == null) amount = auction.getMinimalBid();
                 if (amount < 0) {
