@@ -21,7 +21,6 @@ package edu.self.startux.craftBay;
 
 import edu.self.startux.craftBay.event.AuctionTickEvent;
 import edu.self.startux.craftBay.event.AuctionBidEvent;
-import edu.self.startux.craftBay.event.AuctionEndEvent;
 import edu.self.startux.craftBay.event.AuctionStartEvent;
 import edu.self.startux.craftBay.locale.Message;
 import java.util.ArrayList;
@@ -40,7 +39,6 @@ public class TimedAuction extends AbstractAuction {
         private int minbid;
         private int minIncrement = 5;
         private LinkedList<Bid> bids = new LinkedList<Bid>();
-        private ItemDelivery delivery;
 
 	public TimedAuction(CraftBayPlugin plugin, Merchant owner, Item item) {
                 super(plugin, owner, item);
@@ -81,7 +79,6 @@ public class TimedAuction extends AbstractAuction {
 	public void tick() {
                 if (timeLeft <= 0) {
 			end();
-                        getPlugin().getAuctionScheduler().soon();
                         return;
                 }
                 getPlugin().getServer().getPluginManager().callEvent(new AuctionTickEvent(this));
@@ -92,18 +89,6 @@ public class TimedAuction extends AbstractAuction {
         public void end() {
                 setState(AuctionState.ENDED);
                 stop();
-                AuctionEndEvent event = new AuctionEndEvent(this);
-		if (getWinner() == null) {
-                        delivery = ItemDelivery.schedule(getOwner(), getItem(), this);
-                } else if (!getWinner().hasAmount(getWinningBid())) {
-                        delivery = ItemDelivery.schedule(getOwner(), getItem(), this);
-                        event.setPaymentError(true);
-                } else {
-                        getWinner().takeAmount(getWinningBid());
-                        getOwner().giveAmount(getWinningBid());
-                        delivery = ItemDelivery.schedule(getWinner(), getItem(), this);
-                }
-                getPlugin().getServer().getPluginManager().callEvent(event);
                 getPlugin().getAuctionScheduler().soon();
         }
 
@@ -115,7 +100,6 @@ public class TimedAuction extends AbstractAuction {
         @Override
         public void cancel() {
                 if (getState() != AuctionState.RUNNING && getState() != AuctionState.QUEUED) return;
-                delivery = ItemDelivery.schedule(getOwner(), getItem(), this);
                 setState(AuctionState.CANCELED);
                 stop();
                 getPlugin().getAuctionScheduler().soon();
