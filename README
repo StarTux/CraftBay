@@ -26,5 +26,5 @@ BUILD
 		- Vault http://dev.bukkit.org/server-mods/vault/
 	- execute the build script
 		$ ./build
-	(Other systems)
+	(Other platforms)
 	- good luck
