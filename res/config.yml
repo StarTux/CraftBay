@@ -19,7 +19,7 @@ auctionfee: 0
 # The percentage of the additional starting price an auctioneer has to pay
 auctiontax: 0
 # The time a player has to wait between starting two auctions
-auctioneercooldown: 0
+auctioneercooldown: 30
 # Prevent players from starting auctions while in creative mode
 denycreative: false
 # Herochat configuration
@@ -39,6 +39,7 @@ colors:
         shadow: dark_gray
         shortcut: white
         admin: dark_red
-        adminhighlight: red
+        adminhigh: red
         error: dark_red
         warn: red
+        warnhigh: dark_red
