@@ -465,5 +465,6 @@ public class AuctionCommand implements CommandExecutor {
         @SubCommand(perm = "admin")
         public void reload(CommandSender sender) {
                 plugin.reloadAuctionConfig();
+                sender.sendMessage("config file reloaded.");
         }
 }
