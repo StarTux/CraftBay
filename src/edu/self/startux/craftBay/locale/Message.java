@@ -207,6 +207,7 @@ public class Message {
                 if (auction.getWinner() != null) set("winner", auction.getWinner().getName());
                 set("minbid", new MoneyAmount(auction.getMinimalBid()));
                 set("price", new MoneyAmount(auction.getWinningBid()));
+                set("fee", new MoneyAmount(auction.getFee()));
                 set("state", auction.getState());
                 set("timeleft", new AuctionTime(auction.getTimeLeft()));
                 return this;
