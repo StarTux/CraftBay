@@ -112,7 +112,12 @@ public class AuctionScheduler implements Runnable {
         public void schedule() {
                 ItemDelivery.deliverAll();
                 if (current != null) {
-                        if (current.getState() == AuctionState.ENDED || current.getState() == AuctionState.CANCELED) {
+                        if (current.getState() == AuctionState.ENDED) {
+                                plugin.getAuctionHouse().endAuction(current);
+                                historyAuction(current);
+                                current = null;
+                        } else if (current.getState() == AuctionState.CANCELED) {
+                                plugin.getAuctionHouse().cancelAuction(current);
                                 historyAuction(current);
                                 current = null;
                         } else if (current.getState() == AuctionState.QUEUED) {
