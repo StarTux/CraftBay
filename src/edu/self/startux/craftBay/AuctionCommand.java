@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import net.milkbowl.vault.item.ItemInfo;
@@ -285,6 +286,10 @@ public class AuctionCommand implements CommandExecutor {
                         plugin.warn(sender, plugin.getMessage("commands.cancel.NotOwner").set(auction, sender));
                         return;
                 }
+                if (auction.getState() == AuctionState.RUNNING && !sender.hasPermission("auction.admin") && !sender.isOp()) {
+                        plugin.warn(sender, plugin.getMessage("commands.cancel.Running").set(auction, sender));
+                        return;
+                }
                 AuctionCancelEvent event = new AuctionCancelEvent(auction, sender);
                 plugin.getServer().getPluginManager().callEvent(event);
                 auction.cancel();
@@ -417,22 +422,24 @@ public class AuctionCommand implements CommandExecutor {
 
         @SubCommand(perm = "info", optional = 1, aliases = { "hist" })
         public void history(CommandSender sender, Integer id) {
-                List<String> msg = new ArrayList<String>();
-                msg.addAll(plugin.getMessage("history.Header").set(sender).compile());
                 if (id == null) {
+                        LinkedList<Message> msgs = new LinkedList<Message>();
                         for (Auction auction : plugin.getAuctionScheduler().getQueue()) {
-                                msg.addAll(plugin.getMessage("history.Queue").set(auction).compile());
+                                msgs.addFirst(plugin.getMessage("history.Queue").set(auction));
                         }
                         {
                                 Auction auction = plugin.getAuctionScheduler().getCurrentAuction();
                                 if (auction != null) {
-                                        msg.addAll(plugin.getMessage("history.Current").set(auction).compile());
+                                        msgs.addFirst(plugin.getMessage("history.Current").set(auction));
                                 }
                         }
                         for (Auction auction : plugin.getAuctionScheduler().getHistory()) {
-                                msg.addAll(plugin.getMessage("history.History").set(auction).compile());
+                                msgs.addFirst(plugin.getMessage("history.History").set(auction));
                         }
-                        plugin.msg(sender, msg);
+                        List<String> out = new ArrayList<String>(msgs.size());
+                        out.addAll(plugin.getMessage("history.Header").set(sender).compile());
+                        for (Message msg : msgs) out.addAll(msg.compile());
+                        plugin.msg(sender, out);
                         return;
                 }
                 Auction auction = plugin.getAuctionScheduler().getById(id);
