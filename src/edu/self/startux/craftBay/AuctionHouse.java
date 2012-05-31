@@ -91,7 +91,7 @@ public class AuctionHouse implements Listener {
                                 owner.warn(plugin.getMessage("auction.create.FeeTooHigh").set(owner).set("fee", new MoneyAmount(fee)));
                                 return null;
                         }
-                }
+                } else fee = 0;
                 // take
                 if (fee > 0) {
                         owner.takeAmount(fee);
@@ -103,6 +103,7 @@ public class AuctionHouse implements Listener {
                 Auction auction = new TimedAuction(plugin, owner, item);
                 auction.setState(AuctionState.QUEUED);
                 if (startingBid != 0) auction.setStartingBid(startingBid);
+                auction.setFee(fee);
                 plugin.getAuctionScheduler().queueAuction(auction);
                 return auction;
         }
@@ -129,5 +130,9 @@ public class AuctionHouse implements Listener {
 
         public void cancelAuction(Auction auction) {
                 ItemDelivery.schedule(auction.getOwner(), auction.getItem(), auction);
+                if (auction.getFee() > 0) {
+                        auction.getOwner().giveAmount(auction.getFee());
+                        auction.getOwner().msg(plugin.getMessage("auction.cancel.FeeReturn").set(auction));
+                }
         }
 }
