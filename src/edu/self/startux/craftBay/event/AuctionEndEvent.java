@@ -25,7 +25,7 @@ import org.bukkit.event.HandlerList;
 
 /**
  * Called whenever an auction ends and an item and maybe money
- * will go to a merchant.
+ * will go to merchants.
  */
 public class AuctionEndEvent extends AuctionEvent {
         private static HandlerList handlers = new HandlerList();

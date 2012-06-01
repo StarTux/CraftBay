@@ -18,7 +18,10 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 package edu.self.startux.craftBay;
+
 import java.util.logging.Level;
+import java.util.List;
+import java.util.LinkedList;
 
 public abstract class AbstractAuction implements Auction, Runnable {
 	private CraftBayPlugin plugin;
@@ -28,6 +31,7 @@ public abstract class AbstractAuction implements Auction, Runnable {
         private int auctionId;
 	private int taskid = -1;
         private int fee;
+        protected List<String> log = new LinkedList<String>();
 
         public AbstractAuction(CraftBayPlugin plugin, Merchant owner, Item item) {
                 this.plugin = plugin;
@@ -77,6 +81,17 @@ public abstract class AbstractAuction implements Auction, Runnable {
         @Override
         public void setFee(int fee) {
                 this.fee = fee;
+        }
+
+        @Override
+        public void log(String msg) {
+                log.add(msg);
+                plugin.log("[" + auctionId + "] " + msg);
+        }
+
+        @Override
+        public List<String> getLog() {
+                return log;
         }
 
         protected void scheduleTick(boolean on) {

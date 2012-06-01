@@ -118,16 +118,18 @@ public class AuctionHouse implements Listener {
         public void endAuction(Auction auction) {
                 AuctionEndEvent event = new AuctionEndEvent(auction);
 		if (auction.getWinner() == null) {
+                        plugin.getServer().getPluginManager().callEvent(event);
                         ItemDelivery.schedule(auction.getOwner(), auction.getItem(), auction);
                 } else if (!auction.getWinner().hasAmount(auction.getWinningBid())) {
-                        ItemDelivery.schedule(auction.getOwner(), auction.getItem(), auction);
                         event.setPaymentError(true);
+                        plugin.getServer().getPluginManager().callEvent(event);
+                        ItemDelivery.schedule(auction.getOwner(), auction.getItem(), auction);
                 } else {
+                        plugin.getServer().getPluginManager().callEvent(event);
                         auction.getWinner().takeAmount(auction.getWinningBid());
                         auction.getOwner().giveAmount(auction.getWinningBid());
                         ItemDelivery.schedule(auction.getWinner(), auction.getItem(), auction);
                 }
-                plugin.getServer().getPluginManager().callEvent(event);
         }
 
         public void cancelAuction(Auction auction) {

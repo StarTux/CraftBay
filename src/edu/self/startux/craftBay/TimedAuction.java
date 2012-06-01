@@ -216,6 +216,7 @@ public class TimedAuction extends AbstractAuction {
                 result.put("item", getItem().clone());
                 result.put("bids", bids);
                 result.put("fee", getFee());
+                result.put("log", new ArrayList(getLog()));
                 return result;
         }
 
@@ -230,6 +231,7 @@ public class TimedAuction extends AbstractAuction {
                 result.setState(AuctionState.getByName((String)map.get("state")));
                 result.bids = new LinkedList<Bid>((List<Bid>)map.get("bids"));
                 result.setFee((Integer)map.get("fee"));
+                result.log = new LinkedList((List<String>)map.get("log"));
                 return result;
         }
 }

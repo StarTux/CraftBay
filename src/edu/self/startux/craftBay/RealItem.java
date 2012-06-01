@@ -123,7 +123,7 @@ public class RealItem implements Item {
         @Override
         public String toString() {
                 String name = "";
-                name += "" + stack.getTypeId() + ":" + stack.getDurability() + " " + stack.getAmount() + ", " + stack.getType().name();
+                name += "" + stack.getTypeId() + ":" + stack.getDurability() + " " + stack.getAmount();
                 Map<Enchantment, Integer> enchantments = stack.getEnchantments();
                 if (!enchantments.isEmpty()) {
                         boolean comma = false;
@@ -136,7 +136,7 @@ public class RealItem implements Item {
                                 }
                                 Enchantment enchantment = entry.getKey();
                                 int level = entry.getValue();
-                                name += enchantment.getName() + level;
+                                name += enchantment.getName() + ":" + roman(level);
                         }
                 }
                 return name;

@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 public class ItemDelivery implements ConfigurationSerializable {
@@ -38,12 +39,23 @@ public class ItemDelivery implements ConfigurationSerializable {
                 this.creationDate = creationDate;
         }
 
+        public String getLocation() {
+                if (!(recipient instanceof PlayerMerchant)) {
+                        return "none";
+                }
+                Location loc = ((PlayerMerchant)recipient).getPlayer().getLocation();
+                return String.format("%s (%d,%d,%d)", loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        }
+
         public boolean deliver() {
                 boolean result = item.give(recipient);
                 if (result) {
-                        System.out.println("Delivery successful: " + item + " to " + recipient.getName());
-                } else {
-                        System.out.println("Delivery failed: " + item + " to " + recipient.getName());
+                        String msg = String.format("DELIVER item ='%s' recipient='%s' location='%s'", item.toString(), recipient.getName(), getLocation());
+                        if (auction != null) {
+                                auction.log(msg);
+                        } else {
+                                CraftBayPlugin.getInstance().log(msg);
+                        }
                 }
                 return result;
         }

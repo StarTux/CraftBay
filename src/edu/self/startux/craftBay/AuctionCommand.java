@@ -278,7 +278,7 @@ public class AuctionCommand implements CommandExecutor {
                 if (id != null) {
                         auction = plugin.getAuctionScheduler().getById(id);
                         if (auction == null) {
-                                plugin.warn(sender, plugin.getMessage("commands.cancel.NoEntry").set(sender).set("arg", id));
+                                plugin.warn(sender, plugin.getMessage("command.NoSuchAuction").set(sender).set("arg", id));
                                 return;
                         }
                 }
@@ -466,5 +466,29 @@ public class AuctionCommand implements CommandExecutor {
         public void reload(CommandSender sender) {
                 plugin.reloadAuctionConfig();
                 sender.sendMessage("config file reloaded.");
+        }
+
+        @SubCommand(perm = "admin", optional = 1)
+        public void log(CommandSender sender, Integer id) {
+                Auction auction;
+                if (id != null) {
+                        auction = plugin.getAuctionScheduler().getById(id);
+                        if (auction == null) {
+                                plugin.warn(sender, plugin.getMessage("command.NoSuchAuction").set(sender).set("arg", id));
+                                return;
+                        }
+                } else {
+                        auction = plugin.getAuctionScheduler().getCurrentAuction();
+                        if (auction == null) {
+                                plugin.warn(sender, plugin.getMessage("command.NoCurrentAuction"));
+                                return;
+                        }
+                }
+                List<String> lines = new LinkedList<String>();
+                lines.addAll(plugin.getMessage("log.Header").set(auction, sender).compile());
+                for (String log : auction.getLog()) {
+                        lines.addAll(plugin.getMessage("log.Log").set(auction, sender).set("log", log).compile());
+                }
+                plugin.msg(sender, lines);
         }
 }

@@ -106,4 +106,7 @@ public interface Auction extends ConfigurationSerializable {
 
         public int getFee();
         public void setFee(int fee);
+
+        public void log(String msg);
+        public List<String> getLog();
 }

@@ -29,6 +29,7 @@ adminhelp:
   Bank: '<adm>/auc <admhi>bank <adm>\<<admhi>item<adm>\> \<<admhi>amount<adm>\> <adm>[<admhi>price<adm>] [<admhi>time<adm>] <h>Auction spawned items'
   BankBid: '<adm>/auc <admhi>bankbid <adm>\<<admhi>amount<adm>\> <h>Place a bid on behalf of the bank'
   Reload: '<adm>/auc <admhi>reload <h>Reload configuration file'
+  Log: '<adm>/auc <admhi>log <adm>[<admhi>id<adm>] <h>View auction log'
 # Error messages during command line parsing
 # Environment:
 #  player - the name of the player issuing the command
@@ -39,11 +40,12 @@ command:
   NoPerm: "<warn>You don't have permission!"
   NotAPlayer: '<warn>Only players can do that!'
   NoCurrentAuction: '<warn>No auction running!'
+  NoSuchAuction: '<warn>Unknown such auction: <warnhi>{arg}<warn>!'
   ArgsTooSmall: '<warn>Not enough arguments!'
   ArgsTooBig: '<warn>Too many arguments!'
-  NotANumber: '<warn>Number expected: "{arg}"!'
-  NoSuchItem: '<warn>Invalid item: "{arg}"!'
-  IllegalItem: '<warn>Invalid item: "{arg}"!'
+  NotANumber: '<warn>Number expected: <warnhi>{arg}<warn>!'
+  NoSuchItem: '<warn>Invalid item: <warnhi>{arg}<warn>!'
+  IllegalItem: '<warn>Invalid item: <warnhi>{arg}<warn>!'
 # Error messages from commands
 # Environment:
 #   player - the name of the player issuing the command
@@ -74,7 +76,6 @@ commands:
     DelayTooLong: '<warn>You can only shorten your auction!'
     DelayNegative: '<warn>Positive delay expected!'
   cancel:
-    NoEntry: '<warn>Auction with ID {arg} not found!'
     NotOwner: '<warn>You are not the owner of this auction!'
     Running: '<warn>You cannot cancel a running auction!'
 # Error messages from auctions
@@ -180,3 +181,6 @@ history:
   Queue: '<shd>[{id}] {owner} <hl>{totalamount}<dfl>x<hl>{itemdesc}'
   Current: '<h>[{id}] {owner} <hl>{totalamount}<dfl>x<hl>{itemdesc}'
   History: '<dfl>[<hl>{id}<dfl>] {owner} <hl>{totalamount}<dfl>x<hl>{itemdesc}'
+log:
+  Header: '<header>Auction Log [{id}]'
+  Log: '<admin>{log}'
