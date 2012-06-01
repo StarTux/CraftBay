@@ -60,9 +60,9 @@ commands:
     BidNegative: '<warn>Positives Gebot erwartet!'
   listen:
     AlreadyListen: '<warn>Du lauschst den Auktionen bereits!'
-    AlreadyIgnore : '<warn>DDu ignorierst Auktionen bereits!'
-    ListenError: '<warn>DEs ist ein Fehler aufgetreten!'
-    IgnoreError: '<warn>DEs ist ein Fehler aufgetreten!'
+    AlreadyIgnore : '<warn>Du ignorierst Auktionen bereits!'
+    ListenError: '<warn>Es ist ein Fehler aufgetreten!'
+    IgnoreError: '<warn>Es ist ein Fehler aufgetreten!'
     ListenSuccess: '<dfl>Du lauschst nun den Auktionen'
     IgnoreSuccess: '<dfl>Auktionen werden nun ignoriert.'
   history:
