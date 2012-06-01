@@ -67,7 +67,10 @@ public class PlayerMerchant implements Merchant {
                 if (amount < 0) {
                         throw new IllegalArgumentException("give amount must be positive!");
                 }
+                double before = getPlugin().getEco().getBalance(player.getName());
                 getPlugin().getEco().depositPlayer(player.getName(), amount);
+                double after = getPlugin().getEco().getBalance(player.getName());
+                getPlugin().log(String.format("GIVE player='%s' amount=%d before=%f after=%f", player.getName(), amount, before, after));
         }
 
         @Override
@@ -75,7 +78,10 @@ public class PlayerMerchant implements Merchant {
                 if (amount < 0) {
                         throw new IllegalArgumentException("take amount must be positive!");
                 }
+                double before = getPlugin().getEco().getBalance(player.getName());
                 getPlugin().getEco().withdrawPlayer(player.getName(), amount);
+                double after = getPlugin().getEco().getBalance(player.getName());
+                getPlugin().log(String.format("TAKE player='%s' amount=%d before=%f after=%f", player.getName(), amount, before, after));
         }
 
         @Override
