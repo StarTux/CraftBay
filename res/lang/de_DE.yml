@@ -1,0 +1,188 @@
+# Formatting
+# default: <default> <dfl>
+# header: <header> <head> <hd> <h>
+# highlight: <highlight> <hl> <hi>
+# shadow: <shadow> <dark> <shade> <shd>
+# shortcut: <shortcut> <sc> <s>
+# admin: <admin> <adm>
+# adminhighlight: <adminhighlight> <adminhigh> <adminhi> <admhl> <admhi>
+# error: <error> <err>
+# warn: <warning> <warn> <wrn>
+# warn: <warninghighlight> <warninghigh> <warnhigh> <warnhi> <wrnhi>
+
+Tag: 'Auktion:'
+# Command help, accessed via "/auc help"
+help:
+  Header: '<h>Auktionshilfe'
+  Help: '<dfl>/auc <hl>?<dfl> <h>Hilfebildschirm'
+  Info: '<dfl>/auc <s>i<hl>nfo <h>Zeige Auktionsinformationen'
+  Bid: '<dfl>/auc <s>b<hl>ID <dfl>[<hl>Betrag<dfl>] <h>Biete für die Auktion'
+  BidShort: '<dfl>/bid <dfl>[<hl>Betrag<dfl>] <h>Biete für die Auktion'
+  Start: '<dfl>/auc <s>s<hl>tart <dfl>\<<hl>Item<dfl>\> <dfl>\<<hl>Anzahl<dfl>\> <dfl>[<hl>Preis<dfl>] <h>Versteigere ein Item'
+  Hand: '<dfl>/auc <hl>hand <dfl>[<hl>Anzahl<dfl>] [<hl>Preis<dfl>] <h>Versteigere das Item in deiner Hand'
+  Fee: '<dfl>Das Starten einer Auktion kostet <hl>{fee}<dfl>.'
+  Tax: '<dfl>Anfangsgebote über <hl>{minbid}<dfl> erfordern <hl>{tax}%<dfl> Gebühren.'
+  End: '<dfl>/auc <s>e<hl>nd <dfl>[<hl>Frist<dfl>] <h>Beende die Auktion'
+  Listen: '<dfl>/auc <hl>listen<dfl>|<hl>ignore <h>Lausche oder ignoriere Auktionen'
+  History: '<dfl>/auc <hl>history <dfl>[<hl>ID<dfl>] <h>Betrachte Auktionshistorie'
+  Cancel: '<dfl>/auc <s>c<hl>ancel <dfl>[<hl>ID<dfl>] <h>Löse eine Auktion auf'
+# Admin command help, accessed via "/auc help" for admins
+adminhelp:
+  Bank: '<adm>/auc <admhi>bank <adm>\<<admhi>Item<adm>\> [<admhi>Anzahl<adm>] <adm>[<admhi>Preis<adm>] [<admhi>Frist<adm>] <h>Versteigere ein geschenktes Item.'
+  BankBid: '<adm>/auc <admhi>bankbid <adm>\<<admhi>Betrag<adm>\> <h>Biete stellvertretend für die Bank'
+  Reload: '<adm>/auc <admhi>reload <h>Lade die Konfigurationsdatei erneut'
+  Log: '<adm>/auc <admhi>log <adm>[<admhi>ID<adm>] <h>Betrachte Auktionslogbuch'
+# Error messages during command line parsing
+# Environment:
+#  player - the name of the player issuing the command
+#  cmd - the issued subcommand
+#  arg - the erroneous argument (if applicable)
+command:
+  NoEntry: '<warn>Unbekannter Befehl: "{cmd}"!'
+  NoPerm: "<warn>Du bist nicht befugt!"
+  NotAPlayer: '<warn>Spieler erwartet!'
+  NoCurrentAuction: '<warn>Keine laufende Auktion!'
+  NoSuchAuction: '<warn>Unbekannte Auktion: <warnhi>{arg}<warn>!'
+  ArgsTooSmall: '<warn>Nicht genügend Parameter!'
+  ArgsTooBig: '<warn>Zu viele Parameter!'
+  NotANumber: '<warn>Zahl erwartet: <warnhi>{arg}<warn>!'
+  NoSuchItem: '<warn>Unbekannter Gegenstand: <warnhi>{arg}<warn>!'
+  IllegalItem: '<warn>Ungültiger Gegenstand: <warnhi>{arg}<warn>!'
+# Error messages from commands
+# Environment:
+#   player - the name of the player issuing the command
+#   auction variables where applicable, see auction.*
+#   arg - the erroneous argument, if applicable
+commands:
+  bid:
+    BidNegative: '<warn>Positives Gebot erwartet!'
+  bankbid:
+    BidNegative: '<warn>Positives Gebot erwartet!'
+  listen:
+    AlreadyListen: '<warn>Du lauschst den Auktionen bereits!'
+    AlreadyIgnore : '<warn>DDu ignorierst Auktionen bereits!'
+    ListenError: '<warn>DEs ist ein Fehler aufgetreten!'
+    IgnoreError: '<warn>DEs ist ein Fehler aufgetreten!'
+    ListenSuccess: '<dfl>Du lauschst nun den Auktionen'
+    IgnoreSuccess: '<dfl>Auktionen werden nun ignoriert.'
+  history:
+    NoEntry: '<warn>Unbekannte ID: {id}'
+  start:
+    HandEmpty: '<warn>Du hältst nichts in deiner Hand!'
+    AmountTooSmall: '<warn>Positive Anzahl erwartet!'
+    PriceTooLow: '<warn>Positives Anfangsgebot erwartet!'
+    CreativeDenial: '<warn>Du kannst keine Auktionen im Kreativmodus starten!'
+    Success: '<dfl>Deine Auktion für <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> wird bald beginnen!'
+  end:
+    NotOwner: '<warn>Das ist nicht deine Auktion!'
+    DelayTooLong: '<warn>Du kannst lediglich deine eigenen Auktionen verkürzen!'
+    DelayNegative: '<warn>Positive Frist erwartet!'
+  cancel:
+    NotOwner: '<warn>Das ist nicht deine Auktion!'
+    Running: '<warn>Laufende Auktionen können nicht abgebrochen werden!'
+# Error messages from auctions
+# Environment (where applicable):
+#   id - the auction id
+#   item - the item name
+#   itemdesc - a description of the item (the name and whether it is enchanted ot not)
+#   amount - the item amount, user friendly
+#   totalamount - the item amount, bare number
+#   enchantments - the items' enchantments
+#   itemid - the item's id
+#   itemdamage - the item's damage value
+#   owner - the owner's name
+#   winner - the winner, if any
+#   minbid - smallest possible bid to participate
+#   price - the current price
+#   state - the state of this auction
+#   timeleft - the remaining auction duration
+#   fee - the total fee
+auction:
+  create:
+    QueueFull: '<warn>Bitte warte bis andere Auktionen vorüber sind!'
+    NotEnoughItems: '<warn>Du hast nicht genug <warnhi>{itemdesc}<warn>!'
+    FeeTooHigh: '<warn>Du kannst dir die <warnhi>{fee}<warnhi> Gebühr nicht leisten!'
+    FeeDebited: '<dfl>Dein Konto wurde mit <hl>{fee}<dfl> belastet.'
+    OwnerCooldown: '<warn>Du must noch <warnhi>{cooldown}<warn> warten!'
+  state:
+    Queued: Warteschlange
+    Running: Laufend
+    Canceled: Abgebrochen
+    Ended: Beendet
+  info:
+    Header: '<h>Auktionsinformationen'
+    Owner: '<dfl>Auktionär: <hl>{owner}'
+    RealItem: '<dfl>Gegenstand: <hl>{totalamount}<dfl>x<hl>{item}<dfl> [<hl>{itemid}<dfl>:<hl>{itemdamage}<dfl>] <hl>{enchantments}<dfl>'
+    FakeItem: '<dfl>Gegenstand: <hl>{item}'
+    Winner: '<dfl>Sieger: <hl>{winner}<dfl> for <hl>{price}'
+    NoWinner: '<dfl>Anfangsgebot: <hl>{minbid}'
+    Time: '<dfl>Frist: <hl>{timeleft}'
+    State: '<dfl>Zustand: <hl>{state}'
+    Fee: '<dfl>Gebühr: <hl>{fee}'
+    Help: '<dfl>Schreibe <hl>/auc ?<dfl> für eine Befehlsliste.'
+  reminder:
+    NoWinner: '<dfl>Auktion für <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> endet it <hl>{timeleft}<dfl>. Preis: <hl>{minbid}<dfl>.'
+    Winner: '<hl>{winner}<dfl> gewinnt <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> für <hl>{price}<dfl> in <hl>{timeleft}<dfl>!'
+  alert:
+    NoWinner: '<dfl>Auktion für <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> endet in <hl>{timeleft}<dfl>!'
+    Winner: '<hl>{winner}<dfl> gewinnt <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> in <hl>{timeleft}<dfl>!'
+  bid:
+    IsOwner: '<warn>Du kannst nicht für deine eigene Auktion bieten!'
+    UnderbidSelf: '<warn>Du hast bereits ein größeres Gebot gemacht!'
+    BidTooSmall: '<warn>Du must wenigstens <warnhi>{minbid}<warn> bieten!'
+    TooPoor: '<warn>Das kannst du dir nicht leisten!'
+    Win: '<dfl>Du hast nun den Zuschlag für <hl>{price}<dfl>!'
+    Fail: '<hl>{winner}<dfl> behält den Zuschlag aber der Preis steigt auf <hl>{price}<dfl>!'
+    ToLoser: '<dfl>{winner} hat dich besiegt mit {price}!'
+    NewPrice: '<dfl>Der Preis für <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> ist nun <hl>{price}<dfl> für <hl>{winner}<dfl>'
+    NewWinner: '<hl>{winner}<dfl> schlägt {oldwinner}. Preis <hl>{price}'
+    UnderBid: '<dfl>{player} erhöht, doch <hl>{winner}<dfl> ist höher. Preis <hl>{price}<dfl>.'
+  end:
+    ToWinner: '<dfl>Viel Spaß mit deinem <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> für <hl>{price}<dfl>!'
+    OwnerSell: '<dfl>Dein <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> wurde für <hl>{price}<dfl> an <hl>{winner}<dfl> verkauft.'
+    OwnerReturn: '<dfl>Hier hast du dein <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> zurück.'
+    OwnerPaymentError: '<warn>Fehler bei der Bezahlung. Auktion wird abgebrochen.'
+    Winner: '<hl>{winner}<dfl> kauft <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> für <hl>{price}<dfl>.'
+    WinnerPaymentError: '<warn>Fehler bei der Bezahlung. Auktion wird abgebrochen.'
+    PaymentError: '<warnhi>{winner}<warn> kann seine Rechnung nicht bezahlen. Auf ihn!'
+    NoBid: '<dfl>Auktion für <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> endet ohne Gebote.'
+    Manual: '<hl>{player}<dfl> hat die Auktion beendet.'
+  cancel:
+    Announce: '<admin>Auktion abgebrochen durch <adminhi>{player}<admin>!'
+    ToOwner: '<warn>Deine Auktion wurde abgebrochen!'
+    FeeReturn: '<dfl>Deine <hl>{fee}<dfl> Gebühren wurden zurückerstattet.'
+  time:
+    Change: '<hl>{player}<dfl> setzt die Frist auf <hl>{newtimeleft}<dfl>.'
+# Special item describing strings not covered by Vault
+item:
+  enchanted:
+        Singular: 'Verzaubertes'
+        Plural: 'Verzauberte'
+  minute:
+        Singular: 'Minute'
+        Plural: 'Minuten'
+  second:
+        Singular: 'Sekunde'
+        Plural: 'Sekunden'
+  stack:
+        Singular: 'Stapel'
+        Plural: 'Stapel'
+  chest:
+        Singular: 'Truhe'
+        Plural:   'Truhen'
+  doubleChest:
+        Singular: 'Doppeltruhe'
+        Plural:   'Doppeltruhen'
+  inventory:
+        Singular: 'Inventar'
+        Plural: 'Inventare'
+# Display of the history.
+# Environment: see auction.*
+history:
+  Header: '<h>Auktionshistorie'
+  Queue: '<shd>[{id}] {owner} <hl>{totalamount}<dfl>x<hl>{itemdesc}'
+  Current: '<h>[{id}] {owner} <hl>{totalamount}<dfl>x<hl>{itemdesc}'
+  History: '<dfl>[<hl>{id}<dfl>] {owner} <hl>{totalamount}<dfl>x<hl>{itemdesc}'
+log:
+  Header: '<header>Auktionslogbuch [{id}]'
+  Log: '<admin>{log}'
