@@ -454,12 +454,17 @@ public class AuctionCommand implements CommandExecutor {
         public void help(CommandSender sender) {
                 String[] cmds = { "Header", "Help", "Info", "Bid", "BidShort", "Start", "Hand", "End", "Listen", "History", "Cancel" };
                 Message msg = new Message();
+                int fee = plugin.getConfig().getInt("auctionfee");
+                int tax = plugin.getConfig().getInt("auctiontax");
+                int minbid = plugin.getConfig().getInt("startingbid");
                 for (String cmd : cmds) msg.append(plugin.getMessage("help." + cmd));
+                if (fee > 0) msg.append(plugin.getMessage("help.Fee"));
+                if (tax > 0) msg.append(plugin.getMessage("help.Tax"));
                 if (sender.hasPermission("auction.admin") || sender.isOp()) {
-                        String[] admcmds = { "Bank", "BankBid", "Reload" };
+                        String[] admcmds = { "Bank", "BankBid", "Reload", "Log" };
                         for (String cmd : admcmds) msg.append(plugin.getMessage("adminhelp." + cmd));
                 }
-                plugin.msg(sender, msg);
+                plugin.msg(sender, msg.set("fee", new MoneyAmount(fee)).set("tax", tax).set("minbid", new MoneyAmount(minbid)));
         }
 
         @SubCommand(perm = "admin")

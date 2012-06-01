@@ -12,6 +12,10 @@
 * Make colors configurable
 * Add denial for starting auctions in creative mode
 * Add cooldown for players starting auctions
+* Log auction activity more detailed
+* Add /auc log command for admins
+* Make short item information more elaborate (say Enchanted)
+* Make short item amount more intuitive (stacks, chests, etc)
 
 1.0.2
 

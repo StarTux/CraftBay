@@ -1,15 +1,15 @@
 # The initial duration of any auction
-auctiontime: 900
+auctiontime: 600
 # The delay after which an auction reminder is broadcast
 reminderinterval: 60
 # The minimum delay between two messages
-spamprotection: 5
+spamprotection: 3
 # The minimal amount a player has to raise for
 minincrement: 5
 # The maximal amount of stored future auctions
 maxqueue: 1
 # The maximal amount of stored past auctions
-maxhistory: 20
+maxhistory: 10
 # The language file to use
 lang: en_US
 # The starting bid of any auction
@@ -21,7 +21,7 @@ auctiontax: 0
 # The time a player has to wait between starting two auctions
 auctioneercooldown: 30
 # Prevent players from starting auctions while in creative mode
-denycreative: false
+denycreative: true
 # Herochat configuration
 herochat:
         enable: false

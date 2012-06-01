@@ -20,13 +20,15 @@ help:
   BidShort: '<dfl>/bid <dfl>[<hl>amount<dfl>] <h>Place a bid'
   Start: '<dfl>/auc <s>s<hl>tart <dfl>\<<hl>item<dfl>\> <dfl>\<<hl>amount<dfl>\> <dfl>[<hl>price<dfl>] <h>Auction an item'
   Hand: '<dfl>/auc <hl>hand <dfl>[<hl>amount<dfl>] [<hl>price<dfl>] <h>Auction the item in your hand'
+  Fee: '<dfl>Starting an auction costs <hl>{fee}<dfl>.'
+  Tax: '<dfl>Starting bids above <hl>{minbid}<dfl> will cause <hl>{tax}%<dfl> tax.'
   End: '<dfl>/auc <s>e<hl>nd <dfl>[<hl>delay<dfl>] <h>End current auction'
   Listen: '<dfl>/auc <hl>listen<dfl>|<hl>ignore <h>Listen to or ignore auctions'
   History: '<dfl>/auc <hl>history <dfl>[<hl>id<dfl>] <h>View past or queued auctions'
   Cancel: '<dfl>/auc <s>c<hl>ancel <dfl>[<hl>id<dfl>] <h>Cancel an auction'
 # Admin command help, accessed via "/auc help" for admins
 adminhelp:
-  Bank: '<adm>/auc <admhi>bank <adm>\<<admhi>item<adm>\> \<<admhi>amount<adm>\> <adm>[<admhi>price<adm>] [<admhi>time<adm>] <h>Auction spawned items'
+  Bank: '<adm>/auc <admhi>bank <adm>\<<admhi>item<adm>\> [<admhi>amount<adm>] <adm>[<admhi>price<adm>] [<admhi>time<adm>] <h>Auction spawned items'
   BankBid: '<adm>/auc <admhi>bankbid <adm>\<<admhi>amount<adm>\> <h>Place a bid on behalf of the bank'
   Reload: '<adm>/auc <admhi>reload <h>Reload configuration file'
   Log: '<adm>/auc <admhi>log <adm>[<admhi>id<adm>] <h>View auction log'
@@ -94,7 +96,7 @@ commands:
 #   price - the current price
 #   state - the state of this auction
 #   timeleft - the remaining auction duration
-#   fee - the total fee (only in Fee* nodes)
+#   fee - the total fee
 auction:
   create:
     QueueFull: '<warn>Wait until other auctions have ended!'
