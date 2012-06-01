@@ -18,4 +18,5 @@ mkdir -vp lib
 find lib -type f -name '*.jar' | concat : > libs
 find src -type f -name '*.java' > files
 loud javac -d target -classpath @libs @files
+for i in res/lang/*.yml; do basename $i; done > res/lang/list
 loud jar cf CraftBay.jar -C res . -C target .

@@ -146,7 +146,7 @@ auction:
     WinnerPaymentError: '<warn>Error processing payment. Auction canceled.'
     PaymentError: '<warnhi>{winner}<warn> cannot afford the <warnhi>{price}<warn> he bid. Punish him!'
     NoBid: '<dfl>Auction for <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> ended with no bids.'
-    Manual: '<hl>{player}<dfl> endend the auction.'
+    Manual: '<hl>{player}<dfl> ended the auction.'
   cancel:
     Announce: '<admin>Auction canceled by <adminhi>{player}<admin>!'
     ToOwner: '<warn>Your auction has been canceled!'
