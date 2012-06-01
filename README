@@ -10,6 +10,7 @@ INSTALLATION
 	- Put CraftBay.jar in your plugin folder.
 	- Restart Bukkit.
 	- (Optional) Edit plugins/CraftBay/config.yml
+        - (Optional) Reload configuration via /auc reload
 
 BUILD
 

@@ -72,7 +72,7 @@ public class Locale {
                         file = new File(file, "lang");
                         if (!file.exists()) file.mkdir();
                         file = new File(file, line);
-                        if (file.exists()) continue;
+                        // if (file.exists()) continue;
                         try {
                                 FileOutputStream out = new FileOutputStream(file);
                                 while (true) {

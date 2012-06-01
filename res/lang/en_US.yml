@@ -32,6 +32,7 @@ adminhelp:
   BankBid: '<adm>/auc <admhi>bankbid <adm>\<<admhi>amount<adm>\> <h>Place a bid on behalf of the bank'
   Reload: '<adm>/auc <admhi>reload <h>Reload configuration file'
   Log: '<adm>/auc <admhi>log <adm>[<admhi>id<adm>] <h>View auction log'
+  Fake: '<adm>/auc <adminhi>fake <adm>\<<admhi>title<adm>\> [<admhi>amount<adm>] [<admhi>price<adm>] <h>Auction off a fake item'
 # Error messages during command line parsing
 # Environment:
 #  player - the name of the player issuing the command
@@ -48,6 +49,7 @@ command:
   NotANumber: '<warn>Number expected: <warnhi>{arg}<warn>!'
   NoSuchItem: '<warn>Invalid item: <warnhi>{arg}<warn>!'
   IllegalItem: '<warn>Invalid item: <warnhi>{arg}<warn>!'
+  UnclosedQuote: '<warn>No closing quote!'
 # Error messages from commands
 # Environment:
 #   player - the name of the player issuing the command
@@ -80,6 +82,9 @@ commands:
   cancel:
     NotOwner: '<warn>You are not the owner of this auction!'
     Running: '<warn>You cannot cancel a running auction!'
+  fake:
+    Fail: '<warn>Creating fake auction failed'
+    Success: '<dfl>Created fake auction successfully'
 # Error messages from auctions
 # Environment (where applicable):
 #   id - the auction id

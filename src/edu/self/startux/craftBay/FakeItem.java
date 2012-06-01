@@ -99,4 +99,9 @@ public class FakeItem implements Item {
         public static FakeItem deserialize(Map<String, Object> map) {
                 return new FakeItem((String)map.get("name"));
         }
+
+        @Override
+        public String toString() {
+                return name;
+        }
 }

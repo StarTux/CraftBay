@@ -32,6 +32,7 @@ adminhelp:
   BankBid: '<adm>/auc <admhi>bankbid <adm>\<<admhi>Betrag<adm>\> <h>Biete stellvertretend für die Bank'
   Reload: '<adm>/auc <admhi>reload <h>Lade die Konfigurationsdatei erneut'
   Log: '<adm>/auc <admhi>log <adm>[<admhi>ID<adm>] <h>Betrachte Auktionslogbuch'
+  Fake: '<adm>/auc <adminhi>fake <adm>\<<admhi>Titel<adm>\> [<admhi>Anzahl<adm>] [<admhi>price<adm>] <h>Versteigere Fälschung'
 # Error messages during command line parsing
 # Environment:
 #  player - the name of the player issuing the command
@@ -48,6 +49,7 @@ command:
   NotANumber: '<warn>Zahl erwartet: <warnhi>{arg}<warn>!'
   NoSuchItem: '<warn>Unbekannter Gegenstand: <warnhi>{arg}<warn>!'
   IllegalItem: '<warn>Ungültiger Gegenstand: <warnhi>{arg}<warn>!'
+  UnclosedQuote: '<warn>Anführungs- ohne Schlusszeichen!'
 # Error messages from commands
 # Environment:
 #   player - the name of the player issuing the command
@@ -72,7 +74,7 @@ commands:
     AmountTooSmall: '<warn>Positive Anzahl erwartet!'
     PriceTooLow: '<warn>Positives Anfangsgebot erwartet!'
     CreativeDenial: '<warn>Du kannst keine Auktionen im Kreativmodus starten!'
-    Success: '<dfl>Deine Auktion für <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> wird bald beginnen!'
+    Success: '<dfl>Dein <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> wird bald versteigert werden!'
   end:
     NotOwner: '<warn>Das ist nicht deine Auktion!'
     DelayTooLong: '<warn>Du kannst lediglich deine eigenen Auktionen verkürzen!'
@@ -80,6 +82,9 @@ commands:
   cancel:
     NotOwner: '<warn>Das ist nicht deine Auktion!'
     Running: '<warn>Laufende Auktionen können nicht abgebrochen werden!'
+  fake:
+    Fail: '<warn>Versteigerung der Fälschung schlug fehl!'
+    Success: '<dfl>Die Fälschung wird bald versteigert werden.'
 # Error messages from auctions
 # Environment (where applicable):
 #   id - the auction id

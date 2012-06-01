@@ -199,7 +199,33 @@ public class AuctionCommand implements CommandExecutor {
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] argv) {
-                Iterator<String> args = Arrays.asList(argv).iterator();
+                List<String> argl = new LinkedList<String>();
+                String part = null;
+                for (String arg : argv) {
+                        if (part == null) {
+                                if (arg.length() == 0) {
+                                        continue;
+                                } else if (arg.charAt(0) == '"') {
+                                        part = arg.substring(1, arg.length());
+                                } else {
+                                        argl.add(arg);
+                                }
+                        } else {
+                                if (arg.length() == 0) {
+                                        continue;
+                                } else if (arg.charAt(arg.length() - 1) == '"') {
+                                        argl.add(part + " " + arg.substring(0, arg.length() - 1));
+                                        part = null;
+                                } else {
+                                        part += " " + arg;
+                                }
+                        }
+                }
+                if (part != null) {
+                        plugin.warn(sender, plugin.getMessage("command.UnclosedQuote").set(sender));
+                        return true;
+                }
+                Iterator<String> args = argl.iterator();
                 String arg;
                 if (label.equals("bid")) {
                         arg = "bid";
@@ -461,7 +487,7 @@ public class AuctionCommand implements CommandExecutor {
                 if (fee > 0) msg.append(plugin.getMessage("help.Fee"));
                 if (tax > 0) msg.append(plugin.getMessage("help.Tax"));
                 if (sender.hasPermission("auction.admin") || sender.isOp()) {
-                        String[] admcmds = { "Bank", "BankBid", "Reload", "Log" };
+                        String[] admcmds = { "Bank", "BankBid", "Reload", "Log", "Fake" };
                         for (String cmd : admcmds) msg.append(plugin.getMessage("adminhelp." + cmd));
                 }
                 plugin.msg(sender, msg.set("fee", new MoneyAmount(fee)).set("tax", tax).set("minbid", new MoneyAmount(minbid)));
@@ -495,5 +521,19 @@ public class AuctionCommand implements CommandExecutor {
                         lines.addAll(plugin.getMessage("log.Log").set(auction, sender).set("log", log).compile());
                 }
                 plugin.msg(sender, lines);
+        }
+
+        @SubCommand(perm = "admin", optional = 2)
+        public void fake(CommandSender sender, String title, Integer price, Integer duration) {
+                FakeItem item = new FakeItem(title);
+                if (price == null) price = plugin.getConfig().getInt("startingbid");
+                if (duration == null) duration = plugin.getConfig().getInt("auctiontime");
+                Auction auction = plugin.getAuctionHouse().createAuction(BankMerchant.getInstance(), item, price);
+                if (auction == null) {
+                        plugin.msg(sender, plugin.getMessage("commands.fake.Fail").set(sender));
+                        return;
+                }
+                auction.setTimeLeft(duration);
+                plugin.msg(sender, plugin.getMessage("commands.fake.Success").set(sender));
         }
 }
