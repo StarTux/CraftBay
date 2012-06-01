@@ -337,7 +337,7 @@ public class AuctionCommand implements CommandExecutor {
 
         @SubCommand(perm = "start", shortcut = true, optional = 2)
         public void start(Player player, ItemStack stack, Integer amount, Integer price) {
-                if (player.getGameMode() == GameMode.CREATIVE && plugin.getConfig().getBoolean("denycreative") && !player.hasPermission("auction.admin") && !player.isOp()) {
+                if (player.getGameMode() == GameMode.CREATIVE && plugin.getConfig().getBoolean("denycreative")) {
                         plugin.warn(player, plugin.getMessage("commands.start.CreativeDenial").set(player));
                         return;
                 }
@@ -390,7 +390,7 @@ public class AuctionCommand implements CommandExecutor {
 
         @SubCommand(perm = "start", optional = 2)
         public void hand(Player player, Integer amount, Integer price) {
-                if (player.getGameMode() == GameMode.CREATIVE && plugin.getConfig().getBoolean("denycreative") && !player.hasPermission("auction.admin") && !player.isOp()) {
+                if (player.getGameMode() == GameMode.CREATIVE && plugin.getConfig().getBoolean("denycreative")) {
                         plugin.warn(player, plugin.getMessage("commands.start.CreativeDenial").set(player));
                         return;
                 }
