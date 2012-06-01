@@ -58,6 +58,7 @@ public class AuctionScheduler implements Runnable {
         }
 
         public void disable() {
+                if (current != null) current.stop();
                 save();
         }
 
@@ -108,17 +109,21 @@ public class AuctionScheduler implements Runnable {
 
         public void schedule() {
                 ItemDelivery.deliverAll();
+                boolean dirty = false;
                 if (current != null) {
                         if (current.getState() == AuctionState.ENDED) {
                                 plugin.getAuctionHouse().endAuction(current);
                                 historyAuction(current);
                                 current = null;
+                                dirty = true;
                         } else if (current.getState() == AuctionState.CANCELED) {
                                 plugin.getAuctionHouse().cancelAuction(current);
                                 historyAuction(current);
                                 current = null;
+                                dirty = true;
                         } else if (current.getState() == AuctionState.QUEUED) {
                                 current.start();
+                                dirty = true;
                         }
                 }
                 while (current == null && !queue.isEmpty()) {
@@ -129,6 +134,10 @@ public class AuctionScheduler implements Runnable {
                                 current = next;
                                 current.start();
                         }
+                        dirty = true;
+                }
+                if (dirty) {
+                        save();
                 }
         }
 
@@ -162,6 +171,7 @@ public class AuctionScheduler implements Runnable {
         }
 
         private void save() {
+                plugin.log("saving");
                 conf.set("current", current);
                 conf.set("queue", new ArrayList<Object>(queue));
                 conf.set("history", new ArrayList<Object>(history));
@@ -183,7 +193,9 @@ public class AuctionScheduler implements Runnable {
                 else queue = new LinkedList<Auction>();
                 if (conf.get("current") != null) {
                         current = (Auction)conf.get("current");
-                        current.start();
+                        if (current != null && current.getState() == AuctionState.RUNNING) {
+                                current.start();
+                        }
                 } else {
                         current = null;
                 }
