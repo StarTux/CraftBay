@@ -79,6 +79,7 @@ public class HeroChat implements ChatPlugin {
         @Override
         public boolean listen(Player player, boolean on) {
                 Chatter chatter = Herochat.getChatterManager().getChatter(player);
+                if (chatter == null) return false;
                 if (on) {
                         if (chatter.canJoin(channel, password) == Chatter.Result.ALLOWED) {
                                 return chatter.addChannel(channel, true, true);
@@ -93,6 +94,8 @@ public class HeroChat implements ChatPlugin {
 
         @Override
         public boolean isListening(Player player) {
-                return Herochat.getChatterManager().getChatter(player).hasChannel(channel);
+                Chatter chatter = Herochat.getChatterManager().getChatter(player);
+                if (chatter == null) return false;
+                return chatter.hasChannel(channel);
         }
 }
