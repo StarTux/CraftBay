@@ -2,7 +2,7 @@
 
 * Make countdown configurable
 * Catch error while loading auctions file
-* Fix issue with spout players
+* Fix issue with Spout players
 * Rearrange help output
 * Fix reloading tag and chat plugin at config reload
 
