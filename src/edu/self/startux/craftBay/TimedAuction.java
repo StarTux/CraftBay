@@ -216,7 +216,7 @@ public class TimedAuction extends AbstractAuction {
                 result.put("item", getItem().clone());
                 result.put("bids", bids);
                 result.put("fee", getFee());
-                result.put("log", new ArrayList(getLog()));
+                result.put("log", new ArrayList<String>(getLog()));
                 return result;
         }
 
