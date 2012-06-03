@@ -45,7 +45,7 @@ public class PlayerMerchant implements Merchant {
                 return player.getPlayer();
         }
 
-        private CraftBayPlugin getPlugin() {
+        private static CraftBayPlugin getPlugin() {
                 return CraftBayPlugin.getInstance();
         }
 
@@ -214,13 +214,20 @@ public class PlayerMerchant implements Merchant {
         @Override
         public Map<String, Object> serialize() {
                 Map<String, Object> result = new HashMap<String, Object>();
-                result.put("player", player);
+                result.put("player", player.getName());
                 return result;
         }
 
         @SuppressWarnings("unchecked")
         public static PlayerMerchant deserialize(Map<String, Object> map) {
-                return new PlayerMerchant((OfflinePlayer)map.get("player"));
+                Object o = map.get("player");
+                if (o instanceof OfflinePlayer) {
+                        return new PlayerMerchant((OfflinePlayer)o);
+                } else if (o instanceof String) {
+                        return new PlayerMerchant(getPlugin().getServer().getOfflinePlayer((String)o));
+                } else {
+                        return null;
+                }
         }
 
         @Override

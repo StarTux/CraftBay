@@ -1,6 +1,8 @@
 1.1.1
 
-* Add 'countdown' config for countdown alert in chat
+* Make countdown configurable
+* Catch error while loading auctions file
+* Fix issue with spout players
 
 1.1
 
