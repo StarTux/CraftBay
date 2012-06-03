@@ -58,7 +58,7 @@ public class Locale {
                         try {
                                 line = reader.readLine();
                         } catch (IOException ioe) {
-                                ioe.getCause().printStackTrace();
+                                ioe.printStackTrace();
                                 return;
                         }
                         if (line == null) break;
@@ -88,7 +88,7 @@ public class Locale {
                         try {
                                 inp.close();
                         } catch (IOException ioe) {
-                                ioe.getCause().printStackTrace();
+                                ioe.printStackTrace();
                         }
                 }
         }

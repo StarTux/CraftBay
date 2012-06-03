@@ -186,7 +186,13 @@ public class AuctionScheduler implements Runnable {
 
         @SuppressWarnings("unchecked")
         private void load() {
-                conf = YamlConfiguration.loadConfiguration(getSaveFile());
+                try {
+                        conf = YamlConfiguration.loadConfiguration(getSaveFile());
+                } catch (Exception e) {
+                        e.printStackTrace();
+                        getSaveFile().delete();
+                        conf = YamlConfiguration.loadConfiguration(getSaveFile());
+                }
                 if (conf.getList("history") != null) history = new LinkedList<Auction>((List<Auction>)conf.getList("history"));
                 else history = new LinkedList<Auction>();
                 if (conf.getList("queue") != null) queue = new LinkedList<Auction>((List<Auction>)conf.getList("queue"));
