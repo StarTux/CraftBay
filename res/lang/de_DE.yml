@@ -108,7 +108,7 @@ auction:
     NotEnoughItems: '<warn>Du hast nicht genug <warnhi>{itemdesc}<warn>!'
     FeeTooHigh: '<warn>Du kannst dir die <warnhi>{fee}<warnhi> Gebühr nicht leisten!'
     FeeDebited: '<dfl>Dein Konto wurde mit <hl>{fee}<dfl> belastet.'
-    OwnerCooldown: '<warn>Du must noch <warnhi>{cooldown}<warn> warten!'
+    OwnerCooldown: '<warn>Du musst noch <warnhi>{cooldown}<warn> warten!'
   state:
     Queued: Warteschlange
     Running: Laufend
@@ -134,7 +134,7 @@ auction:
   bid:
     IsOwner: '<warn>Du kannst nicht für deine eigene Auktion bieten!'
     UnderbidSelf: '<warn>Du hast bereits ein größeres Gebot gemacht!'
-    BidTooSmall: '<warn>Du must wenigstens <warnhi>{minbid}<warn> bieten!'
+    BidTooSmall: '<warn>Du musst wenigstens <warnhi>{minbid}<warn> bieten!'
     TooPoor: '<warn>Das kannst du dir nicht leisten!'
     Win: '<dfl>Du hast nun den Zuschlag für <hl>{price}<dfl>!'
     Fail: '<hl>{winner}<dfl> behält den Zuschlag aber der Preis steigt auf <hl>{price}<dfl>!'
