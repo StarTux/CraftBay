@@ -128,8 +128,8 @@ auction:
   reminder:
     NoWinner: '<dfl>Auction for <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> ends in <hl>{timeleft}<dfl>. Price: <hl>{minbid}<dfl>.'
     Winner: '<hl>{winner}<dfl> wins <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> for <hl>{price}<dfl> in <hl>{timeleft}<dfl>!'
-  alert:
-    NoWinner: '<dfl>Auction for<hl>{amount}<dfl>x<hl>{itemdesc}<dfl> ends in <hl>{timeleft}<dfl>!'
+  countdown:
+    NoWinner: '<dfl>Auction for <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> ends in <hl>{timeleft}<dfl>!'
     Winner: '<hl>{winner}<dfl> wins <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> in <hl>{timeleft}<dfl>!'
   bid:
     IsOwner: "<warn>You can't bid on your own auction!"

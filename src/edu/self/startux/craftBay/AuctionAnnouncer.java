@@ -27,6 +27,7 @@ import edu.self.startux.craftBay.event.AuctionTickEvent;
 import edu.self.startux.craftBay.event.AuctionTimeChangeEvent;
 import edu.self.startux.craftBay.locale.Message;
 import java.util.Date;
+import java.util.List;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -37,6 +38,7 @@ public class AuctionAnnouncer implements Listener {
         private int reminderTimer;
         private int reminderInterval;
         private int broadcastInterval;
+        private List<Integer> countdown;
 
         public AuctionAnnouncer(CraftBayPlugin plugin) {
                 this.plugin = plugin;
@@ -49,6 +51,7 @@ public class AuctionAnnouncer implements Listener {
         public void reloadConfig() {
                 reminderInterval = plugin.getConfig().getInt("reminderinterval");
                 broadcastInterval = plugin.getConfig().getInt("spamprotection");
+                countdown = plugin.getConfig().getIntegerList("countdown");
         }
 
         private boolean announce(Message msg, boolean force, boolean noTouch) {
@@ -80,11 +83,10 @@ public class AuctionAnnouncer implements Listener {
         @EventHandler(priority = EventPriority.LOWEST)
         public void onAuctionTick(AuctionTickEvent event) {
                 Auction auction = event.getAuction();
-                int[] alerts = { 10, 5, 4, 3, 2, 1 };
-                for (int i : alerts) {
+                for (int i : countdown) {
                         if (auction.getTimeLeft() == i) {
                                 Message msg;
-                                msg = plugin.getMessage(auction.getWinner() == null ? "auction.alert.NoWinner" : "auction.alert.Winner");
+                                msg = plugin.getMessage(auction.getWinner() == null ? "auction.countdown.NoWinner" : "auction.countdown.Winner");
                                 announce(msg.set(auction), true, true);
                                 reminderTimer = reminderInterval;
                                 break;

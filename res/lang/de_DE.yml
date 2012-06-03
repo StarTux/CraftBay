@@ -128,7 +128,7 @@ auction:
   reminder:
     NoWinner: '<dfl>Auktion für <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> endet it <hl>{timeleft}<dfl>. Preis: <hl>{minbid}<dfl>.'
     Winner: '<hl>{winner}<dfl> gewinnt <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> für <hl>{price}<dfl> in <hl>{timeleft}<dfl>!'
-  alert:
+  countdown:
     NoWinner: '<dfl>Auktion für <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> endet in <hl>{timeleft}<dfl>!'
     Winner: '<hl>{winner}<dfl> gewinnt <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> in <hl>{timeleft}<dfl>!'
   bid:
