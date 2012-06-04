@@ -62,13 +62,8 @@ public class CraftBayPlugin extends JavaPlugin {
 	public void onEnable() {
                 instance = this;
                 logger = Logger.getLogger("edu.self.startux.craftBay");
-                ConfigurationSerialization.registerClass(TimedAuction.class);
-                ConfigurationSerialization.registerClass(RealItem.class);
-                ConfigurationSerialization.registerClass(FakeItem.class);
-                ConfigurationSerialization.registerClass(Bid.class);
-                ConfigurationSerialization.registerClass(PlayerMerchant.class);
-                ConfigurationSerialization.registerClass(BankMerchant.class);
-                ConfigurationSerialization.registerClass(ItemDelivery.class);
+                Locale.writeLocaleFiles();
+                setupSerializations();
                 executor = new AuctionCommand(this);
 		getCommand("auction").setExecutor(executor);
 		getCommand("bid").setExecutor(executor);
@@ -100,6 +95,16 @@ public class CraftBayPlugin extends JavaPlugin {
                 auctionLogger = null;
                 instance = null;
 	}
+
+        public void setupSerializations() {
+                ConfigurationSerialization.registerClass(TimedAuction.class);
+                ConfigurationSerialization.registerClass(RealItem.class);
+                ConfigurationSerialization.registerClass(FakeItem.class);
+                ConfigurationSerialization.registerClass(Bid.class);
+                ConfigurationSerialization.registerClass(PlayerMerchant.class);
+                ConfigurationSerialization.registerClass(BankMerchant.class);
+                ConfigurationSerialization.registerClass(ItemDelivery.class);
+        }
 
         public void loadAuctionConfig() {
 		getConfig().options().copyDefaults(true);

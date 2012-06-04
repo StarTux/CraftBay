@@ -42,7 +42,6 @@ public class Locale {
 
         public Locale(CraftBayPlugin plugin, String locale) {
                 this.plugin = plugin;
-                writeLocaleFiles();
                 loadLocaleResource("en_US");
                 loadLocaleFile(locale);
         }
@@ -51,7 +50,8 @@ public class Locale {
                 this(plugin, "en_US");
         }
 
-        private void writeLocaleFiles() {
+        public static void writeLocaleFiles() {
+                CraftBayPlugin plugin = CraftBayPlugin.getInstance();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(plugin.getResource("lang/list")));
                 while (true) {
                         String line = null;
