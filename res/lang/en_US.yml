@@ -109,6 +109,8 @@ auction:
     FeeTooHigh: '<warn>You cannot afford the fee of <warnhi>{fee}<warnhi>!'
     FeeDebited: '<dfl>Your account has been debited <hl>{fee}<dfl>.'
     OwnerCooldown: '<warn>You have to wait <warnhi>{cooldown}<warn>!'
+  start:
+    Announce: '<hl>{owner}<dfl> is auctioning <hl>{amount}<dfl>x<hl>{itemdesc}<dfl>. Price: <hl>{minbid}<dfl>.'
   state:
     Queued: Queued
     Running: Running

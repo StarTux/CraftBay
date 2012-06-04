@@ -109,6 +109,8 @@ auction:
     FeeTooHigh: '<warn>Du kannst dir die <warnhi>{fee}<warnhi> Gebühr nicht leisten!'
     FeeDebited: '<dfl>Dein Konto wurde mit <hl>{fee}<dfl> belastet.'
     OwnerCooldown: '<warn>Du musst noch <warnhi>{cooldown}<warn> warten!'
+  start:
+    Announce: '<hl>{owner}<dfl> versteigert <hl>{amount}<dfl>x<hl>{itemdesc}<dfl>. Preis: <hl>{minbid}<dfl>.'
   state:
     Queued: Warteschlange
     Running: Laufend

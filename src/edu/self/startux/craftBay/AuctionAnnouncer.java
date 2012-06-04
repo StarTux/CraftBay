@@ -105,11 +105,8 @@ public class AuctionAnnouncer implements Listener {
         @EventHandler(priority = EventPriority.LOWEST)
         public void onAuctionStart(AuctionStartEvent event) {
                 Auction auction = event.getAuction();
-                String[] infos = { "Header", "Owner", (auction.getItem() instanceof FakeItem ? "FakeItem" : "RealItem"), "NoWinner", "Time", "Help" };
-                Message msg = new Message();
-                for (String info : infos) msg.append(plugin.getMessage("auction.info." + info));
-                msg.set(auction);
-                announce(msg, true, true);
+                Message msg = plugin.getMessage("auction.start.Announce");
+                announce(msg.set(auction), true, true);
                 broadcastTimer = 0;
                 reminderTimer = reminderInterval;
         }
