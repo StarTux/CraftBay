@@ -1,3 +1,10 @@
+# File: plugins/CraftBay/lang/de_DE.yml
+#
+# WARNUNG: Diese Datei nicht direkt verändern! Sie wird bei jedem
+# Neustart überschrieben. Erzeuge stattdessen eine lokale kopie
+# mit einem einmaligen Namen.
+# Beispiel: "plugins/CraftBay/lang/meinserver.yml"
+#
 # Formatting
 # default: <default> <dfl>
 # header: <header> <head> <hd> <h>
