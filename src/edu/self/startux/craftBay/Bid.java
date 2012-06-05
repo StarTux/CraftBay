@@ -24,10 +24,9 @@ import java.util.Map;
 import java.util.HashMap;
 
 /**
- * Bid is a simple carrier of information about a placed bid, some
- * of which really meaningful to the Auction class. This class can
- * be compared by its natural ordering to determine if one bid
- * beats another one.
+ * Bid is a simple carrier of information about a placed bid.
+ * This class can be compared by its natural ordering to determine
+ * if one bid beats another one.
  */
 public class Bid implements Comparable<Bid>, ConfigurationSerializable {
         private Merchant bidder;
