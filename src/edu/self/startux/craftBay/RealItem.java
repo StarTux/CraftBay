@@ -20,14 +20,13 @@
 package edu.self.startux.craftBay;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import net.milkbowl.vault.item.ItemInfo;
 import net.milkbowl.vault.item.Items;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
-import edu.self.startux.craftBay.locale.Color;
-import java.util.Iterator;
 
 /**
  * Represent an actual item, in fact a bukkit ItemStack.
