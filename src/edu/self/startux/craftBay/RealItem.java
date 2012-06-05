@@ -27,6 +27,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import edu.self.startux.craftBay.locale.Color;
+import java.util.Iterator;
 
 /**
  * Represent an actual item, in fact a bukkit ItemStack.
@@ -80,16 +81,12 @@ public class RealItem implements Item {
                 if (enchantments.isEmpty()) return "";
                 boolean comma = false;
                 StringBuffer sb = new StringBuffer();
-                for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
-                        if (comma) {
-                                sb.append(Color.DEFAULT).append(" ");
-                        } else {
-                                sb.append(" ");
-                                comma = true;
-                        }
-                        Enchantment enchantment = entry.getKey();
-                        int level = entry.getValue();
-                        sb.append(Color.HIGHLIGHT).append(getEnchantmentName(enchantment)).append(" ").append(roman(level));
+                Iterator<Map.Entry<Enchantment, Integer>> iter = enchantments.entrySet().iterator();
+                Map.Entry<Enchantment, Integer> enchantment = iter.next();
+                sb.append(getEnchantmentName(enchantment.getKey())).append(" ").append(roman(enchantment.getValue()));
+                while (iter.hasNext()) {
+                        enchantment = iter.next();
+                        sb.append(" ").append(getEnchantmentName(enchantment.getKey())).append(" ").append(roman(enchantment.getValue()));
                 }
                 return sb.toString();
         }
@@ -102,6 +99,10 @@ public class RealItem implements Item {
         @Override
         public int getDamage() {
                 return stack.getDurability();
+        }
+
+        public ItemStack getItemStack() {
+                return stack.clone();
         }
 
         @Override
