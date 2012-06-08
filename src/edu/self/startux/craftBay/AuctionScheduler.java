@@ -153,6 +153,14 @@ public class AuctionScheduler implements Runnable {
                 return new ArrayList<Auction>(history);
         }
 
+        public List<Auction> getAllAuctions() {
+                List<Auction> result = new ArrayList(queue.size() + history.size() + 1);
+                result.addAll(history);
+                result.add(current);
+                result.addAll(queue);
+                return result;
+        }
+
         public boolean canQueue() {
                 int maxQueue = plugin.getConfig().getInt("maxqueue");
                 return queue.size() < maxQueue;
