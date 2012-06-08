@@ -117,7 +117,6 @@ public class AuctionScheduler implements Runnable {
                                 current = null;
                                 dirty = true;
                         } else if (current.getState() == AuctionState.CANCELED) {
-                                plugin.getAuctionHouse().cancelAuction(current);
                                 historyAuction(current);
                                 current = null;
                                 dirty = true;

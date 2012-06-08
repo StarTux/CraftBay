@@ -130,9 +130,14 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
                         plugin.warn(sender, plugin.getMessage("commands.cancel.Running").set(auction, sender));
                         return;
                 }
+                if (auction.getState() == AuctionState.CANCELED) {
+                        plugin.warn(sender, plugin.getMessage("commands.cancel.Canceled").set(auction, sender));
+                        return;
+                }
                 AuctionCancelEvent event = new AuctionCancelEvent(auction, sender);
                 plugin.getServer().getPluginManager().callEvent(event);
                 auction.cancel();
+                plugin.getAuctionHouse().cancelAuction(auction);
         }
 
         @SubCommand(perm = "admin", optional = 1)
