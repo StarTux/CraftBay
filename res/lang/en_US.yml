@@ -89,6 +89,7 @@ commands:
     NotOwner: '<warn>You are not the owner of this auction!'
     Running: '<warn>You cannot cancel a running auction!'
     Canceled: '<warn>This auction is already canceled!'
+    Ended: '<warn>This auction is over!'
   fake:
     Fail: '<warn>Creating fake auction failed'
     Success: '<dfl>Created fake auction successfully'
