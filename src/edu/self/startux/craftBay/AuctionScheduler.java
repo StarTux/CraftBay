@@ -154,7 +154,7 @@ public class AuctionScheduler implements Runnable {
         }
 
         public List<Auction> getAllAuctions() {
-                List<Auction> result = new ArrayList(queue.size() + history.size() + 1);
+                List<Auction> result = new ArrayList<Auction>(queue.size() + history.size() + 1);
                 result.addAll(history);
                 result.add(current);
                 result.addAll(queue);
