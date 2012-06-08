@@ -17,26 +17,27 @@
  * along with CraftBay.  If not, see <http://www.gnu.org/licenses/>.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-package edu.self.startux.craftBay;
+package edu.self.startux.craftBay.command;
 
+import edu.self.startux.craftBay.Auction;
+import edu.self.startux.craftBay.AuctionState;
+import edu.self.startux.craftBay.BankMerchant;
+import edu.self.startux.craftBay.CraftBayPlugin;
+import edu.self.startux.craftBay.FakeItem;
+import edu.self.startux.craftBay.HandItem;
+import edu.self.startux.craftBay.Item;
+import edu.self.startux.craftBay.Merchant;
+import edu.self.startux.craftBay.MoneyAmount;
+import edu.self.startux.craftBay.PlayerMerchant;
+import edu.self.startux.craftBay.RealItem;
 import edu.self.startux.craftBay.chat.ChatPlugin;
 import edu.self.startux.craftBay.event.AuctionCancelEvent;
 import edu.self.startux.craftBay.event.AuctionTimeChangeEvent;
 import edu.self.startux.craftBay.locale.Message;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import net.milkbowl.vault.item.ItemInfo;
-import net.milkbowl.vault.item.Items;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -46,217 +47,30 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class AuctionCommand implements CommandExecutor {
-        @Retention(RetentionPolicy.RUNTIME)
-        @Target(ElementType.METHOD)
-        private static @interface SubCommand {
-                String name() default ""; // command name if it deviates from function name
-                String[] aliases() default {}; // list of alternative names
-                boolean shortcut() default false; // is there a one character shortcut?
-                String perm() default ""; // permission node necessary to execute
-                int optional() default 0; // count of optional args
-        }
-        private static class CommandAttribute {
-                private AuctionCommand parent;
-                private Method method;
-                private String name;
-                private List<String> aliases;
-                private String permission = null;
-                private boolean shortcut;
-                private int optionalArgc = 0;
-
-                public CommandAttribute(SubCommand subCommand, Method method) {
-                        this.method = method;
-                        if (subCommand.name().length() != 0) {
-                                name = subCommand.name();
-                        } else {
-                                name = method.getName();
-                        }
-                        aliases = new ArrayList<String>();
-                        for (String alias : subCommand.aliases()) aliases.add(alias);
-                        shortcut = subCommand.shortcut();
-                        if (shortcut) aliases.add("" + name.charAt(0));
-                        if (subCommand.perm().length() != 0) {
-                                permission = "auction." + subCommand.perm();
-                        }
-                        this.optionalArgc = subCommand.optional();
-                }
-                public boolean checkPermission(CommandSender sender) {
-                        if (sender.isOp()) return true;
-                        if (permission != null && !sender.hasPermission(permission)) return false;
-                        return true;
-                }
-                public boolean call(AuctionCommand parent, CommandSender sender, Iterator<String> args) {
-                        CraftBayPlugin plugin = CraftBayPlugin.getInstance();
-                        Class<?>[] paramTypes = method.getParameterTypes();
-                        Object[] params = new Object[paramTypes.length];
-                        int avoided = 0;
-                paramLoop:
-                        for (int i = 0; i < params.length; ++i) {
-                                String arg;
-                                Class<?> paramType = paramTypes[i];
-                                if (paramType.equals(CommandSender.class)) {
-                                        params[i] = sender;
-                                        continue paramLoop;
-                                } else if (paramType.equals(Player.class)) {
-                                        if (!(sender instanceof Player)) {
-                                                parent.plugin.warn(sender, plugin.getMessage("command.NotAPlayer").set(sender).set("cmd", name));
-                                                return false;
-                                        }
-                                        params[i] = (Player)sender;
-                                        continue paramLoop;
-                                } else if (paramType.equals(Auction.class)) {
-                                        Auction auction = parent.plugin.getAuction();
-                                        if (auction == null) {
-                                                parent.plugin.warn(sender, plugin.getMessage("command.NoCurrentAuction").set(sender).set("cmd", name));
-                                                return false;
-                                        }
-                                        params[i] = auction;
-                                        continue paramLoop;
-                                }
-                                if (!args.hasNext()) {
-                                        avoided += 1;
-                                        if (avoided > optionalArgc) {
-                                                parent.plugin.warn(sender, plugin.getMessage("command.ArgsTooSmall").set(sender).set("cmd", name));
-                                                return false;
-                                        }
-                                        arg = null;
-                                } else {
-                                        arg = args.next();
-                                }
-                                if (paramType.equals(String.class)) {
-                                        params[i] = arg;
-                                } else if (paramType.equals(Integer.class)) {
-                                        if (arg == null) {
-                                                params[i] = null;
-                                                continue paramLoop;
-                                        }
-                                        try {
-                                                params[i] = Integer.parseInt(arg);
-                                        } catch (NumberFormatException e) {
-                                                parent.plugin.warn(sender, plugin.getMessage("command.NotANumber").set(sender).set("cmd", name).set("arg", arg));
-                                                return false;
-                                        }
-                                } else if (paramType.equals(int.class)) {
-                                        if (arg == null) {
-                                                params[i] = 0;
-                                                continue paramLoop;
-                                        }
-                                        try {
-                                                params[i] = Integer.parseInt(arg);
-                                        } catch (NumberFormatException e) {
-                                                parent.plugin.warn(sender, plugin.getMessage("command.NotANumber").set(sender).set("cmd", name).set("arg", arg));
-                                                return false;
-                                        }
-                                } else if (paramType.equals(ItemStack.class)) {
-                                        if (arg == null) {
-                                                params[i] = null;
-                                                continue paramLoop;
-                                        }
-                                        ItemInfo item = Items.itemByString(arg);
-                                        if (item == null) {
-                                                parent.plugin.warn(sender, plugin.getMessage("command.NoSuchItem").set(sender).set("cmd", name).set("arg", arg));
-                                                return false;
-                                        }
-                                        ItemStack stack = item.toStack();
-                                        if (stack == null || stack.getType().equals(Material.AIR)) {
-                                                parent.plugin.warn(sender, plugin.getMessage("command.IllegalItem").set(sender).set("cmd", name).set("arg", arg));
-                                                return false;
-                                        }
-                                        params[i] = stack;
-                                }
-                        }
-                        if (args.hasNext()) {
-                                parent.plugin.warn(sender, plugin.getMessage("command.ArgsTooBig").set(sender).set("cmd", name));
-                                return false;
-                        }
-                        try {
-                                method.invoke(parent, params);
-                        } catch (Exception e) {
-                                System.err.println(e);
-                                e.printStackTrace();
-                                return false;
-                        }
-                        return true;
-                }
-        }
-
-        private CraftBayPlugin plugin;
-        private Map<String, CommandAttribute> commandMap = new HashMap<String, CommandAttribute>();
-
-	AuctionCommand(CraftBayPlugin plugin) {
-		this.plugin = plugin;
-                for (Method method : getClass().getMethods()) {
-                        if (method.isAnnotationPresent(SubCommand.class)) {
-                                SubCommand subCommand = method.getAnnotation(SubCommand.class);
-                                CommandAttribute attr = new CommandAttribute(subCommand, method);
-                                commandMap.put(attr.name.toLowerCase(), attr);
-                                for (String alias : attr.aliases) {
-                                        commandMap.put(alias.toLowerCase(), attr);
-                                }
-                        }
-                }
+public class AuctionCommand extends AuctionParameters implements CommandExecutor {
+	public AuctionCommand(CraftBayPlugin plugin) {
+                super(plugin);
 	}
 
+        @Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] argv) {
-                List<String> argl = new LinkedList<String>();
-                String part = null;
-                for (String arg : argv) {
-                        if (part == null) {
-                                if (arg.length() == 0) {
-                                        continue;
-                                } else if (arg.charAt(0) == '"') {
-                                        part = arg.substring(1, arg.length());
-                                } else {
-                                        argl.add(arg);
-                                }
-                        } else {
-                                if (arg.length() == 0) {
-                                        continue;
-                                } else if (arg.charAt(arg.length() - 1) == '"') {
-                                        argl.add(part + " " + arg.substring(0, arg.length() - 1));
-                                        part = null;
-                                } else {
-                                        part += " " + arg;
-                                }
-                        }
-                }
-                if (part != null) {
-                        plugin.warn(sender, plugin.getMessage("command.UnclosedQuote").set(sender));
-                        return true;
-                }
-                Iterator<String> args = argl.iterator();
-                String arg;
+                LinkedList<String> argl = new LinkedList<String>(Arrays.asList(argv));
                 if (label.equals("bid")) {
-                        arg = "bid";
-                } else {
-                        if (!args.hasNext()) {
-                                Auction auction = plugin.getAuction();
-                                if (auction != null) {
-                                        info(sender, auction);
-                                } else {
-                                        help(sender);
-                                }
-                                return true;
+                        callCommand(sender, "bid", argl);
+                        return true;
+                }
+                if (argl.isEmpty()) {
+                        Auction auction = plugin.getAuction();
+                        if (auction != null) {
+                                info(sender, auction);
+                        } else {
+                                help(sender);
                         }
-                        arg = args.next();
-                }
-                CommandAttribute attr = commandMap.get(arg.toLowerCase());
-                if (attr == null) {
-                        plugin.warn(sender, plugin.getMessage("command.NoEntry").set("cmd", arg));
                         return true;
                 }
-                if (!attr.checkPermission(sender)) {
-                        plugin.warn(sender, plugin.getMessage("command.NoPerm").set("cmd", arg));
-                        return true;
-                }
-                try {
-                        attr.call(this, sender, args);
-                } catch (Exception e) {
-                        System.err.println(e.getMessage());
-                        e.printStackTrace(System.err);
-                        return true;
-                }
+                String token = argl.getFirst();
+                argl.removeFirst();
+                callCommand(sender, token, argl);
                 return true;
         }
 

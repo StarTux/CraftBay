@@ -23,6 +23,7 @@ import edu.self.startux.craftBay.chat.BukkitChat;
 import edu.self.startux.craftBay.chat.ChannelChat;
 import edu.self.startux.craftBay.chat.ChatPlugin;
 import edu.self.startux.craftBay.chat.HeroChat;
+import edu.self.startux.craftBay.command.AuctionCommand;
 import edu.self.startux.craftBay.locale.Color;
 import edu.self.startux.craftBay.locale.Locale;
 import edu.self.startux.craftBay.locale.Message;
