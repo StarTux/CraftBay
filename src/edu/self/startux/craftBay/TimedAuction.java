@@ -33,6 +33,8 @@ import java.util.Map;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import java.util.Set;
+import java.util.HashSet;
 
 public class TimedAuction extends AbstractAuction {
 	private int timeLeft;
@@ -177,6 +179,22 @@ public class TimedAuction extends AbstractAuction {
                         }
                 }
                 bids.addLast(bid);
+        }
+
+        public void removeDuplicates() {
+                LinkedList<Bid> newBids = new LinkedList<Bid>();
+                Set<Merchant> set = new HashSet<Merchant>();
+                for (Bid bid : bids) {
+                        if (!set.contains(bid.getBidder())) {
+                                set.add(bid.getBidder());
+                                newBids.add(bid);
+                                if (newBids.size() == 2) {
+                                        bids = newBids;
+                                        return;
+                                }
+                        }
+                }
+                bids = newBids;
         }
         
         @Override
