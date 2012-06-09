@@ -1,7 +1,7 @@
 1.1.2
 
 * Add seperate announcement message for auction start
-* Fix auction cancellation not working properly for queued auctions
+* Fix cancelling queued auctions properly
 
 1.1.1
 
