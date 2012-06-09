@@ -89,6 +89,8 @@ commands:
   cancel:
     NotOwner: '<warn>Das ist nicht deine Auktion!'
     Running: '<warn>Laufende Auktionen können nicht abgebrochen werden!'
+    Canceled: '<warn>Die Auktion wurde bereits abgebrochen!'
+    Ended: '<warn>Diese Auktion is vorüber!'
   fake:
     Fail: '<warn>Versteigerung der Fälschung schlug fehl!'
     Success: '<dfl>Die Fälschung wird bald versteigert werden.'
