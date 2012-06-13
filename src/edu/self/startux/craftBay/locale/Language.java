@@ -36,21 +36,21 @@ import java.util.logging.Level;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-public class Locale {
+public class Language {
         private CraftBayPlugin plugin;
         private Map<String, Message> map = new HashMap<String, Message>();
 
-        public Locale(CraftBayPlugin plugin, String locale) {
+        public Language(CraftBayPlugin plugin, String locale) {
                 this.plugin = plugin;
-                loadLocaleResource("en_US");
-                loadLocaleFile(locale);
+                loadLanguageResource("en_US");
+                loadLanguageFile(locale);
         }
 
-        public Locale(CraftBayPlugin plugin) {
+        public Language(CraftBayPlugin plugin) {
                 this(plugin, "en_US");
         }
 
-        public static void writeLocaleFiles() {
+        public static void writeLanguageFiles() {
                 CraftBayPlugin plugin = CraftBayPlugin.getInstance();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(plugin.getResource("lang/list")));
                 while (true) {
@@ -93,22 +93,22 @@ public class Locale {
                 }
         }
 
-        private void loadLocaleResource(String name) {
+        private void loadLanguageResource(String name) {
                 String path = "lang/" + name + ".yml";
                 InputStream inp = plugin.getResource(path);
                 if (inp == null) {
                         plugin.log("Language file not found: \"" + name + "\"", Level.WARNING);
                         return;
                 }
-                loadLocaleStream(inp);
+                loadLanguageStream(inp);
         }
 
-        private void loadLocaleFile(String name) {
+        private void loadLanguageFile(String name) {
                 File file = plugin.getDataFolder();
                 file = new File(file, "lang");
                 file = new File(file, name + ".yml");
                 try {
-                        loadLocaleStream(new FileInputStream(file));
+                        loadLanguageStream(new FileInputStream(file));
                 } catch (FileNotFoundException fnfe) {
                         plugin.log("Unable to locate locale file: \"" + file.getPath() + "\"", Level.WARNING);
                         return;
@@ -116,7 +116,7 @@ public class Locale {
         }
 
         @SuppressWarnings("unchecked")
-        private void loadLocaleStream(InputStream inp) {
+        private void loadLanguageStream(InputStream inp) {
                 ConfigurationSection conf = YamlConfiguration.loadConfiguration(inp);
                 for (String key : conf.getKeys(true)) {
                         Message message;
@@ -138,7 +138,7 @@ public class Locale {
                 if (key == null) return new Message();
                 Message result = map.get(key.toLowerCase());
                 if (result == null) {
-                        System.err.println("Locale key not found: " + key);
+                        System.err.println("Language key not found: " + key);
                         return new Message();
                 }
                 return result.clone();

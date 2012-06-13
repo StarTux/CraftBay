@@ -25,7 +25,7 @@ import edu.self.startux.craftBay.chat.ChatPlugin;
 import edu.self.startux.craftBay.chat.HeroChat;
 import edu.self.startux.craftBay.command.AuctionCommand;
 import edu.self.startux.craftBay.locale.Color;
-import edu.self.startux.craftBay.locale.Locale;
+import edu.self.startux.craftBay.locale.Language;
 import edu.self.startux.craftBay.locale.Message;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -52,7 +52,7 @@ public class CraftBayPlugin extends JavaPlugin {
         private AuctionHouse house;
         private AuctionScheduler scheduler;
         private AuctionCommand executor;
-        private Locale locale;
+        private Language language;
         private AuctionLogger auctionLogger;
         private static CraftBayPlugin instance;
         
@@ -63,7 +63,7 @@ public class CraftBayPlugin extends JavaPlugin {
 	public void onEnable() {
                 instance = this;
                 logger = Logger.getLogger("edu.self.startux.craftBay");
-                Locale.writeLocaleFiles();
+                Language.writeLanguageFiles();
                 setupSerializations();
                 executor = new AuctionCommand(this);
 		getCommand("auction").setExecutor(executor);
@@ -115,8 +115,8 @@ public class CraftBayPlugin extends JavaPlugin {
 
         public void reloadAuctionConfig() {
                 reloadConfig();
-                locale = new Locale(this, getConfig().getString("lang"));
-                tag = locale.getMessage("Tag").toString();
+                language = new Language(this, getConfig().getString("lang"));
+                tag = language.getMessage("Tag").toString();
                 Color.configure(getConfig().getConfigurationSection("colors"));
                 announcer.reloadConfig();
                 setupChat();
@@ -211,15 +211,15 @@ public class CraftBayPlugin extends JavaPlugin {
                 return chatPlugin;
         }
 
-        public Locale getLocale() {
-                return locale;
+        public Language getLanguage() {
+                return language;
         }
 
         public Message getMessage(String key) {
-                return locale.getMessage(key);
+                return language.getMessage(key);
         }
 
         public Message getMessages(String... keys) {
-                return locale.getMessages(keys);
+                return language.getMessages(keys);
         }
 }

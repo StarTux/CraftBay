@@ -27,7 +27,7 @@ public enum AuctionState {
 
         @Override
         public String toString() {
-                return CraftBayPlugin.getInstance().getLocale().getMessage("auction.state." + name()).toString();
+                return CraftBayPlugin.getInstance().getMessage("auction.state." + name()).toString();
         }
 
         public static AuctionState getByName(String name) {
