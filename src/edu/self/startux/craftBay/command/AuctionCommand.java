@@ -91,7 +91,7 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
         
         @SubCommand(perm = "start", shortcut = true, optional = 1)
         public void end(CommandSender sender, Auction auction, Integer delay) {
-                if (!auction.getOwner().equals(sender)) {
+                if (!auction.getOwner().equals(new PlayerMerchant(sender.getName()))) {
                         if (!sender.hasPermission("auction.admin") && !sender.isOp()) {
                                 plugin.warn(sender, plugin.getMessage("commands.end.NotOwner").set(auction, sender));
                                 return;
@@ -122,7 +122,7 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
                                 return;
                         }
                 }
-                if (!auction.getOwner().equals(sender) && !sender.hasPermission("auction.admin") && !sender.isOp()) {
+                if (!auction.getOwner().equals(new PlayerMerchant(sender.getName())) && !sender.hasPermission("auction.admin") && !sender.isOp()) {
                         plugin.warn(sender, plugin.getMessage("commands.cancel.NotOwner").set(auction, sender));
                         return;
                 }

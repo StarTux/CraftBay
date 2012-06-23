@@ -23,18 +23,22 @@ import edu.self.startux.craftBay.locale.Message;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerMerchant implements Merchant {
-        private OfflinePlayer player;
+        private String playerName;
+
+        public PlayerMerchant(String name) {
+                playerName = name;
+        }
 
         private PlayerMerchant(OfflinePlayer player) {
-                this.player = player;
+                playerName = player.getName();
         }
 
         public static PlayerMerchant getByPlayer(OfflinePlayer player) {
@@ -42,7 +46,7 @@ public class PlayerMerchant implements Merchant {
         }
 
         public Player getPlayer() {
-                return player.getPlayer();
+                return Bukkit.getServer().getPlayerExact(playerName);
         }
 
         private static CraftBayPlugin getPlugin() {
@@ -51,12 +55,12 @@ public class PlayerMerchant implements Merchant {
 
         @Override
         public String getName() {
-                return player.getName();
+                return playerName;
         }
 
         @Override
         public boolean hasAmount(int amount) {
-                if (getPlugin().getEco().getBalance(player.getName()) < amount) {
+                if (getPlugin().getEco().getBalance(playerName) < amount) {
                         return false;
                 }
                 return true;
@@ -67,10 +71,10 @@ public class PlayerMerchant implements Merchant {
                 if (amount < 0) {
                         throw new IllegalArgumentException("give amount must be positive!");
                 }
-                double before = getPlugin().getEco().getBalance(player.getName());
-                getPlugin().getEco().depositPlayer(player.getName(), amount);
-                double after = getPlugin().getEco().getBalance(player.getName());
-                getPlugin().log(String.format("GIVE player='%s' amount=%d before=%f after=%f", player.getName(), amount, before, after));
+                double before = getPlugin().getEco().getBalance(playerName);
+                getPlugin().getEco().depositPlayer(playerName, amount);
+                double after = getPlugin().getEco().getBalance(playerName);
+                getPlugin().log(String.format("GIVE player='%s' amount=%d before=%f after=%f", playerName, amount, before, after));
         }
 
         @Override
@@ -78,10 +82,10 @@ public class PlayerMerchant implements Merchant {
                 if (amount < 0) {
                         throw new IllegalArgumentException("take amount must be positive!");
                 }
-                double before = getPlugin().getEco().getBalance(player.getName());
-                getPlugin().getEco().withdrawPlayer(player.getName(), amount);
-                double after = getPlugin().getEco().getBalance(player.getName());
-                getPlugin().log(String.format("TAKE player='%s' amount=%d before=%f after=%f", player.getName(), amount, before, after));
+                double before = getPlugin().getEco().getBalance(playerName);
+                getPlugin().getEco().withdrawPlayer(playerName, amount);
+                double after = getPlugin().getEco().getBalance(playerName);
+                getPlugin().log(String.format("TAKE player='%s' amount=%d before=%f after=%f", playerName, amount, before, after));
         }
 
         @Override
@@ -169,21 +173,11 @@ public class PlayerMerchant implements Merchant {
 
         @Override
         public boolean equals(Object o) {
-                if (o == null) {
-                        return false;
-                }
-                if (o instanceof PlayerMerchant) {
-                        PlayerMerchant other = (PlayerMerchant)o;
-                        if (player.equals(other.player)) {
-                                return true;
-                        }
-                } else if (o instanceof CommandSender) {
-                        CommandSender sender = (CommandSender)o;
-                        if (player.equals(sender)) {
-                                return true;
-                        }
-                }
-                return false;
+                if (o == null) return false;
+                if (!(o instanceof PlayerMerchant)) return false;
+                PlayerMerchant other = (PlayerMerchant)o;
+                if (!playerName.equalsIgnoreCase(other.playerName)) return false;
+                return true;
         }
 
 	private static boolean hasSameEnchantments(ItemStack stack, ItemStack value) {
@@ -214,17 +208,18 @@ public class PlayerMerchant implements Merchant {
         @Override
         public Map<String, Object> serialize() {
                 Map<String, Object> result = new HashMap<String, Object>();
-                result.put("player", player.getName());
+                result.put("player", playerName);
                 return result;
         }
 
         @SuppressWarnings("unchecked")
         public static PlayerMerchant deserialize(Map<String, Object> map) {
                 Object o = map.get("player");
+                // support legacy serialization using OfflinePlayer
                 if (o instanceof OfflinePlayer) {
                         return new PlayerMerchant((OfflinePlayer)o);
                 } else if (o instanceof String) {
-                        return new PlayerMerchant(getPlugin().getServer().getOfflinePlayer((String)o));
+                        return new PlayerMerchant((String)o);
                 } else {
                         return null;
                 }
@@ -239,6 +234,6 @@ public class PlayerMerchant implements Merchant {
 
         @Override
         public Merchant clone() {
-                return new PlayerMerchant(player);
+                return new PlayerMerchant(playerName);
         }
 }
