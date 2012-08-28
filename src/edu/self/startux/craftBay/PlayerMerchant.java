@@ -140,7 +140,7 @@ public class PlayerMerchant implements Merchant {
                         stackSize = 1;
                 }
                 while (due > 0) {
-                        ItemStack other = new ItemStack(stack);
+                        ItemStack other = stack.clone();
                         if (due < stackSize) {
                                 other.setAmount(due);
                                 due = 0;
