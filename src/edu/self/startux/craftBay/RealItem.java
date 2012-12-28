@@ -151,6 +151,7 @@ public class RealItem implements Item {
                 case 4: return "Projectile Protection";
                 case 5: return "Respiration";
                 case 6: return "Aqua Affinity";
+                case 7: return "Thorns";
                 case 16: return "Sharpness";
                 case 17: return "Smite";
                 case 18: return "Bane of Arthropods";
