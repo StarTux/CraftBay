@@ -28,6 +28,23 @@ public class MoneyAmount {
 
         @Override
         public String toString() {
-                return CraftBayPlugin.getInstance().getEco().format((double)amount);
+                /* 
+                 * Essentials Economy is known to throw an
+                 * exception here if it is called before being
+                 * enabled. Perhaps Vault should add it to its
+                 * soft-depends but CraftBay will do no such
+                 * thing; so the exception must be caught here.
+                 *
+                 * This can be considered bad habit since the
+                 * Exception is simply muted which should never be
+                 * done. But on the other hand, how much could
+                 * possibly go wrong when formatting a double
+                 * number.
+                 */
+                try {
+                        return CraftBayPlugin.getInstance().getEco().format((double)amount);
+                } catch (RuntimeException e) {
+                        return "" + amount;
+                }
         }
 }
