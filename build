@@ -13,6 +13,7 @@ concat() {
 	done
 }
 
+set -e
 mkdir -vp target
 mkdir -vp lib
 find lib -type f -name '*.jar' | concat : > libs
