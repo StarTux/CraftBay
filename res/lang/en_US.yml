@@ -122,7 +122,7 @@ auction:
     Announce: '<hl>{owner}<dfl> is auctioning <hl>{amount}<dfl>x<hl>{itemdesc}<dfl>. Price: <hl>{minbid}<dfl>.'
   gui:
     ChestTitle: 'Items for auction'
-    ItemsNotEqual: '<warn>All items must be equal!'
+    ItemsNotEqual: '<warn>All items must be identical!'
     Success: '<dfl>Your auction for <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> will start soon!'
   state:
     Queued: Queued
