@@ -54,8 +54,18 @@ public class RealItem implements Item {
                 try {
                         return Items.itemByStack(stack).getName();
                 } catch (NullPointerException npe) {
-                        return stack.getType().name(); // if vault is outdated
+                        // if vault is outdated
+                        String[] parts = stack.getType().name().split("_");
+                        StringBuilder sb = new StringBuilder(capitalName(parts[0]));
+                        for (int i = 1; i < parts.length; ++i) {
+                                sb.append(" ").append(capitalName(parts[i]));
+                        }
+                        return sb.toString();
                 }
+        }
+
+        private String capitalName(String in) {
+                return "" + Character.toUpperCase(in.charAt(0)) + in.substring(1, in.length()).toLowerCase();
         }
 
         @Override
