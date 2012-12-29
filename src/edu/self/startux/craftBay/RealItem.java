@@ -79,7 +79,7 @@ public class RealItem implements Item {
         @Override
         public String getDescription() {
                 StringBuilder sb = new StringBuilder();
-                if (!stack.getType().isBlock() && stack.getDurability() > 0) {
+                if (canBeDamaged() && stack.getDurability() > 0) {
                         sb.append(CraftBayPlugin.getInstance().getMessage("item.damaged.Singular").toString());
                         sb.append(" ");
                 }
@@ -203,6 +203,23 @@ public class RealItem implements Item {
 
         public static boolean canMerge(ItemStack a, ItemStack b) {
                 return a.getType() == b.getType() && a.getDurability() == b.getDurability() && a.getItemMeta().equals(b.getItemMeta());
+        }
+
+        private boolean canBeDamaged() {
+                int id = stack.getType().getId();
+                if (between(id, 256, 259)) return true; // iron tools
+                if (id == 261) return true; // bow
+                if (between(id, 267, 279)) return true; // iron sword, wooden tools, stone tools, diamond tools
+                if (between(id, 283, 286)) return true; // gold tools
+                if (between(id, 298, 317)) return true; // armor
+                if (id == 346) return true; // fishing rod
+                if (id == 359) return true; // shears
+                if (id == 398) return true; // carrot on a stick
+                return false;
+        }
+
+        private boolean between(int pivot, int lower, int upper) {
+                return pivot >= lower && pivot <= upper;
         }
 
         private String getEnchantmentName(Enchantment enchantment) {
