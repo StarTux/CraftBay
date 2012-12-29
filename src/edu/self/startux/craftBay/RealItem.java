@@ -100,6 +100,9 @@ public class RealItem implements Item {
         public String getEnchantments() {
                 StringBuffer result = new StringBuffer();
                 ItemMeta meta = stack.getItemMeta();
+                if (meta.hasDisplayName()) {
+                        result.append("\"").append(meta.getDisplayName()).append("\"");
+                }
                 if (meta instanceof BookMeta) {
                         BookMeta book = (BookMeta)meta;
                         if (result.length() > 0) result.append(" ");
