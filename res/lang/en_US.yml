@@ -24,8 +24,9 @@ help:
   Info: '<dfl>/auc <s>i<hl>nfo <h>Display auction information'
   Bid: '<dfl>/auc <s>b<hl>id <dfl>[<hl>amount<dfl>] <h>Place a bid'
   BidShort: '<dfl>/bid <dfl>[<hl>amount<dfl>] <h>Place a bid'
-  Start: '<dfl>/auc <s>s<hl>tart <dfl>\<<hl>item<dfl>\> <dfl>\<<hl>amount<dfl>\> <dfl>[<hl>price<dfl>] <h>Auction an item'
+  Start: '<dfl>/auc <s>s<hl>tart <dfl>[<hl>item<dfl>] <dfl>[<hl>amount<dfl>] <dfl>[<hl>price<dfl>] <h>Auction an item'
   Hand: '<dfl>/auc <hl>hand <dfl>[<hl>amount<dfl>] [<hl>price<dfl>] <h>Auction the item in your hand'
+  Gui: '<dfl>/auc <hl>gui <dfl>[<hl>price<dfl>] <h>Open a graphical interface'
   Fee: '<dfl>Starting an auction costs <hl>{fee}<dfl>.'
   Tax: '<dfl>Starting bids above <hl>{minbid}<dfl> will cause <hl>{tax}%<dfl> tax.'
   End: '<dfl>/auc <s>e<hl>nd <dfl>[<hl>delay<dfl>] <h>End current auction'
@@ -119,6 +120,10 @@ auction:
     OwnerCooldown: '<warn>You have to wait <warnhi>{cooldown}<warn>!'
   start:
     Announce: '<hl>{owner}<dfl> is auctioning <hl>{amount}<dfl>x<hl>{itemdesc}<dfl>. Price: <hl>{minbid}<dfl>.'
+  gui:
+    ChestTitle: 'Items for auction'
+    ItemsNotEqual: '<warn>All items must be equal!'
+    Success: '<dfl>Your auction for <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> will start soon!'
   state:
     Queued: Queued
     Running: Running

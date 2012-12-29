@@ -68,7 +68,7 @@ public class AuctionHouse implements Listener {
                 lastAuctions.put(merchant.getName(), new Date());
         }
 
-        public Auction createAuction(Merchant owner, Item item, int startingBid) {
+        public Auction createAuction(Merchant owner, Item item, int startingBid, boolean takeItems) {
                 // check
                 if (!checkCooldown(owner)) {
                         owner.warn(plugin.getMessage("auction.create.OwnerCooldown").set(owner).set("cooldown", new AuctionTime(getCooldown(owner))));
@@ -78,7 +78,7 @@ public class AuctionHouse implements Listener {
                         owner.warn(plugin.getMessage("auction.create.QueueFull").set(owner));
                         return null;
                 }
-                if (!item.has(owner)) {
+                if (takeItems && !item.has(owner)) {
                         owner.warn(plugin.getMessage("auction.create.NotEnoughItems").set(item).set(owner));
                         return null;
                 }
@@ -98,7 +98,9 @@ public class AuctionHouse implements Listener {
                         owner.takeAmount(fee);
                         owner.msg(plugin.getMessage("auction.create.FeeDebited").set(owner).set("fee", new MoneyAmount(fee)));
                 }
-                item = item.take(owner);
+                if (takeItems) {
+                        item = item.take(owner);
+                }
                 touchCooldown(owner);
                 // create
                 Auction auction = new TimedAuction(plugin, owner, item);
@@ -108,6 +110,10 @@ public class AuctionHouse implements Listener {
                 plugin.getAuctionScheduler().queueAuction(auction);
                 plugin.getServer().getPluginManager().callEvent(new AuctionCreateEvent(auction));
                 return auction;
+        }
+
+        public Auction createAuction(Merchant owner, Item item, int startingBid) {
+                return createAuction(owner, item, startingBid, true);
         }
 
         @EventHandler(priority = EventPriority.LOWEST)

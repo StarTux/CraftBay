@@ -54,6 +54,7 @@ public class CraftBayPlugin extends JavaPlugin {
         private AuctionCommand executor;
         private Language language;
         private AuctionLogger auctionLogger;
+        private AuctionInventory inventory;
         private static CraftBayPlugin instance;
         
         public static CraftBayPlugin getInstance() {
@@ -77,6 +78,7 @@ public class CraftBayPlugin extends JavaPlugin {
                 house = new AuctionHouse(this);
                 scheduler = new AuctionScheduler(this);
                 auctionLogger = new AuctionLogger(this);
+                inventory = new AuctionInventory(this);
                 scheduler.soon();
                 loadAuctionConfig();
                 auctionLogger.enable();
@@ -165,6 +167,10 @@ public class CraftBayPlugin extends JavaPlugin {
 
         public AuctionScheduler getAuctionScheduler() {
                 return scheduler;
+        }
+
+        public AuctionInventory getAuctionInventory() {
+                return inventory;
         }
 
         public void warn(CommandSender sender, Message msg) {

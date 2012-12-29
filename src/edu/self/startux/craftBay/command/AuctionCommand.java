@@ -184,10 +184,15 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
                 plugin.msg(player, plugin.getMessage("commands.listen.IgnoreSuccess").set(player));
         }
 
-        @SubCommand(perm = "start", shortcut = true, optional = 2)
+        @SubCommand(perm = "start", shortcut = true, optional = 3)
         public void start(Player player, ItemStack stack, Integer amount, Integer price) {
                 if (player.getGameMode() == GameMode.CREATIVE && plugin.getConfig().getBoolean("denycreative")) {
                         plugin.warn(player, plugin.getMessage("commands.start.CreativeDenial").set(player));
+                        return;
+                }
+                if (stack == null) {
+                        price = plugin.getConfig().getInt("startingbid");
+                        plugin.getAuctionInventory().initPlayer(player, price);
                         return;
                 }
                 if (amount == null) amount = 1;
@@ -301,7 +306,7 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
 
         @SubCommand(aliases = { "h", "?" })
         public void help(CommandSender sender) {
-                String[] cmds = { "Header", "Help", "Info", "History", "Bid", "BidShort", "Start", "Hand", "End", "Cancel", "Listen" };
+                String[] cmds = { "Header", "Help", "Info", "History", "Bid", "BidShort", "Start", "Hand", "Gui", "End", "Cancel", "Listen" };
                 Message msg = new Message();
                 int fee = plugin.getConfig().getInt("auctionfee");
                 int tax = plugin.getConfig().getInt("auctiontax");
@@ -358,5 +363,19 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
                 }
                 auction.setTimeLeft(duration);
                 plugin.msg(sender, plugin.getMessage("commands.fake.Success").set(sender));
+        }
+
+        @SubCommand(perm = "start", optional = 1)
+        public void gui(Player player, Integer minbid) {
+                if (player.getGameMode() == GameMode.CREATIVE && plugin.getConfig().getBoolean("denycreative")) {
+                        plugin.warn(player, plugin.getMessage("commands.start.CreativeDenial").set(player));
+                        return;
+                }
+                if (minbid == null) minbid = plugin.getConfig().getInt("startingbid");
+                if (minbid < 0) {
+                        plugin.warn(player, plugin.getMessage("commands.start.PriceTooLow").set(player).set("arg", minbid));
+                        return;
+                }
+                plugin.getAuctionInventory().initPlayer(player, minbid);
         }
 }

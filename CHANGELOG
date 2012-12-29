@@ -1,3 +1,8 @@
+1.2
+
+* Add graphical user interface (/auc gui and /auc start without arguments)
+* Add new Enchantments
+
 1.1.4
 
 * Fix potential exception when AuctionStartEvent is called right at startup

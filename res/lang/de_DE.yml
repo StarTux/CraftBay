@@ -25,8 +25,9 @@ help:
   Info: '<dfl>/auc <s>i<hl>nfo <h>Zeige Auktionsinformationen'
   Bid: '<dfl>/auc <s>b<hl>ID <dfl>[<hl>Betrag<dfl>] <h>Biete für die Auktion'
   BidShort: '<dfl>/bid <dfl>[<hl>Betrag<dfl>] <h>Biete für die Auktion'
-  Start: '<dfl>/auc <s>s<hl>tart <dfl>\<<hl>Item<dfl>\> <dfl>\<<hl>Anzahl<dfl>\> <dfl>[<hl>Preis<dfl>] <h>Versteigere ein Item'
+  Start: '<dfl>/auc <s>s<hl>tart <dfl>[<hl>Item<dfl>] <dfl>[<hl>Anzahl<dfl>] <dfl>[<hl>Preis<dfl>] <h>Versteigere ein Item'
   Hand: '<dfl>/auc <hl>hand <dfl>[<hl>Anzahl<dfl>] [<hl>Preis<dfl>] <h>Versteigere Item in Hand'
+  Gui: '<dfl>/auc <hl>gui <dfl>[<hl>Preis<dfl>] <h>Öffne ein grafisches Interface'
   Fee: '<dfl>Das Starten einer Auktion kostet <hl>{fee}<dfl>.'
   Tax: '<dfl>Anfangsgebote über <hl>{minbid}<dfl> erfordern <hl>{tax}%<dfl> Gebühren.'
   End: '<dfl>/auc <s>e<hl>nd <dfl>[<hl>Frist<dfl>] <h>Beende die Auktion'
@@ -120,6 +121,10 @@ auction:
     OwnerCooldown: '<warn>Du musst noch <warnhi>{cooldown}<warn> warten!'
   start:
     Announce: '<hl>{owner}<dfl> versteigert <hl>{amount}<dfl>x<hl>{itemdesc}<dfl>. Preis: <hl>{minbid}<dfl>.'
+  gui:
+    ChestTitle: 'Gegenstände zum Versteigern'
+    ItemsNotEqual: '<warn>Alle Gegenstände müssen gleich sein!'
+    Success: '<dfl>Dein <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> wird bald versteigert werden!'
   state:
     Queued: Warteschlange
     Running: Laufend

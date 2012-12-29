@@ -180,7 +180,7 @@ public class PlayerMerchant implements Merchant {
                 return true;
         }
 
-	private static boolean hasSameEnchantments(ItemStack stack, ItemStack value) {
+	public static boolean hasSameEnchantments(ItemStack stack, ItemStack value) {
 		if ((stack.getEnchantments().isEmpty())&&(value.getEnchantments().isEmpty()))return true;
 		if ((!stack.getEnchantments().isEmpty())&&(value.getEnchantments().isEmpty()))return false;
 		if ((stack.getEnchantments().isEmpty())&&(!value.getEnchantments().isEmpty()))return false;
