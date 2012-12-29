@@ -378,4 +378,12 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
                 }
                 plugin.getAuctionInventory().initPlayer(player, minbid);
         }
+
+        @SubCommand(perm = "info")
+        public void debug(Player player) {
+                RealItem item = new RealItem(player.getItemInHand());
+                player.sendMessage(item.getName());
+                player.sendMessage(item.getDescription());
+                player.sendMessage(item.getEnchantments());
+        }
 }
