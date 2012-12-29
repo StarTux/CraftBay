@@ -176,27 +176,30 @@ auction:
     Change: '<hl>{player}<dfl> setzt die Frist auf <hl>{newtimeleft}<dfl>.'
 # Special item describing strings not covered by Vault
 item:
+  damaged:
+    Singular: 'Beschädigtes'
+    Plural: 'Beschädigte'
   enchanted:
-        Singular: 'Verzaubertes'
-        Plural: 'Verzauberte'
+    Singular: 'Verzaubertes'
+    Plural: 'Verzauberte'
   minute:
-        Singular: 'Minute'
-        Plural: 'Minuten'
+    Singular: 'Minute'
+    Plural: 'Minuten'
   second:
-        Singular: 'Sekunde'
-        Plural: 'Sekunden'
+    Singular: 'Sekunde'
+    Plural: 'Sekunden'
   stack:
-        Singular: 'Stapel'
-        Plural: 'Stapel'
+    Singular: 'Stapel'
+    Plural: 'Stapel'
   chest:
-        Singular: 'Truhe'
-        Plural:   'Truhen'
+    Singular: 'Truhe'
+    Plural:   'Truhen'
   doubleChest:
-        Singular: 'Doppeltruhe'
-        Plural:   'Doppeltruhen'
+    Singular: 'Doppeltruhe'
+    Plural:   'Doppeltruhen'
   inventory:
-        Singular: 'Inventar'
-        Plural: 'Inventare'
+    Singular: 'Inventar'
+    Plural: 'Inventare'
 # Display of the history.
 # Environment: see auction.*
 history:

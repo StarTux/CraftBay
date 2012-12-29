@@ -94,7 +94,7 @@ public class PlayerMerchant implements Merchant {
                 Map<Integer, ? extends ItemStack> ret = player.getInventory().all(stack.getType());
                 int found = 0;
                 for (ItemStack slot : ret.values()) {
-                        if (slot.getDurability() == stack.getDurability() && hasSameEnchantments(slot, stack)) {
+                        if (RealItem.canMerge(slot, stack)) {
                                 found += slot.getAmount();
                         }
                 }
@@ -113,7 +113,7 @@ public class PlayerMerchant implements Merchant {
                 for (Map.Entry<Integer, ? extends ItemStack> entry : ret.entrySet()) {
                         Integer ix = entry.getKey();
                         ItemStack slot = entry.getValue();
-                        if (slot.getDurability() == stack.getDurability() && hasSameEnchantments(slot, stack)) {
+                        if (RealItem.canMerge(slot, stack)) {
                                 if (needed <= 0) break;
                                 if (slot.getAmount() <= needed) { // catches amount=1
                                         needed -= slot.getAmount();
@@ -180,30 +180,30 @@ public class PlayerMerchant implements Merchant {
                 return true;
         }
 
-	public static boolean hasSameEnchantments(ItemStack stack, ItemStack value) {
-		if ((stack.getEnchantments().isEmpty())&&(value.getEnchantments().isEmpty()))return true;
-		if ((!stack.getEnchantments().isEmpty())&&(value.getEnchantments().isEmpty()))return false;
-		if ((stack.getEnchantments().isEmpty())&&(!value.getEnchantments().isEmpty()))return false;
-		for (Map.Entry<Enchantment, Integer> ench:stack.getEnchantments().entrySet()){
-			boolean found = false;
-			for(Map.Entry<Enchantment, Integer> compare : value.getEnchantments().entrySet()){
-				if(ench.getKey() == compare.getKey()){
-					if (ench.getValue() == compare.getValue()) found = true;
-				}
-			}
-			if (found == false) return false;
-		}
-		for (Map.Entry<Enchantment, Integer> ench:value.getEnchantments().entrySet()){
-			boolean found = false;
-			for(Map.Entry<Enchantment, Integer> compare :stack.getEnchantments().entrySet()){
-				if(ench.getKey() == compare.getKey()){
-					if (ench.getValue() == compare.getValue()) found = true;
-				}
-			}
-			if (found == false) return false;
-		}
-		return true;
-	}
+	// public static boolean hasSameEnchantments(ItemStack stack, ItemStack value) {
+	// 	if ((stack.getEnchantments().isEmpty())&&(value.getEnchantments().isEmpty()))return true;
+	// 	if ((!stack.getEnchantments().isEmpty())&&(value.getEnchantments().isEmpty()))return false;
+	// 	if ((stack.getEnchantments().isEmpty())&&(!value.getEnchantments().isEmpty()))return false;
+	// 	for (Map.Entry<Enchantment, Integer> ench:stack.getEnchantments().entrySet()){
+	// 		boolean found = false;
+	// 		for(Map.Entry<Enchantment, Integer> compare : value.getEnchantments().entrySet()){
+	// 			if(ench.getKey() == compare.getKey()){
+	// 				if (ench.getValue() == compare.getValue()) found = true;
+	// 			}
+	// 		}
+	// 		if (found == false) return false;
+	// 	}
+	// 	for (Map.Entry<Enchantment, Integer> ench:value.getEnchantments().entrySet()){
+	// 		boolean found = false;
+	// 		for(Map.Entry<Enchantment, Integer> compare :stack.getEnchantments().entrySet()){
+	// 			if(ench.getKey() == compare.getKey()){
+	// 				if (ench.getValue() == compare.getValue()) found = true;
+	// 			}
+	// 		}
+	// 		if (found == false) return false;
+	// 	}
+	// 	return true;
+	// }
 
         @Override
         public Map<String, Object> serialize() {

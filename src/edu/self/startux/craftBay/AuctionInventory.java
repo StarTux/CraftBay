@@ -90,7 +90,7 @@ public class AuctionInventory implements Listener {
                 PlayerMerchant merchant = PlayerMerchant.getByPlayer(player);
                 for(ItemStack slot : items) {
                         if (slot == null) continue;
-                        if (slot.getType() == stack.getType() && slot.getDurability() == stack.getDurability() && PlayerMerchant.hasSameEnchantments(slot, stack)) {
+                        if (RealItem.canMerge(slot, stack)) {
                                 amount += slot.getAmount();
                         } else {
                                 for (ItemStack drop : items) if (drop != null) player.getWorld().dropItem(player.getLocation(), drop);

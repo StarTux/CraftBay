@@ -24,9 +24,17 @@ import java.util.Iterator;
 import java.util.Map;
 import net.milkbowl.vault.item.ItemInfo;
 import net.milkbowl.vault.item.Items;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.FireworkEffectMeta;
+import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 /**
  * Represent an actual item, in fact a bukkit ItemStack.
@@ -64,15 +72,19 @@ public class RealItem implements Item {
                 }
         }
 
-        private String capitalName(String in) {
+        private static String capitalName(String in) {
                 return "" + Character.toUpperCase(in.charAt(0)) + in.substring(1, in.length()).toLowerCase();
         }
 
         @Override
         public String getDescription() {
                 StringBuilder sb = new StringBuilder();
+                if (!stack.getType().isBlock() && stack.getDurability() > 0) {
+                        sb.append(CraftBayPlugin.getInstance().getMessage("item.damaged.Singular").toString());
+                        sb.append(" ");
+                }
                 if (!stack.getEnchantments().isEmpty()) {
-                        sb.append(CraftBayPlugin.getInstance().getMessage("item.enchanted." + (stack.getAmount() == 1 ? "Singular" : "Plural")).toString());
+                        sb.append(CraftBayPlugin.getInstance().getMessage("item.enchanted.Singular").toString());
                         sb.append(" ");
                 }
                 sb.append(getName());
@@ -86,18 +98,52 @@ public class RealItem implements Item {
 
         @Override
         public String getEnchantments() {
-                Map<Enchantment, Integer> enchantments = stack.getEnchantments();
-                if (enchantments.isEmpty()) return "";
-                boolean comma = false;
-                StringBuffer sb = new StringBuffer();
-                Iterator<Map.Entry<Enchantment, Integer>> iter = enchantments.entrySet().iterator();
-                Map.Entry<Enchantment, Integer> enchantment = iter.next();
-                sb.append(getEnchantmentName(enchantment.getKey())).append(" ").append(roman(enchantment.getValue()));
-                while (iter.hasNext()) {
-                        enchantment = iter.next();
-                        sb.append(" ").append(getEnchantmentName(enchantment.getKey())).append(" ").append(roman(enchantment.getValue()));
+                StringBuffer result = new StringBuffer();
+                ItemMeta meta = stack.getItemMeta();
+                if (meta instanceof BookMeta) {
+                        BookMeta book = (BookMeta)meta;
+                        if (result.length() > 0) result.append(" ");
+                        result.append(book.hasTitle() ? book.getTitle() : "notitle").append(" by ").append(book.hasAuthor() ? book.getAuthor() : "noname");
                 }
-                return sb.toString();
+                if (meta instanceof FireworkMeta) {
+                        FireworkMeta firework = (FireworkMeta)meta;
+                        for (FireworkEffect effect : firework.getEffects()) {
+                                if (result.length() > 0) result.append(" ");
+                                result.append(capitalName(effect.getType().name()));
+                        }
+                        if (result.length() > 0) result.append(" ");
+                        result.append(roman(firework.getPower()));
+                }
+                if (meta instanceof FireworkEffectMeta) {
+                        FireworkEffectMeta effect = (FireworkEffectMeta)meta;
+                        if (result.length() > 0) result.append(" ");
+                        result.append(capitalName(effect.getEffect().getType().name()));
+                }
+                if (meta instanceof LeatherArmorMeta) {
+                        LeatherArmorMeta armor = (LeatherArmorMeta)meta;
+                        Color color = armor.getColor();
+                        if (result.length() > 0) result.append(" ");
+                        result.append(color.getRed()).append("r,").append(color.getGreen()).append("g,").append(color.getBlue()).append("b");
+                }
+                {
+                        Map<Enchantment, Integer> enchantments = meta.getEnchants();
+                        Iterator<Map.Entry<Enchantment, Integer>> iter = enchantments.entrySet().iterator();
+                        while (iter.hasNext()) {
+                                Map.Entry<Enchantment, Integer> enchantment = iter.next();
+                                if (result.length() > 0) result.append(" ");
+                                result.append(getEnchantmentName(enchantment.getKey())).append(" ").append(roman(enchantment.getValue()));
+                        }
+                }
+                if (meta instanceof EnchantmentStorageMeta) {
+                        Map<Enchantment, Integer> enchantments = ((EnchantmentStorageMeta)meta).getStoredEnchants();
+                        Iterator<Map.Entry<Enchantment, Integer>> iter = enchantments.entrySet().iterator();
+                        while (iter.hasNext()) {
+                                Map.Entry<Enchantment, Integer> enchantment = iter.next();
+                                if (result.length() > 0) result.append(" ");
+                                result.append(getEnchantmentName(enchantment.getKey())).append(" ").append(roman(enchantment.getValue()));
+                        }
+                }
+                return result.toString();
         }
 
         @Override
@@ -150,6 +196,10 @@ public class RealItem implements Item {
                         }
                 }
                 return name;
+        }
+
+        public static boolean canMerge(ItemStack a, ItemStack b) {
+                return a.getType() == b.getType() && a.getDurability() == b.getDurability() && a.getItemMeta().equals(b.getItemMeta());
         }
 
         private String getEnchantmentName(Enchantment enchantment) {

@@ -175,27 +175,30 @@ auction:
     Change: '<hl>{player}<dfl> set the remaining time to <hl>{newtimeleft}<dfl>.'
 # Special item describing strings not covered by Vault
 item:
+  damaged:
+    Singular: 'Damaged'
+    Plural: 'Damaged'
   enchanted:
-        Singular: 'Enchanted'
-        Plural: 'Enchanted'
+    Singular: 'Enchanted'
+    Plural: 'Enchanted'
   minute:
-        Singular: 'minute'
-        Plural: 'minutes'
+    Singular: 'minute'
+    Plural: 'minutes'
   second:
-        Singular: 'second'
-        Plural: 'seconds'
+    Singular: 'second'
+    Plural: 'seconds'
   stack:
-        Singular: 'Stack'
-        Plural: 'Stacks'
+    Singular: 'Stack'
+    Plural: 'Stacks'
   chest:
-        Singular: 'Chest'
-        Plural:   'Chests'
+    Singular: 'Chest'
+    Plural:   'Chests'
   doubleChest:
-        Singular: 'Double Chest'
-        Plural:   'Double Chests'
+    Singular: 'Double Chest'
+    Plural:   'Double Chests'
   inventory:
-        Singular: 'Inventory'
-        Plural: 'Inventories'
+    Singular: 'Inventory'
+    Plural: 'Inventories'
 # Display of the history.
 # Environment: see auction.*
 history:

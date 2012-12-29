@@ -2,6 +2,10 @@
 
 * Add graphical user interface (/auc gui and /auc start without arguments)
 * Add new Enchantments
+* Add info support for Enchanted Books
+* Add info support for Written Books
+* Add info support for Fireworks and Firework Charges
+* Add info support for Dyed Leather Armor
 
 1.1.4
 
