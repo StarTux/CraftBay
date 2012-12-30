@@ -109,6 +109,7 @@ commands:
 #   owner - the owner's name
 #   winner - the winner, if any
 #   minbid - smallest possible bid to participate
+#   maxbid - highest placed bid
 #   price - the current price
 #   state - the state of this auction
 #   timeleft - the remaining auction duration
@@ -138,6 +139,7 @@ auction:
     FakeItem: '<dfl>Gegenstand: <hl>{item}'
     Winner: '<dfl>Sieger: <hl>{winner}<dfl> for <hl>{price}'
     NoWinner: '<dfl>Anfangsgebot: <hl>{minbid}'
+    Self: '<dfl>Dein Gebot: <hl>{maxbid}'
     Time: '<dfl>Frist: <hl>{timeleft}'
     State: '<dfl>Zustand: <hl>{state}'
     Fee: '<dfl>Gebühr: <hl>{fee}'

@@ -108,6 +108,7 @@ commands:
 #   owner - the owner's name
 #   winner - the winner, if any
 #   minbid - smallest possible bid to participate
+#   maxbid - highest placed bid
 #   price - the current price
 #   state - the state of this auction
 #   timeleft - the remaining auction duration
