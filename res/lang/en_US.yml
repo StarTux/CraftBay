@@ -160,6 +160,7 @@ auction:
     NewPrice: '<dfl>Price for <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> is now <hl>{price}<dfl> for <hl>{winner}<dfl>'
     NewWinner: '<hl>{winner}<dfl> beats {oldwinner}. Price <hl>{price}'
     UnderBid: '<dfl>{player} raises but <hl>{winner}<dfl> is higher. Price <hl>{price}'
+    Still: '<dfl>You are still winning this auction for <hl>{price}<dfl>.'
   end:
     ToWinner: '<dfl>Enjoy your <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> for <hl>{price}<dfl>!'
     OwnerSell: '<dfl>Your <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> has been sold to <hl>{winner}<dfl> for <hl>{price}<dfl>.'

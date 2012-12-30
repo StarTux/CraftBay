@@ -123,6 +123,9 @@ public class AuctionAnnouncer implements Listener {
                         Message msg = plugin.getMessage("auction.bid.NewPrice").set(event);
                         Message pm = plugin.getMessage("auction.bid.Win").set(event);
                         announce(msg, pm, event.getBidder(), false, false);
+                } else if (oldWinner.equals(event.getBidder())) {
+                        // winner raises, with no change of price
+                        newWinner.msg(plugin.getMessage("auction.bid.Still").set(event));
                 } else if (!newWinner.equals(oldWinner)) {
                         // new beats old
                         Message msg = plugin.getMessage("auction.bid.NewWinner").set(event);
