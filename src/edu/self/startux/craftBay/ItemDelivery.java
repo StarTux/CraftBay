@@ -31,6 +31,7 @@ public class ItemDelivery implements ConfigurationSerializable {
         private Item item;
         private Auction auction;
         private Date creationDate;
+        private long attempt;
 
         public ItemDelivery(Merchant recipient, Item item, Auction auction, Date creationDate) {
                 this.recipient = recipient;
@@ -48,9 +49,27 @@ public class ItemDelivery implements ConfigurationSerializable {
         }
 
         public boolean deliver() {
+                attempt++;
+                if (recipient instanceof PlayerMerchant) {
+                        PlayerMerchant player = (PlayerMerchant)recipient;
+                        if (player.getPlayer() != null) {
+                                if (!player.getPlayer().hasPermission("auction.receive")) {
+                                        if (attempt == 1) {
+                                                CraftBayPlugin.getInstance().log(String.format("DELIVER FAIL item='%s' recipient='%s' location='%s' reason='No Permission'", item.toString(), recipient.getName(), getLocation()));
+                                        }
+                                        return false;
+                                }
+                                if (CraftBayPlugin.getInstance().getBlacklistWorlds().contains(player.getPlayer().getWorld().getName())) {
+                                        if (attempt == 1) {
+                                                CraftBayPlugin.getInstance().log(String.format("DELIVER FAIL item='%s' recipient='%s' location='%s' reason='World Blacklisted'", item.toString(), recipient.getName(), getLocation()));
+                                        }
+                                        return false;
+                                }
+                        }
+                }
                 boolean result = item.give(recipient);
                 if (result) {
-                        String msg = String.format("DELIVER item ='%s' recipient='%s' location='%s'", item.toString(), recipient.getName(), getLocation());
+                        String msg = String.format("DELIVER item='%s' recipient='%s' location='%s'", item.toString(), recipient.getName(), getLocation());
                         if (auction != null) {
                                 auction.log(msg);
                         } else {

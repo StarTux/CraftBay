@@ -20,7 +20,6 @@ permissions:
     description: Get all permission nodes
     default: false
     children:
-      auction.default: false
       auction.info: true
       auction.bid: true
       auction.start: true
@@ -31,6 +30,11 @@ permissions:
   auction.bid:
     description: Bid on an auction
     default: true
+    children:
+      auction.receive: true
+  auction.receive:
+    description: Receive an item after winning an auction
+    default: false
   auction.start:
     description: Start an auction
     default: false

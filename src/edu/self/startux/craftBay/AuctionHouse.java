@@ -27,7 +27,10 @@ import java.util.Map;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class AuctionHouse implements Listener {
         private CraftBayPlugin plugin;
@@ -116,8 +119,18 @@ public class AuctionHouse implements Listener {
                 return createAuction(owner, item, startingBid, true);
         }
 
-        @EventHandler(priority = EventPriority.LOWEST)
+        @EventHandler(priority = EventPriority.MONITOR)
         public void onPlayerJoin(PlayerJoinEvent event) {
+                ItemDelivery.deliverAll();
+        }
+
+        @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+        public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
+                ItemDelivery.deliverAll();
+        }
+
+        @EventHandler(priority = EventPriority.MONITOR)
+        public void onPlayerRespawn(PlayerRespawnEvent event) {
                 ItemDelivery.deliverAll();
         }
 

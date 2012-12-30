@@ -48,6 +48,7 @@ adminhelp:
 command:
   NoEntry: '<warn>No such command: "{cmd}"!'
   NoPerm: "<warn>You don't have permission!"
+  BadWorld: '<warn>You cannot do that in this world!'
   NotAPlayer: '<warn>Only players can do that!'
   NoCurrentAuction: '<warn>No auction running!'
   NoSuchAuction: '<warn>Unknown such auction: <warnhi>{arg}<warn>!'

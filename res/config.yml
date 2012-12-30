@@ -24,6 +24,8 @@ auctioneercooldown: 30
 denycreative: true
 # The final seconds at which the countdown is broadcast in chat
 countdown: [10, 5, 3, 2, 1]
+# A list of worlds where CraftBay cannot be used
+blacklistworlds: []
 # Herochat configuration
 herochat:
         enable: false

@@ -49,6 +49,7 @@ adminhelp:
 command:
   NoEntry: '<warn>Unbekannter Befehl: "{cmd}"!'
   NoPerm: "<warn>Du bist nicht befugt!"
+  BadWorld: '<warn>Das geht nicht in dieser Welt!'
   NotAPlayer: '<warn>Spieler erwartet!'
   NoCurrentAuction: '<warn>Keine laufende Auktion!'
   NoSuchAuction: '<warn>Unbekannte Auktion: <warnhi>{arg}<warn>!'

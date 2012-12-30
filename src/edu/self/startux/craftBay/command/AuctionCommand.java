@@ -54,6 +54,10 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
 
         @Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] argv) {
+                if (sender instanceof Player && plugin.getBlacklistWorlds().contains(((Player)sender).getWorld().getName()) && !((Player)sender).hasPermission("auction.admin")) {
+                        plugin.warn(sender, plugin.getMessage("command.BadWorld").set("cmd", cmd));
+                        return true;
+                }
                 LinkedList<String> argl = new LinkedList<String>(Arrays.asList(argv));
                 if (label.equals("bid")) {
                         callCommand(sender, "bid", argl);
