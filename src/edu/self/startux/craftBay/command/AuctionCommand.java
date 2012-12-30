@@ -80,7 +80,7 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
 
         @SubCommand(perm = "info", shortcut = true)
         public void info(CommandSender sender, Auction auction) {
-                plugin.msg(sender, plugin.getMessages("auction.info.Header", "auction.info.Owner", (auction.getItem() instanceof FakeItem ? "auction.info.FakeItem" : "auction.info.RealItem"), (auction.getWinner() != null ? "auction.info.Winner" : "auction.info.NoWinner"), (auction.getState() == AuctionState.RUNNING ? "auction.info.Time" : "auction.info.State"), "auction.info.Help").set(auction, sender));
+                plugin.msg(sender, plugin.getMessages("auction.info.Header", "auction.info.Owner", (auction.getItem() instanceof FakeItem ? "auction.info.FakeItem" : "auction.info.RealItem"), (auction.getWinner() != null ? "auction.info.Winner" : "auction.info.NoWinner"), (sender instanceof Player && auction.getWinner() != null && auction.getWinner().equals(PlayerMerchant.getByPlayer((Player)sender)) ? "auction.info.Self" : null), (auction.getState() == AuctionState.RUNNING ? "auction.info.Time" : "auction.info.State"), "auction.info.Help").set(auction, sender));
         }
 
         @SubCommand(perm = "bid", shortcut = true, optional = 1)

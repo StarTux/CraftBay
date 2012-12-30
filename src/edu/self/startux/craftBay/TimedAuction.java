@@ -127,7 +127,8 @@ public class TimedAuction extends AbstractAuction {
         /**
          * Get the highest bid so far.
          */
-        private int getMaxBid() {
+        @Override
+        public int getMaxBid() {
                 if (bids.isEmpty()) {
                         return minbid;
                 }

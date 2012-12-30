@@ -147,6 +147,7 @@ public class Language {
         public Message getMessages(String... keys) {
                 Message result = new Message();
                 for (String key : keys) {
+                        if (key == null) continue;
                         result.append(getMessage(key));
                 }
                 return result;

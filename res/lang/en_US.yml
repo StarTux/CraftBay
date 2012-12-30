@@ -137,6 +137,7 @@ auction:
     FakeItem: '<dfl>Item: <hl>{item}'
     Winner: '<dfl>Winning: <hl>{winner}<dfl> for <hl>{price}'
     NoWinner: '<dfl>Minimal bid: <hl>{minbid}'
+    Self: '<dfl>Your bid: <hl>{maxbid}'
     Time: '<dfl>Time left: <hl>{timeleft}'
     State: '<dfl>State: <hl>{state}'
     Fee: '<dfl>Fee: <hl>{fee}'

@@ -94,6 +94,10 @@ public interface Auction extends ConfigurationSerializable {
          */
         public int getMinimalBid();
         /**
+         * Get the highest bid that was placed
+         */
+        public int getMaxBid();
+        /**
          * Get the winning bid
          */
         public int getWinningBid();
