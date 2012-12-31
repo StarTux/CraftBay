@@ -188,34 +188,18 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
                 plugin.msg(player, plugin.getMessage("commands.listen.IgnoreSuccess").set(player));
         }
 
-        @SubCommand(perm = "start", shortcut = true, optional = 3)
-        public void start(Player player, ItemStack stack, Integer amount, Integer price) {
-                if (player.getGameMode() == GameMode.CREATIVE && plugin.getConfig().getBoolean("denycreative")) {
+        @SubCommand(perm = "start", shortcut = true, optional = 1)
+        public void start(Player player, Integer price) {
+                if (player.getGameMode() == GameMode.CREATIVE && plugin.getConfig().getBoolean("denycreative") && !player.hasPermission("auction.admin")) {
                         plugin.warn(player, plugin.getMessage("commands.start.CreativeDenial").set(player));
                         return;
                 }
-                if (stack == null) {
-                        price = plugin.getConfig().getInt("startingbid");
-                        plugin.getAuctionInventory().initPlayer(player, price);
-                        return;
-                }
-                if (amount == null) amount = 1;
-                if (amount < 1) {
-                        plugin.warn(player, plugin.getMessage("commands.start.AmountTooSmall").set(player).set("arg", amount));
-                        return;
-                }
-                stack.setAmount(amount);
-                Merchant merchant = PlayerMerchant.getByPlayer(player);
-                Item item = new RealItem(stack);
-                if (price == null) price = 0;
+                if (price == null) price = plugin.getConfig().getInt("startingbid");
                 if (price < 0) {
                         plugin.warn(player, plugin.getMessage("commands.start.PriceTooLow").set(player).set("arg", price));
                         return;
                 }
-                Auction auction = plugin.getAuctionHouse().createAuction(merchant, item, price);
-                if (auction != null) {
-                        merchant.msg(plugin.getMessage("commands.start.Success").set(auction, merchant));
-                }
+                plugin.getAuctionInventory().initPlayer(player, price);
         }
 
         @SubCommand(perm = "admin", optional = 3)
@@ -246,9 +230,9 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
                 plugin.msg(sender, plugin.getMessage("commands.start.Success").set(auction, sender));
         }
 
-        @SubCommand(perm = "start", optional = 2)
-        public void hand(Player player, Integer amount, Integer price) {
-                if (player.getGameMode() == GameMode.CREATIVE && plugin.getConfig().getBoolean("denycreative")) {
+        @SubCommand(perm = "start", optional = 1)
+        public void hand(Player player, Integer price) {
+                if (player.getGameMode() == GameMode.CREATIVE && plugin.getConfig().getBoolean("denycreative") && !player.hasPermission("auction.admin")) {
                         plugin.warn(player, plugin.getMessage("commands.start.CreativeDenial").set(player));
                         return;
                 }
@@ -259,14 +243,7 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
                         plugin.warn(player, plugin.getMessage("commands.start.HandEmpty"));
                         return;
                 }
-                if (amount != null) {
-                        if (amount < 1) {
-                                plugin.warn(player, plugin.getMessage("commands.start.AmountTooSmall").set(player).set("arg", amount));
-                                return;
-                        }
-                        item.setAmount(amount);
-                }
-                if (price == null) price = 0;
+                if (price == null) price = plugin.getConfig().getInt("startingbid");
                 if (price < 0) {
                         plugin.warn(player, plugin.getMessage("commands.start.PriceTooLow").set(player).set("arg", price));
                         return;
@@ -310,7 +287,8 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
 
         @SubCommand(aliases = { "h", "?" })
         public void help(CommandSender sender) {
-                String[] cmds = { "Header", "Help", "Info", "History", "Bid", "BidShort", "Start", "Hand", "Gui", "End", "Cancel", "Listen" };
+//                String[] cmds = { "Header", "Help", "Info", "History", "Bid", "BidShort", "Start", "Hand", "End", "Cancel", "Listen" };
+                String[] cmds = { "Header", "Info", "BidShort", "Start", "Hand", "End", "Cancel", "Listen", "Help" };
                 Message msg = new Message();
                 int fee = plugin.getConfig().getInt("auctionfee");
                 int tax = plugin.getConfig().getInt("auctiontax");
@@ -367,19 +345,5 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
                 }
                 auction.setTimeLeft(duration);
                 plugin.msg(sender, plugin.getMessage("commands.fake.Success").set(sender));
-        }
-
-        @SubCommand(perm = "start", optional = 1)
-        public void gui(Player player, Integer minbid) {
-                if (player.getGameMode() == GameMode.CREATIVE && plugin.getConfig().getBoolean("denycreative")) {
-                        plugin.warn(player, plugin.getMessage("commands.start.CreativeDenial").set(player));
-                        return;
-                }
-                if (minbid == null) minbid = plugin.getConfig().getInt("startingbid");
-                if (minbid < 0) {
-                        plugin.warn(player, plugin.getMessage("commands.start.PriceTooLow").set(player).set("arg", minbid));
-                        return;
-                }
-                plugin.getAuctionInventory().initPlayer(player, minbid);
         }
 }

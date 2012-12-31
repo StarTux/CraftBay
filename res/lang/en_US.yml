@@ -24,9 +24,8 @@ help:
   Info: '<dfl>/auc <s>i<hl>nfo <h>Display auction information'
   Bid: '<dfl>/auc <s>b<hl>id <dfl>[<hl>amount<dfl>] <h>Place a bid'
   BidShort: '<dfl>/bid <dfl>[<hl>amount<dfl>] <h>Place a bid'
-  Start: '<dfl>/auc <s>s<hl>tart <dfl>[<hl>item<dfl>] <dfl>[<hl>amount<dfl>] <dfl>[<hl>price<dfl>] <h>Auction an item'
-  Hand: '<dfl>/auc <hl>hand <dfl>[<hl>amount<dfl>] [<hl>price<dfl>] <h>Auction the item in your hand'
-  Gui: '<dfl>/auc <hl>gui <dfl>[<hl>price<dfl>] <h>Open a graphical interface'
+  Start: '<dfl>/auc <s>s<hl>tart <dfl>[<hl>price<dfl>] <h>Start an auction'
+  Hand: '<dfl>/auc <hl>hand <dfl>[<hl>price<dfl>] <h>Auction the item in your hand'
   Fee: '<dfl>Starting an auction costs <hl>{fee}<dfl>.'
   Tax: '<dfl>Starting bids above <hl>{minbid}<dfl> will cause <hl>{tax}%<dfl> tax.'
   End: '<dfl>/auc <s>e<hl>nd <dfl>[<hl>delay<dfl>] <h>End current auction'
@@ -121,7 +120,7 @@ auction:
     FeeDebited: '<dfl>Your account has been debited <hl>{fee}<dfl>.'
     OwnerCooldown: '<warn>You have to wait <warnhi>{cooldown}<warn>!'
   start:
-    Announce: '<hl>{owner}<dfl> is auctioning <hl>{amount}<dfl>x<hl>{itemdesc}<dfl>. Price: <hl>{minbid}<dfl>.'
+    Announce: '<hl>{owner}<dfl> is auctioning <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> for <hl>{minbid}<dfl>. Type <hl>/auc'
   gui:
     ChestTitle: 'Items for auction'
     ItemsNotEqual: '<warn>All items must be identical!'
@@ -144,8 +143,8 @@ auction:
     Fee: '<dfl>Fee: <hl>{fee}'
     Help: '<dfl>Type <hl>/auc ?<dfl> for a list of commands.'
   reminder:
-    NoWinner: '<dfl>Auction for <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> ends in <hl>{timeleft}<dfl>. Price: <hl>{minbid}<dfl>.'
-    Winner: '<hl>{winner}<dfl> wins <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> for <hl>{price}<dfl> in <hl>{timeleft}<dfl>!'
+    NoWinner: '<dfl>Auction for <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> ends in <hl>{timeleft}<dfl>. Price: <hl>{minbid}<dfl>. Type <hl>/auc'
+    Winner: '<hl>{winner}<dfl> wins <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> for <hl>{price}<dfl> in <hl>{timeleft}<dfl>. Type <hl>/auc'
   countdown:
     NoWinner: '<dfl>Auction for <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> ends in <hl>{timeleft}<dfl>!'
     Winner: '<hl>{winner}<dfl> wins <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> in <hl>{timeleft}<dfl>!'

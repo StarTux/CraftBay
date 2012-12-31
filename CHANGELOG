@@ -1,3 +1,10 @@
+1.2.2
+
+* Change "/auction start" to have only one optional parameter (starting bid) and always open a chest
+* Change "/auction hand" to have only one optional parameter (starting bid)
+* Remove "/auction gui"
+* Let "auction.admin" permission override the "denycreative" config option
+
 1.2.1
 
 * Add auction.receive permission for getting items from CraftBay
@@ -6,7 +13,7 @@
 
 1.2
 
-* Add graphical user interface (/auc gui and /auc start without arguments)
+* Add graphical user interface ("/auc gui" and "/auc start" without arguments)
 * Add new Enchantments
 * Add info support for Enchanted Books
 * Add info support for Written Books
