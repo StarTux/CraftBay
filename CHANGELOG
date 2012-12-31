@@ -1,3 +1,9 @@
+1.2.1
+
+* Add auction.receive permission for getting items from CraftBay
+* Add blacklist for worlds (blacklistworlds config node) where CraftBay is not active
+* Add missing message and bid information for the winner
+
 1.2
 
 * Add graphical user interface (/auc gui and /auc start without arguments)
