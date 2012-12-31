@@ -121,7 +121,7 @@ auction:
     FeeDebited: '<dfl>Dein Konto wurde mit <hl>{fee}<dfl> belastet.'
     OwnerCooldown: '<warn>Du musst noch <warnhi>{cooldown}<warn> warten!'
   start:
-    Announce: '<hl>{owner}<dfl> versteigert <hl>{amount}<dfl>x<hl>{itemdesc}<dfl>. Preis: <hl>{minbid}<dfl>.'
+    Announce: '<hl>{owner}<dfl> versteigert <hl>{amount}<dfl>x<hl>{itemdesc}<dfl>. Preis: <hl>{minbid}<dfl>. Gib <hl>/auc<dfl> ein.'
   gui:
     ChestTitle: 'Gegenstände zum Versteigern'
     ItemsNotEqual: '<warn>Alle Gegenstände müssen gleich sein!'
@@ -142,10 +142,10 @@ auction:
     Time: '<dfl>Frist: <hl>{timeleft}'
     State: '<dfl>Zustand: <hl>{state}'
     Fee: '<dfl>Gebühr: <hl>{fee}'
-    Help: '<dfl>Schreibe <hl>/auc ?<dfl> für eine Befehlsliste.'
+    Help: '<dfl>Gib <hl>/auc ?<dfl> ein für eine Befehlsliste.'
   reminder:
-    NoWinner: '<dfl>Auktion für <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> endet it <hl>{timeleft}<dfl>. Preis: <hl>{minbid}<dfl>.'
-    Winner: '<hl>{winner}<dfl> gewinnt <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> für <hl>{price}<dfl> in <hl>{timeleft}<dfl>!'
+    NoWinner: '<dfl>Auktion für <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> endet it <hl>{timeleft}<dfl>. Preis: <hl>{minbid}<dfl>. Gib <hl>/auc<dfl> ein.'
+    Winner: '<hl>{winner}<dfl> gewinnt <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> für <hl>{price}<dfl> in <hl>{timeleft}<dfl>! Gib <hl>/auc<dfl> ein.'
   countdown:
     NoWinner: '<dfl>Auktion für <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> endet in <hl>{timeleft}<dfl>!'
     Winner: '<hl>{winner}<dfl> gewinnt <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> in <hl>{timeleft}<dfl>!'
