@@ -106,7 +106,14 @@ public class RealItem implements Item {
                 if (meta instanceof BookMeta) {
                         BookMeta book = (BookMeta)meta;
                         if (result.length() > 0) result.append(" ");
-                        result.append(book.hasTitle() ? book.getTitle() : "notitle").append(" by ").append(book.hasAuthor() ? book.getAuthor() : "noname");
+                        if (book.hasTitle()) {
+                                result.append("'").append(book.getTitle()).append("'");
+                        }
+                        if (book.hasAuthor()) {
+                                result.append(CraftBayPlugin.getInstance().getMessage("item.book.ByAuthor")).append(book.getAuthor());
+                        }
+                        int pageCount = book.getPageCount();
+                        result.append(" (").append(pageCount).append(" ").append(CraftBayPlugin.getInstance().getMessage(pageCount == 1 ? "item.page.Singular" : "item.page.Plural")).append(")");
                 }
                 if (meta instanceof FireworkMeta) {
                         FireworkMeta firework = (FireworkMeta)meta;

@@ -202,6 +202,11 @@ item:
   inventory:
     Singular: 'Inventory'
     Plural: 'Inventories'
+  page:
+    Singular: 'page'
+    Plural: 'pages'
+  book:
+    ByAuthor: ' by '
 # Display of the history.
 # Environment: see auction.*
 history:

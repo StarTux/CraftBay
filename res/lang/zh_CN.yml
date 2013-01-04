@@ -201,6 +201,11 @@ item:
   inventory:
     Singular: '装备'
     Plural: '装备'
+  page:
+    Singular: 'page'
+    Plural: 'pages'
+  book:
+    ByAuthor: ' by '
 # Display of the history.
 # Environment: see auction.*
 history:
