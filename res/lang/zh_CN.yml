@@ -26,7 +26,6 @@ help:
   BidShort: '<dfl>/bid <dfl>[<hl>amount<dfl>] <h>宣布竞价'
   Start: '<dfl>/auc <s>s<hl>tart <dfl>[<hl>price<dfl>] <h>拍卖一个物品'
   Hand: '<dfl>/auc <hl>hand <dfl>[<hl>price<dfl>] <h>拍卖你手中的物品'
-  Gui: '<dfl>/auc <hl>gui <dfl>[<hl>price<dfl>] <h>打开一个图形界面'
   Fee: '<dfl>需要花费 <hl>{fee}<dfl> 才可以拍卖.'
   Tax: '<dfl>超过了 <hl>{minbid}<dfl> 的竞价将需要缴纳 <hl>{tax}%<dfl> 税费.'
   End: '<dfl>/auc <s>e<hl>nd <dfl>[<hl>delay<dfl>] <h>结束当前拍卖'
