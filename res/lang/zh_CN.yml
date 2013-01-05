@@ -119,7 +119,7 @@ auction:
     FeeDebited: '<dfl>你的账户已扣除 <hl>{fee}<dfl>.'
     OwnerCooldown: '<warn>你必须等待 <warnhi>{cooldown}<warn>!'
   start:
-    Announce: '<hl>{owner}<dfl> 正在拍卖 <hl>{amount}<dfl>x<hl>{itemdesc}<dfl>. 价格: <hl>{minbid}<dfl>.'
+    Announce: '<hl>{owner}<dfl> 正在拍卖 <hl>{amount}<dfl>x<hl>{itemdesc}<dfl>. 价格: <hl>{minbid}<dfl>. 请输入 <hl>/auc'
   gui:
     ChestTitle: '正在拍卖的物品'
     ItemsNotEqual: '<warn>所有物品必须相同!'
@@ -136,14 +136,14 @@ auction:
     FakeItem: '<dfl>物品: <hl>{item}'
     Winner: '<dfl>获得者: <hl>{winner}<dfl> 的竞标价格为 <hl>{price}'
     NoWinner: '<dfl>最小竞标价格: <hl>{minbid}'
-    Self: '<dfl>Your bid: <hl>{maxbid}'
+    Self: '<dfl>你的竞拍价格: <hl>{maxbid}'
     Time: '<dfl>时间剩余: <hl>{timeleft}'
     State: '<dfl>状态: <hl>{state}'
     Fee: '<dfl>费用: <hl>{fee}'
     Help: '<dfl>输入 <hl>/auc ?<dfl> 以获得指令列表.'
   reminder:
-    NoWinner: '<dfl>对 <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> 的拍卖将在 <hl>{timeleft}<dfl> 后结束. 价格: <hl>{minbid}<dfl>.'
-    Winner: '<hl>{winner}<dfl> 赢得了 <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> 以花费了 <hl>{price}<dfl> 并在剩余时间为 <hl>{timeleft}<dfl> 时拍得物品!'
+    NoWinner: '<dfl>对 <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> 的拍卖将在 <hl>{timeleft}<dfl> 后结束. 价格: <hl>{minbid}<dfl>. 请输入 <hl>/auc'
+    Winner: '<hl>{winner}<dfl> 赢得了 <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> 以花费了 <hl>{price}<dfl> 并在剩余时间为 <hl>{timeleft}<dfl> 时拍得物品! 请输入 <hl>/auc'
   countdown:
     NoWinner: '<dfl>对 <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> 的拍卖将在 <hl>{timeleft}<dfl> 后结束!'
     Winner: '<hl>{winner}<dfl> 赢得了 <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> 并在剩余时间为 <hl>{timeleft}<dfl> 时拍得物品!'
@@ -158,7 +158,7 @@ auction:
     NewPrice: '<hl>{amount}<dfl>x<hl>{itemdesc}<dfl> 的价格现在是 <hl>{price}<dfl> 且由 <hl>{winner}<dfl> 竞标'
     NewWinner: '<hl>{winner}<dfl> 压制了 {oldwinner}. 价格为 <hl>{price}'
     UnderBid: '<dfl>{player} 抬升了竞标价格但是 <hl>{winner}<dfl> 出了更高的价格. 价格为 <hl>{price}'
-    Still: '<dfl>You are still winning this auction for <hl>{price}<dfl>.'
+    Still: '<dfl>你当前仍以价格 <hl>{price}<dfl> 领先其他竞拍者.'
   end:
     ToWinner: '<dfl>享受你的 <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> 并花费了 <hl>{price}<dfl>!'
     OwnerSell: '<dfl>你的 <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> 被卖给了 <hl>{winner}<dfl> 以 <hl>{price}<dfl> 的价格.'
@@ -202,10 +202,10 @@ item:
     Singular: '装备'
     Plural: '装备'
   page:
-    Singular: 'page'
-    Plural: 'pages'
+    Singular: '页'
+    Plural: '页'
   book:
-    ByAuthor: ' by '
+    ByAuthor: ' 由 '
 # Display of the history.
 # Environment: see auction.*
 history:
