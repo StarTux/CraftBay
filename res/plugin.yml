@@ -41,3 +41,9 @@ permissions:
   auction.admin:
     description: Perform administrative commands
     default: op
+  auction.nofee:
+    description: Player does not have to pay the auction fee
+    default: false
+  auction.notax:
+    description: Player does not have to pay the auction tax
+    default: false

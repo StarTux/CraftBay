@@ -294,8 +294,8 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
                 int tax = plugin.getConfig().getInt("auctiontax");
                 int minbid = plugin.getConfig().getInt("startingbid");
                 for (String cmd : cmds) msg.append(plugin.getMessage("help." + cmd));
-                if (fee > 0) msg.append(plugin.getMessage("help.Fee"));
-                if (tax > 0) msg.append(plugin.getMessage("help.Tax"));
+                if (fee > 0 && !sender.hasPermission("auction.nofee")) msg.append(plugin.getMessage("help.Fee"));
+                if (tax > 0 && !sender.hasPermission("auction.notax")) msg.append(plugin.getMessage("help.Tax"));
                 if (sender.hasPermission("auction.admin") || sender.isOp()) {
                         String[] admcmds = { "Bank", "Fake", "BankBid", "Log", "Reload" };
                         for (String cmd : admcmds) msg.append(plugin.getMessage("adminhelp." + cmd));

@@ -82,6 +82,13 @@ public interface Merchant extends ConfigurationSerializable {
         public boolean giveItem(ItemStack lot);
 
         /**
+         * Check if this merchant has a Bukkit permission.
+         * @param permission the permission
+         * @return true if he has it, false otherwise
+         */
+        public boolean hasPermission(String permission);
+
+        /**
          * Send a message to this merchant.
          * @param msg the message
          */

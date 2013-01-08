@@ -159,6 +159,19 @@ public class PlayerMerchant implements Merchant {
                 return true;
         }
 
+        /**
+         * Check if the Player represented by the Merchant has a
+         * Bukkit permission.
+         * @param permission the permission
+         * @return true if he has it, false otherwise
+         */
+        @Override
+        public boolean hasPermission(String permission) {
+                Player player = getPlayer();
+                if (player == null) return false;
+                return player.hasPermission(permission);
+        }
+
         @Override
         public void msg(Message msg) {
                 if (getPlayer() == null) return;
@@ -179,31 +192,6 @@ public class PlayerMerchant implements Merchant {
                 if (!playerName.equalsIgnoreCase(other.playerName)) return false;
                 return true;
         }
-
-	// public static boolean hasSameEnchantments(ItemStack stack, ItemStack value) {
-	// 	if ((stack.getEnchantments().isEmpty())&&(value.getEnchantments().isEmpty()))return true;
-	// 	if ((!stack.getEnchantments().isEmpty())&&(value.getEnchantments().isEmpty()))return false;
-	// 	if ((stack.getEnchantments().isEmpty())&&(!value.getEnchantments().isEmpty()))return false;
-	// 	for (Map.Entry<Enchantment, Integer> ench:stack.getEnchantments().entrySet()){
-	// 		boolean found = false;
-	// 		for(Map.Entry<Enchantment, Integer> compare : value.getEnchantments().entrySet()){
-	// 			if(ench.getKey() == compare.getKey()){
-	// 				if (ench.getValue() == compare.getValue()) found = true;
-	// 			}
-	// 		}
-	// 		if (found == false) return false;
-	// 	}
-	// 	for (Map.Entry<Enchantment, Integer> ench:value.getEnchantments().entrySet()){
-	// 		boolean found = false;
-	// 		for(Map.Entry<Enchantment, Integer> compare :stack.getEnchantments().entrySet()){
-	// 			if(ench.getKey() == compare.getKey()){
-	// 				if (ench.getValue() == compare.getValue()) found = true;
-	// 			}
-	// 		}
-	// 		if (found == false) return false;
-	// 	}
-	// 	return true;
-	// }
 
         @Override
         public Map<String, Object> serialize() {

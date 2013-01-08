@@ -85,8 +85,9 @@ public class AuctionHouse implements Listener {
                         owner.warn(plugin.getMessage("auction.create.NotEnoughItems").set(item).set(owner));
                         return null;
                 }
-                int fee = plugin.getConfig().getInt("auctionfee");
-                if (startingBid > plugin.getConfig().getInt("startingbid")) {
+                int fee = 0;
+                if (!owner.hasPermission("auction.nofee")) fee = plugin.getConfig().getInt("auctionfee");
+                if (!owner.hasPermission("auction.notax") && startingBid > plugin.getConfig().getInt("startingbid")) {
                         int tax = (plugin.getConfig().getInt("auctiontax") * (startingBid - plugin.getConfig().getInt("startingbid"))) / 100;
                         fee += tax;
                 }
@@ -95,7 +96,8 @@ public class AuctionHouse implements Listener {
                                 owner.warn(plugin.getMessage("auction.create.FeeTooHigh").set(owner).set("fee", new MoneyAmount(fee)));
                                 return null;
                         }
-                } else fee = 0;
+                }
+                else fee = 0;
                 // take
                 if (fee > 0) {
                         owner.takeAmount(fee);
@@ -136,7 +138,7 @@ public class AuctionHouse implements Listener {
 
         public void endAuction(Auction auction) {
                 AuctionEndEvent event = new AuctionEndEvent(auction);
-		if (auction.getWinner() == null) {
+                if (auction.getWinner() == null) {
                         plugin.getServer().getPluginManager().callEvent(event);
                         ItemDelivery.schedule(auction.getOwner(), auction.getItem(), auction);
                 } else if (!auction.getWinner().hasAmount(auction.getWinningBid())) {

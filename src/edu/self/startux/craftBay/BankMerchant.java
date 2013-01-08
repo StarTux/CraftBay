@@ -67,6 +67,15 @@ public class BankMerchant implements Merchant {
                 return true;
         }
 
+        /**
+         * Check if the Bank has a Bukkit permission.
+         * @param permission the permission
+         * @return true
+         */
+        public boolean hasPermission(String permission) {
+                return true;
+        }
+
         @Override
         public void msg(Message msg) {}
 
