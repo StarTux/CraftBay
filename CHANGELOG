@@ -1,3 +1,9 @@
+1.2.3
+
+* Add Simplified Chinese translation (thanks to zestybaby)
+* Add "auction.nofee" permission node for players who don't have to pay the auction fee
+* Add "auction.notax" permission node for players who don't have to pay the auction tax
+
 1.2.2
 
 * Change "/auction start" to have only one optional parameter (starting bid) and always open a chest
