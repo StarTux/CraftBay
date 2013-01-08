@@ -326,9 +326,4 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
                 auction.setTimeLeft(duration);
                 plugin.msg(sender, plugin.getMessage("commands.fake.Success").set(sender));
         }
-
-        @SubCommand
-        public void debug(Player player, MoneyAmount amount) {
-                player.sendMessage("MoneyAmount(" + amount + ")");
-        }
 }
