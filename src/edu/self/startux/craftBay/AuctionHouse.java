@@ -71,7 +71,7 @@ public class AuctionHouse implements Listener {
                 lastAuctions.put(merchant.getName(), new Date());
         }
 
-        public Auction createAuction(Merchant owner, Item item, int startingBid, boolean takeItems) {
+        public Auction createAuction(Merchant owner, Item item, MoneyAmount startingBid, boolean takeItems) {
                 // check
                 if (!checkCooldown(owner)) {
                         owner.warn(plugin.getMessage("auction.create.OwnerCooldown").set(owner).set("cooldown", new AuctionTime(getCooldown(owner))));
@@ -85,24 +85,22 @@ public class AuctionHouse implements Listener {
                         owner.warn(plugin.getMessage("auction.create.NotEnoughItems").set(item).set(owner));
                         return null;
                 }
-                int fee = 0;
-                if (!owner.hasPermission("auction.nofee")) fee = plugin.getConfig().getInt("auctionfee");
-                if (!owner.hasPermission("auction.notax") && startingBid > plugin.getConfig().getInt("startingbid")) {
-                        int tax = (plugin.getConfig().getInt("auctiontax") * (startingBid - plugin.getConfig().getInt("startingbid"))) / 100;
-                        fee += tax;
+                double fee = 0.0;
+                double tax = 0.0;
+                if (!owner.hasPermission("auction.nofee")) fee = plugin.getConfig().getDouble("auctionfee");
+                if (!owner.hasPermission("auction.notax") && startingBid.getDouble() > plugin.getConfig().getDouble("startingbid")) {
+                        tax = (plugin.getConfig().getDouble("auctiontax") * (startingBid.getDouble() - plugin.getConfig().getDouble("startingbid"))) / 100.0;
                 }
-                if (fee > 0) {
-                        if (!owner.hasAmount(fee)) {
-                                owner.warn(plugin.getMessage("auction.create.FeeTooHigh").set(owner).set("fee", new MoneyAmount(fee)));
+                MoneyAmount feetax = new MoneyAmount(fee + tax);
+                if (feetax.getDouble() > 0.0) {
+                        if (!owner.hasAmount(feetax)) {
+                                owner.warn(plugin.getMessage("auction.create.FeeTooHigh").set(owner).set("fee", feetax));
                                 return null;
                         }
+                        owner.takeAmount(feetax);
+                        owner.msg(plugin.getMessage("auction.create.FeeDebited").set(owner).set("fee", feetax));
                 }
-                else fee = 0;
                 // take
-                if (fee > 0) {
-                        owner.takeAmount(fee);
-                        owner.msg(plugin.getMessage("auction.create.FeeDebited").set(owner).set("fee", new MoneyAmount(fee)));
-                }
                 if (takeItems) {
                         item = item.take(owner);
                 }
@@ -110,14 +108,14 @@ public class AuctionHouse implements Listener {
                 // create
                 Auction auction = new TimedAuction(plugin, owner, item);
                 auction.setState(AuctionState.QUEUED);
-                if (startingBid != 0) auction.setStartingBid(startingBid);
-                auction.setFee(fee);
+                if (startingBid.getDouble() > 0) auction.setStartingBid(startingBid);
+                auction.setFee(feetax);
                 plugin.getAuctionScheduler().queueAuction(auction);
                 plugin.getServer().getPluginManager().callEvent(new AuctionCreateEvent(auction));
                 return auction;
         }
 
-        public Auction createAuction(Merchant owner, Item item, int startingBid) {
+        public Auction createAuction(Merchant owner, Item item, MoneyAmount startingBid) {
                 return createAuction(owner, item, startingBid, true);
         }
 
@@ -155,7 +153,7 @@ public class AuctionHouse implements Listener {
 
         public void cancelAuction(Auction auction) {
                 ItemDelivery.schedule(auction.getOwner(), auction.getItem(), auction);
-                if (auction.getFee() > 0) {
+                if (auction.getFee().getDouble() > 0.0) {
                         auction.getOwner().giveAmount(auction.getFee());
                         auction.getOwner().msg(plugin.getMessage("auction.cancel.FeeReturn").set(auction));
                 }

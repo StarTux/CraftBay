@@ -71,7 +71,7 @@ public interface Auction extends ConfigurationSerializable {
          * @param bidder the Merchant attempting to bid
          * @param bid the bid amount
          */
-	public boolean bid(Merchant bidder, int bid);
+	public boolean bid(Merchant bidder, MoneyAmount bid);
 
         /**
          * Stop this auction.
@@ -92,24 +92,24 @@ public interface Auction extends ConfigurationSerializable {
          * Get the minimum amount that a new bidder has to make to
          * be accepted.
          */
-        public int getMinimalBid();
+        public MoneyAmount getMinimalBid();
         /**
          * Get the highest bid that was placed
          */
-        public int getMaxBid();
+        public MoneyAmount getMaxBid();
         /**
          * Get the winning bid
          */
-        public int getWinningBid();
+        public MoneyAmount getWinningBid();
 
         public int getTimeLeft();
         public void setTimeLeft(int time);
 
-        public int getStartingBid();
-        public void setStartingBid(int amount);
+        public MoneyAmount getStartingBid();
+        public void setStartingBid(MoneyAmount amount);
 
-        public int getFee();
-        public void setFee(int fee);
+        public MoneyAmount getFee();
+        public void setFee(MoneyAmount fee);
 
         public void log(String msg);
         public List<String> getLog();

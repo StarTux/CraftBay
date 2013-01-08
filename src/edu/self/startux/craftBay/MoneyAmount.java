@@ -19,15 +19,53 @@
 
 package edu.self.startux.craftBay;
 
-public class MoneyAmount {
-        int amount;
+public class MoneyAmount implements Comparable<MoneyAmount> {
+        double amount;
 
-        public MoneyAmount(int amount) {
+        public MoneyAmount(double amount) {
                 this.amount = amount;
         }
 
+        /**
+         * This constructor is there mostly for support of legacy
+         * auction.yml files where money wasexpressed solely as
+         * Integer. The additional support for String and Object
+         * is just a catch-call precaution. Use it sparingly.
+         */
+        public MoneyAmount(Object o) {
+                if (o instanceof Number) amount = ((Number)o).doubleValue();
+                else if (o instanceof String) {
+                        try {
+                                amount = Double.parseDouble((String)o);
+                        } catch (NumberFormatException nfe) {
+                                amount = 0.0;
+                        }
+                } else {
+                        try {
+                                amount = Double.parseDouble(o.toString());
+                        } catch (NumberFormatException nfe) {
+                                amount = 0.0;
+                        }
+                }
+        }
+
+        public double getDouble() {
+                return amount;
+        }
+
         @Override
-        public String toString() {
+        public boolean equals(Object other) {
+                if (!(other instanceof MoneyAmount)) return false;
+                return amount == ((MoneyAmount)other).amount;
+        }
+
+        @Override
+        public int compareTo(MoneyAmount other) {
+                return new Double(amount).compareTo(other.amount);
+        }
+
+        @Override
+                public String toString() {
                 /* 
                  * Essentials Economy is known to throw an
                  * exception here if it is called before being

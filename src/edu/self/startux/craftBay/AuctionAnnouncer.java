@@ -115,10 +115,10 @@ public class AuctionAnnouncer implements Listener {
         public void onAuctionBid(AuctionBidEvent event) {
                 Auction auction = event.getAuction();
                 Merchant newWinner = auction.getWinner();
-                int newPrice = auction.getWinningBid();
+                MoneyAmount newPrice = auction.getWinningBid();
                 Merchant oldWinner = event.getOldWinner();
-                int oldPrice = event.getOldPrice();
-                if (oldWinner == null || (newPrice != oldPrice && oldWinner.equals(event.getBidder()))) {
+                MoneyAmount oldPrice = event.getOldPrice();
+                if (oldWinner == null || (newPrice.getDouble() != oldPrice.getDouble() && oldWinner.equals(event.getBidder()))) {
                         // overbid, first winner or overbid yourself with price change (corner case)
                         Message msg = plugin.getMessage("auction.bid.NewPrice").set(event);
                         Message pm = plugin.getMessage("auction.bid.Win").set(event);
@@ -138,7 +138,7 @@ public class AuctionAnnouncer implements Listener {
                                 Message pmLoser = plugin.getMessage("auction.bid.ToLoser").set(event);
                                 oldWinner.msg(pmLoser);
                         }
-                } else if (newPrice != oldPrice) {
+                } else if (newPrice.getDouble() != oldPrice.getDouble()) {
                         // underbid
                         Message msg = plugin.getMessage("auction.bid.UnderBid").set(event);
                         Message pm = plugin.getMessage("auction.bid.Fail").set(event);

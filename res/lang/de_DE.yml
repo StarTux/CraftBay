@@ -64,10 +64,6 @@ command:
 #   auction variables where applicable, see auction.*
 #   arg - the erroneous argument, if applicable
 commands:
-  bid:
-    BidNegative: '<warn>Positives Gebot erwartet!'
-  bankbid:
-    BidNegative: '<warn>Positives Gebot erwartet!'
   listen:
     AlreadyListen: '<warn>Du lauschst den Auktionen bereits!'
     AlreadyIgnore : '<warn>Du ignorierst Auktionen bereits!'
@@ -80,7 +76,6 @@ commands:
   start:
     HandEmpty: '<warn>Du hältst nichts in deiner Hand!'
     AmountTooSmall: '<warn>Positive Anzahl erwartet!'
-    PriceTooLow: '<warn>Positives Anfangsgebot erwartet!'
     CreativeDenial: '<warn>Du kannst keine Auktionen im Kreativmodus starten!'
     Success: '<dfl>Dein <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> wird bald versteigert werden!'
   end:

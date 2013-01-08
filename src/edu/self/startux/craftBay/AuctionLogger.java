@@ -43,31 +43,31 @@ public class AuctionLogger implements Listener {
         @EventHandler(priority = EventPriority.LOWEST)
         public void onAuctionCreate(AuctionCreateEvent event) {
                 Auction auction = event.getAuction();
-                auction.log(String.format("CREATE owner='%s' item='%s' minbid='%d' fee='%d'", auction.getOwner().getName(), auction.getItem().toString(), auction.getMinimalBid(), auction.getFee()));
+                auction.log(String.format("CREATE owner='%s' item='%s' minbid='%s' fee='%s'", auction.getOwner().getName(), auction.getItem().toString(), auction.getMinimalBid(), auction.getFee()));
         }
 
         @EventHandler(priority = EventPriority.LOWEST)
         public void onAuctionStart(AuctionStartEvent event) {
                 Auction auction = event.getAuction();
-                auction.log(String.format("START owner='%s' item='%s' minbid='%d' fee='%d'", auction.getOwner().getName(), auction.getItem().toString(), auction.getMinimalBid(), auction.getFee()));
+                auction.log(String.format("START owner='%s' item='%s' minbid='%s' fee='%s'", auction.getOwner().getName(), auction.getItem().toString(), auction.getMinimalBid(), auction.getFee()));
         }
 
         @EventHandler(priority = EventPriority.LOWEST)
         public void onAuctionBid(AuctionBidEvent event) {
                 Auction auction = event.getAuction();
-                auction.log(String.format("BID bidder='%s' amount='%d'", event.getBidder().getName(), event.getAmount()));
+                auction.log(String.format("BID bidder='%s' amount='%s'", event.getBidder().getName(), event.getAmount()));
         }
 
         @EventHandler(priority = EventPriority.LOWEST)
         public void onAuctionEnd(AuctionEndEvent event) {
                 Auction auction = event.getAuction();
-                auction.log(String.format("END winner='%s' price='%d' paymentError='%b'", (auction.getWinner() != null ? auction.getWinner().getName() : "none"), auction.getWinningBid(), event.hasPaymentError()));
+                auction.log(String.format("END winner='%s' price='%s' paymentError='%b'", (auction.getWinner() != null ? auction.getWinner().getName() : "none"), auction.getWinningBid(), event.hasPaymentError()));
         }
 
         @EventHandler(priority = EventPriority.LOWEST)
         public void onAuctionCancel(AuctionCancelEvent event) {
                 Auction auction = event.getAuction();
-                auction.log(String.format("CANCEL sender='%s' owner='%s' item='%s' minbid='%d' fee='%d'", event.getSender().getName(), auction.getOwner().getName(), auction.getItem().toString(), auction.getMinimalBid(), auction.getFee()));
+                auction.log(String.format("CANCEL sender='%s' owner='%s' item='%s' minbid='%s' fee='%s'", event.getSender().getName(), auction.getOwner().getName(), auction.getItem().toString(), auction.getMinimalBid(), auction.getFee()));
         }
 
         @EventHandler(priority = EventPriority.LOWEST)

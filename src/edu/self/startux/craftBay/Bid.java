@@ -30,23 +30,31 @@ import java.util.HashMap;
  */
 public class Bid implements Comparable<Bid>, ConfigurationSerializable {
         private Merchant bidder;
-        private int amount;
+        private double amount;
 
-        public Bid(Merchant bidder, int amount) {
+        public Bid(Merchant bidder, double amount) {
                 this.bidder = bidder;
                 this.amount = amount;
+        }
+
+        public Bid(Merchant bidder, MoneyAmount amount) {
+                this(bidder, amount.getDouble());
         }
 
         public Merchant getBidder() {
                 return bidder;
         }
 
-        public int getAmount() {
+        public double getAmount() {
                 return amount;
         }
 
-        public void setAmount(int amount) {
+        public void setAmount(double amount) {
                 this.amount = amount;
+        }
+
+        public void setAmount(MoneyAmount amount) {
+                this.amount = amount.getDouble();
         }
 
         @Override
@@ -66,6 +74,6 @@ public class Bid implements Comparable<Bid>, ConfigurationSerializable {
 
         @SuppressWarnings("unchecked")
         public static Bid deserialize(Map<String, Object> map) {
-                return new Bid((Merchant)map.get("bidder"), (Integer)map.get("amount"));
+                return new Bid((Merchant)map.get("bidder"), new MoneyAmount(map.get("amount")).getDouble());
         }
 }

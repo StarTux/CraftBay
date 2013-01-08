@@ -3,6 +3,7 @@
 * Add Simplified Chinese translation (thanks to zestybaby)
 * Add "auction.nofee" permission node for players who don't have to pay the auction fee
 * Add "auction.notax" permission node for players who don't have to pay the auction tax
+* Add support for monetary comma amounts
 
 1.2.2
 

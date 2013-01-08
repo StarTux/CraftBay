@@ -21,12 +21,13 @@ package edu.self.startux.craftBay.command;
 
 import edu.self.startux.craftBay.Auction;
 import edu.self.startux.craftBay.CraftBayPlugin;
+import edu.self.startux.craftBay.MoneyAmount;
 import net.milkbowl.vault.item.ItemInfo;
 import net.milkbowl.vault.item.Items;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.Material;
 
 public class AuctionParameters extends CommandParser {
         public AuctionParameters(CraftBayPlugin plugin) {
@@ -80,5 +81,17 @@ public class AuctionParameters extends CommandParser {
                         throw new CommandParseException(plugin.getMessage("command.IllegalItem").set("arg", arg));
                 }
                 return stack;
+        }
+
+        @Parameter
+        public MoneyAmount moneyAmount(CommandSender sender, String arg) throws CommandParseException {
+                double amount;
+                try {
+                        amount = Double.parseDouble(arg);
+                } catch (NumberFormatException nfe) {
+                        throw new CommandParseException(plugin.getMessage("command.NotANumber").set("arg", arg));
+                }
+                if (amount < 0.0) throw new CommandParseException(plugin.getMessage("command.NotANumber").set("arg", arg));
+                return new MoneyAmount(amount);
         }
 }

@@ -42,15 +42,15 @@ public class BankMerchant implements Merchant {
         }
 
         @Override
-        public boolean hasAmount(int amount) {
+        public boolean hasAmount(MoneyAmount amount) {
                 return true;
         }
 
         @Override
-        public void giveAmount(int amount) {}
+        public void giveAmount(MoneyAmount amount) {}
 
         @Override
-        public void takeAmount(int amount) {}
+        public void takeAmount(MoneyAmount amount) {}
 
         @Override
         public boolean hasItem(ItemStack lot) {

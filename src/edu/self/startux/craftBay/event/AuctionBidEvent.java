@@ -21,6 +21,7 @@ package edu.self.startux.craftBay.event;
 
 import edu.self.startux.craftBay.Auction;
 import edu.self.startux.craftBay.Merchant;
+import edu.self.startux.craftBay.MoneyAmount;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -32,9 +33,9 @@ import org.bukkit.event.HandlerList;
 public class AuctionBidEvent extends AuctionEvent {
         private static HandlerList handlers = new HandlerList();
         private Merchant bidder, oldWinner;
-        private int amount, oldPrice;
+        private MoneyAmount amount, oldPrice;
 
-        public AuctionBidEvent(Auction auction, Merchant bidder, int amount, Merchant oldWinner, int oldPrice) {
+        public AuctionBidEvent(Auction auction, Merchant bidder, MoneyAmount amount, Merchant oldWinner, MoneyAmount oldPrice) {
                 super(auction);
                 this.bidder = bidder;
                 this.amount = amount;
@@ -55,7 +56,7 @@ public class AuctionBidEvent extends AuctionEvent {
                 return bidder;
         }
 
-        public int getAmount() {
+        public MoneyAmount getAmount() {
                 return amount;
         }
 
@@ -63,7 +64,7 @@ public class AuctionBidEvent extends AuctionEvent {
                 return oldWinner;
         }
 
-        public int getOldPrice() {
+        public MoneyAmount getOldPrice() {
                 return oldPrice;
         }
 }

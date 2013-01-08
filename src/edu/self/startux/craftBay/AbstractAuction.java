@@ -30,7 +30,7 @@ public abstract class AbstractAuction implements Auction, Runnable {
 	private Merchant owner;
         private int auctionId;
 	private int taskid = -1;
-        private int fee;
+        private MoneyAmount fee;
         protected List<String> log = new LinkedList<String>();
 
         public AbstractAuction(CraftBayPlugin plugin, Merchant owner, Item item) {
@@ -74,12 +74,12 @@ public abstract class AbstractAuction implements Auction, Runnable {
         }
 
         @Override
-        public int getFee() {
+        public MoneyAmount getFee() {
                 return fee;
         }
 
         @Override
-        public void setFee(int fee) {
+        public void setFee(MoneyAmount fee) {
                 this.fee = fee;
         }
 

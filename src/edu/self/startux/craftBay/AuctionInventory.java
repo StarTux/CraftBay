@@ -45,13 +45,13 @@ public class AuctionInventory implements Listener {
                 return data.inventory;
         }
 
-        public int getMinbid(Player player) {
+        public MoneyAmount getMinbid(Player player) {
                 PlayerData data = playerData.get(player.getName());
-                if (data == null) return 0;
+                if (data == null) return new MoneyAmount(0.0);
                 return data.minbid;
         }
 
-        public void setPlayer(Player player, int minbid, Inventory inventory) {
+        public void setPlayer(Player player, MoneyAmount minbid, Inventory inventory) {
                 PlayerData data = playerData.get(player.getName());
                 if (data == null) {
                         data = new PlayerData(minbid, inventory);
@@ -62,7 +62,7 @@ public class AuctionInventory implements Listener {
                 }
         }
 
-        public void initPlayer(Player player, int minbid) {
+        public void initPlayer(Player player, MoneyAmount minbid) {
                 String title = plugin.getMessage("auction.gui.ChestTitle").toString();
                 if (title.length() > 32) title = title.substring(0, 32);
                 Inventory inventory = Bukkit.createInventory(player, 54, title); 
@@ -102,7 +102,7 @@ public class AuctionInventory implements Listener {
                 stack = stack.clone();
                 stack.setAmount(amount);
                 Item item = new RealItem(stack);
-                int minbid = getMinbid(player);
+                MoneyAmount minbid = getMinbid(player);
                 Auction auction = plugin.getAuctionHouse().createAuction(merchant, item, minbid, false);
                 if (auction == null) {
                         for (ItemStack drop : items) if (drop != null) player.getWorld().dropItem(player.getLocation(), drop);
@@ -114,23 +114,23 @@ public class AuctionInventory implements Listener {
 }
 
 class PlayerData {
-        public int minbid;
+        public MoneyAmount minbid;
         public Inventory inventory;
 
-        public PlayerData(int minbid, Inventory inventory) {
+        public PlayerData(MoneyAmount minbid, Inventory inventory) {
                 this.minbid = minbid;
                 this.inventory = inventory;
         }
 
         public PlayerData(Inventory inventory) {
-                this(0, inventory);
+                this(new MoneyAmount(0.0), inventory);
         }
 
-        public PlayerData(int minbid) {
+        public PlayerData(MoneyAmount minbid) {
                 this(minbid, null);
         }
 
         public PlayerData() {
-                this(0, null);
+                this(new MoneyAmount(0.0), null);
         }
 }

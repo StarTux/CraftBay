@@ -205,10 +205,10 @@ public class Message {
                 set(auction.getItem());
                 set("owner", auction.getOwner().getName());
                 if (auction.getWinner() != null) set("winner", auction.getWinner().getName());
-                set("minbid", new MoneyAmount(auction.getMinimalBid()));
-                set("maxbid", new MoneyAmount(auction.getMaxBid()));
-                set("price", new MoneyAmount(auction.getWinningBid()));
-                set("fee", new MoneyAmount(auction.getFee()));
+                set("minbid", auction.getMinimalBid());
+                set("maxbid", auction.getMaxBid());
+                set("price", auction.getWinningBid());
+                set("fee", auction.getFee());
                 set("state", auction.getState());
                 set("timeleft", new AuctionTime(auction.getTimeLeft()));
                 return this;

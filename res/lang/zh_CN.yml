@@ -62,10 +62,6 @@ command:
 #   auction variables where applicable, see auction.*
 #   arg - the erroneous argument, if applicable
 commands:
-  bid:
-    BidNegative: '<warn>需要高于那个数量!'
-  bankbid:
-    BidNegative: '<warn>需要高于那个数量!'
   listen:
     AlreadyListen: 你已在监听拍卖消息!
     AlreadyIgnore : 你已经忽略拍卖消息!
@@ -78,7 +74,6 @@ commands:
   start:
     HandEmpty: '<warn>你手中没有任何物品!'
     AmountTooSmall: '<warn>需要高于那个数量!'
-    PriceTooLow: '<warn>需要高于起始竞拍价格!'
     CreativeDenial: '<warn>你不能在创造模式中开始竞拍!'
     Success: '<dfl>你对 <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> 的拍卖将很快开始!'
   end:

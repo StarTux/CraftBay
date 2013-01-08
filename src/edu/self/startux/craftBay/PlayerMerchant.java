@@ -59,33 +59,36 @@ public class PlayerMerchant implements Merchant {
         }
 
         @Override
-        public boolean hasAmount(int amount) {
-                if (getPlugin().getEco().getBalance(playerName) < amount) {
+        public boolean hasAmount(MoneyAmount amount) {
+                if (amount.getDouble() < 0.0) {
+                        throw new IllegalArgumentException("given amount must be positive!");
+                }
+                if (!getPlugin().getEco().has(playerName, amount.getDouble())) {
                         return false;
                 }
                 return true;
         }
 
         @Override
-        public void giveAmount(int amount) {
-                if (amount < 0) {
-                        throw new IllegalArgumentException("give amount must be positive!");
+        public void giveAmount(MoneyAmount amount) {
+                if (amount.getDouble() < 0.0) {
+                        throw new IllegalArgumentException("given amount must be positive!");
                 }
                 double before = getPlugin().getEco().getBalance(playerName);
-                getPlugin().getEco().depositPlayer(playerName, amount);
+                getPlugin().getEco().depositPlayer(playerName, amount.getDouble());
                 double after = getPlugin().getEco().getBalance(playerName);
-                getPlugin().log(String.format("GIVE player='%s' amount=%d before=%f after=%f", playerName, amount, before, after));
+                getPlugin().log(String.format("GIVE player='%s' amount='%s' before='%f' after='%f'", playerName, amount, before, after));
         }
 
         @Override
-        public void takeAmount(int amount) {
-                if (amount < 0) {
+        public void takeAmount(MoneyAmount amount) {
+                if (amount.getDouble() < 0.0) {
                         throw new IllegalArgumentException("take amount must be positive!");
                 }
                 double before = getPlugin().getEco().getBalance(playerName);
-                getPlugin().getEco().withdrawPlayer(playerName, amount);
+                getPlugin().getEco().withdrawPlayer(playerName, amount.getDouble());
                 double after = getPlugin().getEco().getBalance(playerName);
-                getPlugin().log(String.format("TAKE player='%s' amount=%d before=%f after=%f", playerName, amount, before, after));
+                getPlugin().log(String.format("TAKE player='%s' amount='%s' before='%f' after='%f'", playerName, amount, before, after));
         }
 
         @Override
