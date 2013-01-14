@@ -35,6 +35,7 @@ import org.bukkit.inventory.meta.FireworkEffectMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 /**
  * Represent an actual item, in fact a bukkit ItemStack.
@@ -142,6 +143,13 @@ public class RealItem implements Item {
                         Color color = armor.getColor();
                         if (result.length() > 0) result.append(" ");
                         result.append(color.getRed()).append("r,").append(color.getGreen()).append("g,").append(color.getBlue()).append("b");
+                }
+                if (meta instanceof SkullMeta) {
+                        SkullMeta skull = (SkullMeta)meta;
+                        if (skull.hasOwner()) {
+                                if (result.length() > 0) result.append(" ");
+                                result.append("<").append(skull.getOwner()).append(">");
+                        }
                 }
                 {
                         Map<Enchantment, Integer> enchantments = meta.getEnchants();
