@@ -99,8 +99,16 @@ public class RealItem implements Item {
         @Override
         public String getEnchantments() {
                 StringBuffer result = new StringBuffer();
+                if (canBeDamaged() && stack.getDurability() > 0) {
+                        int durability = stack.getType().getMaxDurability() - stack.getDurability();
+                        durability = durability * 100 / stack.getType().getMaxDurability();
+                        if (durability < 0) durability = 0;
+                        if (durability > 100) durability = 100;
+                        result.append(durability).append("%");
+                }
                 ItemMeta meta = stack.getItemMeta();
                 if (meta.hasDisplayName()) {
+                        if (result.length() > 0) result.append(" ");
                         result.append("\"").append(meta.getDisplayName()).append("\"");
                 }
                 if (meta instanceof BookMeta) {
@@ -213,16 +221,7 @@ public class RealItem implements Item {
         }
 
         private boolean canBeDamaged() {
-                int id = stack.getType().getId();
-                if (between(id, 256, 259)) return true; // iron tools
-                if (id == 261) return true; // bow
-                if (between(id, 267, 279)) return true; // iron sword, wooden tools, stone tools, diamond tools
-                if (between(id, 283, 286)) return true; // gold tools
-                if (between(id, 298, 317)) return true; // armor
-                if (id == 346) return true; // fishing rod
-                if (id == 359) return true; // shears
-                if (id == 398) return true; // carrot on a stick
-                return false;
+                return stack.getType().getMaxDurability() > 0;
         }
 
         private boolean between(int pivot, int lower, int upper) {
