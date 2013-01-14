@@ -33,7 +33,7 @@ public interface Item extends ConfigurationSerializable {
         public String getDescription();
 
         public ItemAmount getAmount();
-        public String getEnchantments();
+        public String getItemInfo();
         public int getId();
         public int getDamage();
 

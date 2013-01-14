@@ -2,6 +2,7 @@
 
 * Display durability percentage in item information
 * Display owner of human head in item information
+* Change "enchantments" language variable to the more appropriate "iteminfo" (but still support legacy name)
 
 1.2.3
 

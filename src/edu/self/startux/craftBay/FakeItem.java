@@ -54,7 +54,7 @@ public class FakeItem implements Item {
         }
 
         @Override
-        public String getEnchantments() {
+        public String getItemInfo() {
                 return "";
         }
 

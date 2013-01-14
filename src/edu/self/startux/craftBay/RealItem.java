@@ -98,7 +98,7 @@ public class RealItem implements Item {
         }
 
         @Override
-        public String getEnchantments() {
+        public String getItemInfo() {
                 StringBuffer result = new StringBuffer();
                 if (canBeDamaged() && stack.getDurability() > 0) {
                         int durability = stack.getType().getMaxDurability() - stack.getDurability();

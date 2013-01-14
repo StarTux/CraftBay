@@ -95,7 +95,7 @@ commands:
 #   itemdesc - a description of the item (the name and whether it is enchanted ot not)
 #   amount - the item amount, user friendly
 #   totalamount - the item amount, bare number
-#   enchantments - the items' enchantments
+#   iteminfo, enchantments - the items' enchantments
 #   itemid - the item's id
 #   itemdamage - the item's damage value
 #   owner - the owner's name
@@ -127,7 +127,7 @@ auction:
   info:
     Header: '<h>拍卖信息'
     Owner: '<dfl>拍卖者: <hl>{owner}'
-    RealItem: '<dfl>物品: <hl>{totalamount}<dfl>x<hl>{item}<dfl> [<hl>{itemid}<dfl>:<hl>{itemdamage}<dfl>] <hl>{enchantments}<dfl>'
+    RealItem: '<dfl>物品: <hl>{totalamount}<dfl>x<hl>{item}<dfl> [<hl>{itemid}<dfl>:<hl>{itemdamage}<dfl>] <hl>{iteminfo}<dfl>'
     FakeItem: '<dfl>物品: <hl>{item}'
     Winner: '<dfl>获得者: <hl>{winner}<dfl> 的竞标价格为 <hl>{price}'
     NoWinner: '<dfl>最小竞标价格: <hl>{minbid}'

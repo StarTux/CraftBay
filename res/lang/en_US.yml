@@ -96,7 +96,7 @@ commands:
 #   itemdesc - a description of the item (the name and whether it is enchanted ot not)
 #   amount - the item amount, user friendly
 #   totalamount - the item amount, bare number
-#   enchantments - the items' enchantments
+#   iteminfo, enchantments - mixed item information
 #   itemid - the item's id
 #   itemdamage - the item's damage value
 #   owner - the owner's name
@@ -128,7 +128,7 @@ auction:
   info:
     Header: '<h>Auction Information'
     Owner: '<dfl>Auctioneer: <hl>{owner}'
-    RealItem: '<dfl>Item: <hl>{totalamount}<dfl>x<hl>{item}<dfl> [<hl>{itemid}<dfl>:<hl>{itemdamage}<dfl>] <hl>{enchantments}<dfl>'
+    RealItem: '<dfl>Item: <hl>{totalamount}<dfl>x<hl>{item}<dfl> [<hl>{itemid}<dfl>:<hl>{itemdamage}<dfl>] <hl>{iteminfo}<dfl>'
     FakeItem: '<dfl>Item: <hl>{item}'
     Winner: '<dfl>Winning: <hl>{winner}<dfl> for <hl>{price}'
     NoWinner: '<dfl>Minimal bid: <hl>{minbid}'
