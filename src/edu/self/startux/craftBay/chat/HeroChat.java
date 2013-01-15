@@ -67,6 +67,9 @@ public class HeroChat implements ChatPlugin {
         }
 
         @Override
+        public void disable() {}
+
+        @Override
         public void broadcast(List<String> lines) {
                 // The announce() message turned out unreliable based on our tests
                 for (Chatter chatter : channel.getMembers()) {

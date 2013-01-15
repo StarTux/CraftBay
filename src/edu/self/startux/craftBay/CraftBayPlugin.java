@@ -127,14 +127,14 @@ public class CraftBayPlugin extends JavaPlugin {
         }
 
         private void setupChat() {
+                if (chatPlugin != null) chatPlugin.disable();
                 do {
                         if (getConfig().getBoolean("herochat.enable")) {
                                 chatPlugin = new HeroChat(this);
                                 if (chatPlugin.enable(getConfig().getConfigurationSection("herochat"))) {
                                         break;
                                 }
-                        }
-                        if (getConfig().getBoolean("channelchat.enable")) {
+                        } else if (getConfig().getBoolean("channelchat.enable")) {
                                 chatPlugin = new ChannelChat(this);
                                 if (chatPlugin.enable(getConfig().getConfigurationSection("channelchat"))) {
                                         break;
@@ -142,6 +142,7 @@ public class CraftBayPlugin extends JavaPlugin {
                         }
                         // if all fails, fall back to bukkit chat
                         chatPlugin = new BukkitChat(this);
+                        chatPlugin.enable(getConfig().getConfigurationSection("defaultchat"));
                         log("Falling back to default chat");
                 } while (false);
         }

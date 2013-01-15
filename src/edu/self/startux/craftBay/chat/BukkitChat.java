@@ -21,15 +21,23 @@ package edu.self.startux.craftBay.chat;
 
 import edu.self.startux.craftBay.CraftBayPlugin;
 import edu.self.startux.craftBay.locale.Message;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 public class BukkitChat implements ChatPlugin {
-        private HashSet<String> ignoreList = new HashSet<String>();
-        CraftBayPlugin plugin;
+        private CraftBayPlugin plugin;
+        private boolean whitelisted;
+        private HashSet<String> playerList = new HashSet<String>();
+        private FileConfiguration conf = new YamlConfiguration(); 
+        private static final String CONFIG_FILE_PATH = "defaultchat.yml";
         
         public BukkitChat(CraftBayPlugin plugin) {
                 this.plugin = plugin;
@@ -37,7 +45,34 @@ public class BukkitChat implements ChatPlugin {
 
         @Override
         public boolean enable(ConfigurationSection section) {
+                whitelisted = section.getBoolean("whitelisted", false);
+                try {
+                        conf.load(new File(plugin.getDataFolder(), CONFIG_FILE_PATH));
+                } catch (FileNotFoundException fnfe) {
+                        // do nothing
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
+                if (whitelisted) {
+                        for (String name : conf.getStringList("whitelist")) playerList.add(name);
+                } else {
+                        for (String name : conf.getStringList("blacklist")) playerList.add(name);
+                }
                 return true;
+        }
+
+        @Override
+        public void disable() {
+                if (whitelisted) {
+                        conf.set("whitelist", new ArrayList<String>(playerList));
+                } else {
+                        conf.set("blacklist", new ArrayList<String>(playerList));
+                }
+                try {
+                        conf.save(new File(plugin.getDataFolder(), CONFIG_FILE_PATH));
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
         }
 
         @Override
@@ -53,10 +88,12 @@ public class BukkitChat implements ChatPlugin {
 
         @Override
         public boolean listen(Player player, boolean on) {
-                if (on) {
-                        ignoreList.remove(player.getName().toLowerCase());
+                if (whitelisted) {
+                        if (on) playerList.add(player.getName().toLowerCase());
+                        else playerList.remove(player.getName().toLowerCase());
                 } else {
-                        ignoreList.add(player.getName().toLowerCase());
+                        if (on) playerList.remove(player.getName().toLowerCase());
+                        else playerList.add(player.getName().toLowerCase());
                 }
                 return true;
         }
@@ -66,9 +103,8 @@ public class BukkitChat implements ChatPlugin {
                 if (!player.hasPermission("auction.bid")) {
                         return false;
                 }
-                if (ignoreList.contains(player.getName().toLowerCase())) {
-                        return false;
-                }
-                return true;
+                if (!whitelisted && !playerList.contains(player.getName().toLowerCase())) return true;
+                else if (whitelisted && playerList.contains(player.getName().toLowerCase())) return true;
+                return false;
         }
 }

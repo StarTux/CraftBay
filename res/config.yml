@@ -26,6 +26,10 @@ denycreative: true
 countdown: [10, 5, 3, 2, 1]
 # A list of worlds where CraftBay cannot be used
 blacklistworlds: []
+# DefaultChat configuration
+defaultchat:
+        # false means players listen by default, true means they don't and have to use /auc listen first
+        whitelisted: false
 # Herochat configuration
 herochat:
         enable: false

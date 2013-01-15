@@ -33,6 +33,12 @@ public interface ChatPlugin {
         public boolean enable(ConfigurationSection section);
 
         /**
+         * Destruction routine. This is where data should be
+         * saved, if any.
+         */
+        public void disable();
+
+        /**
          * Broadcast a list of Strings to everyone listening.
          * @param lines the list of lines
          */

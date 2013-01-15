@@ -58,6 +58,9 @@ public class ChannelChat implements ChatPlugin {
         }
 
         @Override
+        public void disable() {}
+
+        @Override
         public void broadcast(List<String> lines) {
                 for (String line : lines) {
                         channel.sendMessage(line);
