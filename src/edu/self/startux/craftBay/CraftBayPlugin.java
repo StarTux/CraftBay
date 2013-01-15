@@ -92,6 +92,7 @@ public class CraftBayPlugin extends JavaPlugin {
                 scheduler.disable();
                 logger = null;
                 economy = null;
+                chatPlugin.disable();
                 chatPlugin = null;
                 announcer = null;
                 house = null;
