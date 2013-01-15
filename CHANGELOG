@@ -3,6 +3,8 @@
 * Display durability percentage in item information
 * Display owner of human head in item information
 * Change "enchantments" language variable to the more appropriate "iteminfo" (but still support legacy name)
+* DefaultChat can have players ignore or listen by default (whitelisted/blacklisted in the config.yml)
+* DefaultChat remembers who is listening or not
 
 1.2.3
 
