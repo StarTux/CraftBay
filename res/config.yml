@@ -28,8 +28,8 @@ countdown: [10, 5, 3, 2, 1]
 blacklistworlds: []
 # DefaultChat configuration
 defaultchat:
-        # false means players listen by default, true means they don't and have to use /auc listen first
-        whitelisted: false
+        # Are players listening by default?
+        autojoin: true
 # Herochat configuration
 herochat:
         enable: false

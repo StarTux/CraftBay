@@ -45,7 +45,7 @@ public class BukkitChat implements ChatPlugin {
 
         @Override
         public boolean enable(ConfigurationSection section) {
-                whitelisted = section.getBoolean("whitelisted", false);
+                whitelisted = !section.getBoolean("autojoin", true);
                 try {
                         conf.load(new File(plugin.getDataFolder(), CONFIG_FILE_PATH));
                 } catch (FileNotFoundException fnfe) {
