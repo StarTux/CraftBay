@@ -47,22 +47,22 @@ public class HeroChat implements ChatPlugin {
 		String channelName = section.getString("channel");
 		Plugin p = plugin.getServer().getPluginManager().getPlugin("Herochat");
                 if (p == null) {
-                        plugin.log("Herochat could not be found!", Level.WARNING);
+                        plugin.getLogger().warning("Herochat could not be found!");
                         return false;
                 }
                 if (p instanceof Herochat) {
                         herochat = (Herochat)p;
                 } else {
-                        plugin.log("Plugin `Herochat' is not what it is supposed to be!", Level.WARNING);
+                        plugin.getLogger().warning("Plugin `Herochat' is not what it is supposed to be!");
                         return false;
                 }
                 channel = herochat.getChannelManager().getChannel(channelName);
                 if (channel == null) {
-                        plugin.log("Channel `" + channelName + "' does not exist!", Level.WARNING);
+                        plugin.getLogger().warning("Channel `" + channelName + "' does not exist!");
                         return false;
                 }
                 password = section.getString("password");
-                plugin.log("Herochat enabled. Using channel `" + channel.getName() + "'");
+                plugin.getLogger().info("Herochat enabled. Using channel `" + channel.getName() + "'");
                 return true;
         }
 

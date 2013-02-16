@@ -77,7 +77,7 @@ public class PlayerMerchant implements Merchant {
                 double before = getPlugin().getEco().getBalance(playerName);
                 getPlugin().getEco().depositPlayer(playerName, amount.getDouble());
                 double after = getPlugin().getEco().getBalance(playerName);
-                getPlugin().log(String.format("GIVE player='%s' amount='%s' before='%f' after='%f'", playerName, amount, before, after));
+                getPlugin().getLogger().info(String.format("GIVE player='%s' amount='%s' before='%f' after='%f'", playerName, amount, before, after));
         }
 
         @Override
@@ -88,7 +88,7 @@ public class PlayerMerchant implements Merchant {
                 double before = getPlugin().getEco().getBalance(playerName);
                 getPlugin().getEco().withdrawPlayer(playerName, amount.getDouble());
                 double after = getPlugin().getEco().getBalance(playerName);
-                getPlugin().log(String.format("TAKE player='%s' amount='%s' before='%f' after='%f'", playerName, amount, before, after));
+                getPlugin().getLogger().info(String.format("TAKE player='%s' amount='%s' before='%f' after='%f'", playerName, amount, before, after));
         }
 
         @Override

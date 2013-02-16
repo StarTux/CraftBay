@@ -24,7 +24,6 @@ import com.feildmaster.channelchat.channel.ChannelManager;
 import edu.self.startux.craftBay.CraftBayPlugin;
 import edu.self.startux.craftBay.locale.Message;
 import java.util.List;
-import java.util.logging.Level;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -45,15 +44,15 @@ public class ChannelChat implements ChatPlugin {
                 String channelName = section.getString("channel");
 		Plugin p = plugin.getServer().getPluginManager().getPlugin("ChannelChat");
                 if (p == null) {
-                        plugin.log("ChannelChat system could not be loaded!", Level.WARNING);
+                        plugin.getLogger().warning("ChannelChat system could not be loaded!");
                         return false;
 		}
                 channel = ChannelManager.getManager().getChannel(channelName);
                 if (channel == null) {
-                        plugin.log("Channel `" + channelName + "' does not exist!", Level.WARNING);
+                        plugin.getLogger().warning("Channel `" + channelName + "' does not exist!");
                         return false;
                 }
-                plugin.log("ChannelChat enabled. Using channel `" + channel.getName() + "'");
+                plugin.getLogger().info("ChannelChat enabled. Using channel `" + channel.getName() + "'");
                 return true;
         }
 

@@ -32,8 +32,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -44,7 +42,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CraftBayPlugin extends JavaPlugin {
-	private Logger logger;
 	private String tag = "[CraftBay]";
 	private Economy economy;
         private ChatPlugin chatPlugin;
@@ -64,14 +61,13 @@ public class CraftBayPlugin extends JavaPlugin {
 
 	public void onEnable() {
                 instance = this;
-                logger = Logger.getLogger("edu.self.startux.craftBay");
                 Language.writeLanguageFiles();
                 setupSerializations();
                 executor = new AuctionCommand(this);
 		getCommand("auction").setExecutor(executor);
 		getCommand("bid").setExecutor(executor);
 		if (!setupEconomy()) {
-			log("Failed to setup economy. CraftBay is not enabled!", Level.SEVERE);
+			getLogger().severe("Failed to setup economy. CraftBay is not enabled!");
 			setEnabled(false);
 			return;
 		}
@@ -90,7 +86,6 @@ public class CraftBayPlugin extends JavaPlugin {
 
 	public void onDisable() {
                 scheduler.disable();
-                logger = null;
                 economy = null;
                 chatPlugin.disable();
                 chatPlugin = null;
@@ -144,7 +139,7 @@ public class CraftBayPlugin extends JavaPlugin {
                         // if all fails, fall back to bukkit chat
                         chatPlugin = new BukkitChat(this);
                         chatPlugin.enable(getConfig().getConfigurationSection("defaultchat"));
-                        log("Falling back to default chat");
+                        getLogger().info("Falling back to default chat");
                 } while (false);
         }
 
@@ -200,14 +195,6 @@ public class CraftBayPlugin extends JavaPlugin {
 
         public void msg(CommandSender sender, Message msg) {
                 msg(sender, msg.compile());
-        }
-
-        public void log(String msg, Level level) {
-                logger.log(level, "[CraftBay] " + msg);
-        }
-
-        public void log(String msg) {
-                log(msg, Level.INFO);
         }
 
         public String getTag() {

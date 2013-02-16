@@ -55,13 +55,13 @@ public class ItemDelivery implements ConfigurationSerializable {
                         if (player.getPlayer() != null) {
                                 if (!player.getPlayer().hasPermission("auction.receive")) {
                                         if (attempt == 1) {
-                                                CraftBayPlugin.getInstance().log(String.format("DELIVER FAIL item='%s' recipient='%s' location='%s' reason='No Permission'", item.toString(), recipient.getName(), getLocation()));
+                                                CraftBayPlugin.getInstance().getLogger().info(String.format("DELIVER FAIL item='%s' recipient='%s' location='%s' reason='No Permission'", item.toString(), recipient.getName(), getLocation()));
                                         }
                                         return false;
                                 }
                                 if (CraftBayPlugin.getInstance().getBlacklistWorlds().contains(player.getPlayer().getWorld().getName())) {
                                         if (attempt == 1) {
-                                                CraftBayPlugin.getInstance().log(String.format("DELIVER FAIL item='%s' recipient='%s' location='%s' reason='World Blacklisted'", item.toString(), recipient.getName(), getLocation()));
+                                                CraftBayPlugin.getInstance().getLogger().info(String.format("DELIVER FAIL item='%s' recipient='%s' location='%s' reason='World Blacklisted'", item.toString(), recipient.getName(), getLocation()));
                                         }
                                         return false;
                                 }
@@ -73,7 +73,7 @@ public class ItemDelivery implements ConfigurationSerializable {
                         if (auction != null) {
                                 auction.log(msg);
                         } else {
-                                CraftBayPlugin.getInstance().log(msg);
+                                CraftBayPlugin.getInstance().getLogger().info(msg);
                         }
                 }
                 return result;

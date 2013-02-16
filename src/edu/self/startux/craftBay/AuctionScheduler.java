@@ -27,7 +27,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.logging.Level;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -89,7 +88,7 @@ public class AuctionScheduler implements Runnable {
                 if (taskid != -1) return;
                 taskid = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, this, 0l);
                 if (taskid == -1) {
-                        plugin.log("AuctionScheduler failed scheduleSyncDelayedTask()", Level.SEVERE);
+                        plugin.getLogger().severe("AuctionScheduler failed scheduleSyncDelayedTask()");
                 }
         }
 
@@ -178,7 +177,7 @@ public class AuctionScheduler implements Runnable {
         }
 
         private void save() {
-                plugin.log("saving");
+                plugin.getLogger().info("saving");
                 conf.set("current", current);
                 conf.set("queue", new ArrayList<Object>(queue));
                 conf.set("history", new ArrayList<Object>(history));

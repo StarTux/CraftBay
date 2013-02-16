@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -64,7 +63,7 @@ public class Language {
                         if (line == null) break;
                         InputStream inp = plugin.getResource("lang/" + line);
                         if (inp == null) {
-                                plugin.log("Unable to locate resource: \"lang/" + line + "\"", Level.SEVERE);
+                                plugin.getLogger().severe("Unable to locate resource: \"lang/" + line + "\"");
                                 continue;
                         }
                         File file = plugin.getDataFolder();
@@ -82,7 +81,7 @@ public class Language {
                                 }
                                 out.close();
                         } catch (IOException ioe) {
-                                plugin.log("Error while trying to write \"" + file.getPath() + "\"");
+                                plugin.getLogger().warning("Error while trying to write \"" + file.getPath() + "\"");
                                 continue;
                         }
                         try {
@@ -97,7 +96,7 @@ public class Language {
                 String path = "lang/" + name + ".yml";
                 InputStream inp = plugin.getResource(path);
                 if (inp == null) {
-                        plugin.log("Language file not found: \"" + name + "\"", Level.WARNING);
+                        plugin.getLogger().warning("Language file not found: \"" + name + "\"");
                         return;
                 }
                 loadLanguageStream(inp);
@@ -110,7 +109,7 @@ public class Language {
                 try {
                         loadLanguageStream(new FileInputStream(file));
                 } catch (FileNotFoundException fnfe) {
-                        plugin.log("Unable to locate locale file: \"" + file.getPath() + "\"", Level.WARNING);
+                        plugin.getLogger().warning("Unable to locate locale file: \"" + file.getPath() + "\"");
                         return;
                 }
         }

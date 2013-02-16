@@ -86,7 +86,7 @@ public abstract class AbstractAuction implements Auction, Runnable {
         @Override
         public void log(String msg) {
                 log.add(msg);
-                plugin.log("[" + auctionId + "] " + msg);
+                plugin.getLogger().info("[" + auctionId + "] " + msg);
         }
 
         @Override
@@ -99,7 +99,7 @@ public abstract class AbstractAuction implements Auction, Runnable {
                         if (taskid == -1) {
                                 taskid = getPlugin().getServer().getScheduler().scheduleSyncRepeatingTask(getPlugin(), this, 0l, 20l);
                                 if (taskid == -1) {
-                                        getPlugin().log("TimedAuction failed scheduleSyncRepeatingTask()", Level.SEVERE);
+                                        getPlugin().getLogger().severe("TimedAuction failed scheduleSyncRepeatingTask()");
                                 }
                         }
                 } else {

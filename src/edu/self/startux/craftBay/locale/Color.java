@@ -21,7 +21,6 @@ package edu.self.startux.craftBay.locale;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import edu.self.startux.craftBay.CraftBayPlugin;
@@ -71,7 +70,7 @@ public class Color {
                 for (String key : section.getKeys(false)) {
                         Color color = getByName(key);
                         if (color == null) {
-                                CraftBayPlugin.getInstance().log("Unknown color key: " + key, Level.WARNING);
+                                CraftBayPlugin.getInstance().getLogger().warning("Unknown color key: " + key);
                                 continue;
                         }
                         String value = section.getString(key);
@@ -82,7 +81,7 @@ public class Color {
                                         color.setColor(getChatColorByName(value));
                                 }
                         } catch (Exception e) {
-                                CraftBayPlugin.getInstance().log("Unknown color value: " + value, Level.WARNING);
+                                CraftBayPlugin.getInstance().getLogger().warning("Unknown color value: " + value);
                                 continue;
                         }
                 }
