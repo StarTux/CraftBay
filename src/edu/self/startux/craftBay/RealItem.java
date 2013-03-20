@@ -21,9 +21,11 @@ package edu.self.startux.craftBay;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import net.milkbowl.vault.item.ItemInfo;
 import net.milkbowl.vault.item.Items;
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
@@ -167,6 +169,16 @@ public class RealItem implements Item {
                                 Map.Entry<Enchantment, Integer> enchantment = iter.next();
                                 if (result.length() > 0) result.append(" ");
                                 result.append(getEnchantmentName(enchantment.getKey())).append(" ").append(roman(enchantment.getValue()));
+                        }
+                }
+                if (meta.hasLore()) {
+                        List<String> lore = meta.getLore();
+                        if (lore.size() > 0) {
+                                if (result.length() > 0) result.append(" ");
+                                result.append("\"").append(ChatColor.stripColor(lore.get(0))).append("\"");
+                        }
+                        for (int i = 1; i < lore.size(); ++i) {
+                                result.append(" - ").append("\"").append(ChatColor.stripColor(lore.get(i))).append("\"");
                         }
                 }
                 return result.toString();
