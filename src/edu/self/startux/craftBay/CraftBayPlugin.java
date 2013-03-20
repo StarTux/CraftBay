@@ -85,9 +85,9 @@ public class CraftBayPlugin extends JavaPlugin {
 	}
 
 	public void onDisable() {
-                scheduler.disable();
+                if (scheduler != null) scheduler.disable();
                 economy = null;
-                chatPlugin.disable();
+                if (chatPlugin != null) chatPlugin.disable();
                 chatPlugin = null;
                 announcer = null;
                 house = null;
