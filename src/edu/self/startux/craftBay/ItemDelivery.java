@@ -72,11 +72,20 @@ public class ItemDelivery implements ConfigurationSerializable {
                         String msg = String.format("DELIVER item='%s' recipient='%s' location='%s'", item.toString(), recipient.getName(), getLocation());
                         if (auction != null) {
                                 auction.log(msg);
-                        } else {
-                                CraftBayPlugin.getInstance().getLogger().info(msg);
                         }
+                        CraftBayPlugin.getInstance().getLogger().info(msg);
+                } else {
+                        String msg = String.format("DELIVER FAIL item='%s' recipient='%s' reason='Player offline'", item.toString(), recipient.getName());
+                        if (auction != null) {
+                                auction.log(msg);
+                        }
+                        if (attempt == 1) CraftBayPlugin.getInstance().getLogger().info(msg);
                 }
                 return result;
+        }
+
+        public Item getItem() {
+                return item;
         }
 
         public Merchant getRecipient() {

@@ -22,11 +22,12 @@ package edu.self.startux.craftBay;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -170,9 +171,17 @@ public class AuctionScheduler implements Runnable {
         }
 
         public void checkDeliveries() {
+                long currentDate = System.currentTimeMillis();
                 for (Iterator<ItemDelivery> it = deliveries.iterator(); it.hasNext();) {
                         ItemDelivery delivery = it.next();
-                        if (delivery.deliver()) it.remove();
+                        if (delivery.deliver()) {
+                                it.remove();
+                        } else {
+                                if (TimeUnit.MILLISECONDS.toDays(Math.max(0, currentDate - delivery.getCreationDate().getTime())) > plugin.getConfig().getLong("itemexpiry")) {
+                                        plugin.getLogger().info(String.format("DROP recipient='%s' item='%s' created='%s'", delivery.getRecipient().getName(), delivery.getItem().toString(), delivery.getCreationDate().toString()));
+                                        it.remove();
+                                }
+                        }
                 }
         }
 
