@@ -85,12 +85,16 @@ public class AuctionScheduler implements Runnable {
                 return queue.remove(auction);
         }
 
-        public void soon() {
+        public void soon(long delay) {
                 if (taskid != -1) return;
-                taskid = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, this, 0l);
+                taskid = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, this, delay);
                 if (taskid == -1) {
                         plugin.getLogger().severe("AuctionScheduler failed scheduleSyncDelayedTask()");
                 }
+        }
+
+        public void soon() {
+                soon(0l);
         }
 
         @Override
@@ -124,16 +128,21 @@ public class AuctionScheduler implements Runnable {
                                 current.start();
                                 dirty = true;
                         }
-                }
-                while (current == null && !queue.isEmpty()) {
-                        Auction next = queue.removeLast();
-                        if (next.getState() == AuctionState.CANCELED) {
-                                historyAuction(next);
-                        } else {
-                                current = next;
-                                current.start();
+                        // current may have changed
+                        if (current == null) {
+                                soon(plugin.getConfig().getLong("auctionpause") * 20l);
                         }
-                        dirty = true;
+                } else {
+                        while (current == null && !queue.isEmpty()) {
+                                Auction next = queue.removeLast();
+                                if (next.getState() == AuctionState.CANCELED) {
+                                        historyAuction(next);
+                                } else {
+                                        current = next;
+                                        current.start();
+                                }
+                                dirty = true;
+                        }
                 }
                 if (dirty) {
                         save();

@@ -20,6 +20,8 @@ auctionfee: 0
 auctiontax: 0
 # The time a player has to wait between starting two auctions
 auctioneercooldown: 30
+# The pause between two consecutive auctions in seconds
+auctionpause: 5
 # Prevent players from starting auctions while in creative mode
 denycreative: true
 # The final seconds at which the countdown is broadcast in chat
