@@ -1,3 +1,9 @@
+1.2.5
+
+* Display lore in item info
+* Drop item deliveries after an expiry period. Default is 30 days.
+* Add a delay between auctions (config auctionpause)
+
 1.2.4
 
 * Display durability percentage in item information
