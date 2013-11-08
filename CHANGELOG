@@ -2,6 +2,7 @@
 
 * Make item description more informative
 * Add a configurable minimum auction time
+* Reduce console log output via "debug" configuration option
 
 1.2.6
 
