@@ -1,5 +1,7 @@
 # The initial duration of any auction
 auctiontime: 600
+# How much can people shorten their auctions (prevents exploits)
+minauctiontime: 60
 # The delay after which an auction reminder is broadcast
 reminderinterval: 120
 # The minimum delay between two messages

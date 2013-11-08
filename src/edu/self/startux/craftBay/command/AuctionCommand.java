@@ -21,6 +21,7 @@ package edu.self.startux.craftBay.command;
 
 import edu.self.startux.craftBay.Auction;
 import edu.self.startux.craftBay.AuctionState;
+import edu.self.startux.craftBay.AuctionTime;
 import edu.self.startux.craftBay.BankMerchant;
 import edu.self.startux.craftBay.CraftBayPlugin;
 import edu.self.startux.craftBay.FakeItem;
@@ -97,9 +98,14 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
                                 return;
                         }
                 }
-                if (delay == null) delay = 0;
+                int min = plugin.getConfig().getInt("minauctiontime");
+                if (delay == null) delay = min;
                 if (delay < 0) {
                         plugin.warn(sender, plugin.getMessage("commands.end.DelayNegative").set(auction, sender).set("arg", delay));
+                        return;
+                }
+                if (delay < min) {
+                        plugin.warn(sender, plugin.getMessage("commands.end.DelayTooShort").set(auction, sender).set("arg", delay).set("min", new AuctionTime(min)));
                         return;
                 }
                 if (delay > auction.getTimeLeft()) {

@@ -80,7 +80,8 @@ commands:
     Success: '<dfl>Dein <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> wird bald versteigert werden!'
   end:
     NotOwner: '<warn>Das ist nicht deine Auktion!'
-    DelayTooLong: '<warn>Du kannst lediglich deine eigenen Auktionen verkürzen!'
+    DelayTooLong: '<warn>Du kannst die Auktion nicht verlängern!'
+    DelayTooShort: '<warn>Restzeit muss {min} ode mehr sein!'
     DelayNegative: '<warn>Positive Frist erwartet!'
   cancel:
     NotOwner: '<warn>Das ist nicht deine Auktion!'

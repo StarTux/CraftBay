@@ -80,6 +80,7 @@ commands:
   end:
     NotOwner: '<warn>You are not the owner of this auction!'
     DelayTooLong: '<warn>You can only shorten your auction!'
+    DelayTooShort: '<warn>The delay must be at least {min}!'
     DelayNegative: '<warn>Positive delay expected!'
   cancel:
     NotOwner: '<warn>You are not the owner of this auction!'
