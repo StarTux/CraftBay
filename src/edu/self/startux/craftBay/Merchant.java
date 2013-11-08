@@ -50,14 +50,16 @@ public interface Merchant extends ConfigurationSerializable {
         /**
          * Add some money to this merchant's account.
          * @param amount the amount
+         * @return transaction success
          */
-        public void giveAmount(MoneyAmount amount);
+        public boolean giveAmount(MoneyAmount amount);
 
         /**
          * Debit this merchant's account.
          * @param amount the amount
+         * @return transaction success
          */
-        public void takeAmount(MoneyAmount amount);
+        public boolean takeAmount(MoneyAmount amount);
 
         /**
          * Check this merchant's inventory for availabilty of an

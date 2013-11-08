@@ -70,29 +70,31 @@ public class PlayerMerchant implements Merchant {
         }
 
         @Override
-        public void giveAmount(MoneyAmount amount) {
+        public boolean giveAmount(MoneyAmount amount) {
                 if (amount.getDouble() < 0.0) {
                         throw new IllegalArgumentException("given amount must be positive!");
                 }
                 MoneyAmount before = new MoneyAmount(getPlugin().getEco().getBalance(playerName));
-                getPlugin().getEco().depositPlayer(playerName, amount.getDouble());
+                boolean success = getPlugin().getEco().depositPlayer(playerName, amount.getDouble()).transactionSuccess();
                 MoneyAmount after = new MoneyAmount(getPlugin().getEco().getBalance(playerName));
                 if (getPlugin().getDebugMode()) {
-                        getPlugin().getLogger().info(String.format("GIVE player='%s' amount='%s' before='%s' after='%s'", playerName, amount, before, after));
+                        getPlugin().getLogger().info(String.format("GIVE player='%s' amount='%s' success='%b' before='%s' after='%s'", playerName, amount, success, before, after));
                 }
+                return success;
         }
 
         @Override
-        public void takeAmount(MoneyAmount amount) {
+        public boolean takeAmount(MoneyAmount amount) {
                 if (amount.getDouble() < 0.0) {
                         throw new IllegalArgumentException("take amount must be positive!");
                 }
                 MoneyAmount before = new MoneyAmount(getPlugin().getEco().getBalance(playerName));
-                getPlugin().getEco().withdrawPlayer(playerName, amount.getDouble());
+                boolean success = getPlugin().getEco().withdrawPlayer(playerName, amount.getDouble()).transactionSuccess();
                 MoneyAmount after = new MoneyAmount(getPlugin().getEco().getBalance(playerName));
                 if (getPlugin().getDebugMode()) {
-                        getPlugin().getLogger().info(String.format("TAKE player='%s' amount='%s' before='%s' after='%s'", playerName, amount, before, after));
+                        getPlugin().getLogger().info(String.format("TAKE player='%s' amount='%s' success='%b' before='%s' after='%s'", playerName, amount, success, before, after));
                 }
+                return success;
         }
 
         @Override

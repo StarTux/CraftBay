@@ -97,7 +97,10 @@ public class AuctionHouse implements Listener {
                                 owner.warn(plugin.getMessage("auction.create.FeeTooHigh").set(owner).set("fee", feetax));
                                 return null;
                         }
-                        owner.takeAmount(feetax);
+                        if (!owner.takeAmount(feetax)) {
+                                owner.warn(plugin.getMessage("auction.create.FeeTooHigh").set(owner).set("fee", feetax));
+                                return null;
+                        }
                         owner.msg(plugin.getMessage("auction.create.FeeDebited").set(owner).set("fee", feetax));
                 }
                 // take
@@ -144,8 +147,11 @@ public class AuctionHouse implements Listener {
                         plugin.getServer().getPluginManager().callEvent(event);
                         ItemDelivery.schedule(auction.getOwner(), auction.getItem(), auction);
                 } else {
+                        if (!auction.getWinner().takeAmount(auction.getWinningBid())) {
+                                event.setPaymentError(true);
+                                ItemDelivery.schedule(auction.getOwner(), auction.getItem(), auction);
+                        }
                         plugin.getServer().getPluginManager().callEvent(event);
-                        auction.getWinner().takeAmount(auction.getWinningBid());
                         auction.getOwner().giveAmount(auction.getWinningBid());
                         ItemDelivery.schedule(auction.getWinner(), auction.getItem(), auction);
                 }

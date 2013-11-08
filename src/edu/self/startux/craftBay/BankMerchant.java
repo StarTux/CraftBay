@@ -47,10 +47,14 @@ public class BankMerchant implements Merchant {
         }
 
         @Override
-        public void giveAmount(MoneyAmount amount) {}
+        public boolean giveAmount(MoneyAmount amount) {
+                return true;
+        }
 
         @Override
-        public void takeAmount(MoneyAmount amount) {}
+        public boolean takeAmount(MoneyAmount amount) {
+                return true;
+        }
 
         @Override
         public boolean hasItem(ItemStack lot) {
