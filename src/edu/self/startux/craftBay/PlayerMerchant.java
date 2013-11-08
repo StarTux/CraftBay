@@ -74,10 +74,12 @@ public class PlayerMerchant implements Merchant {
                 if (amount.getDouble() < 0.0) {
                         throw new IllegalArgumentException("given amount must be positive!");
                 }
-                double before = getPlugin().getEco().getBalance(playerName);
+                MoneyAmount before = new MoneyAmount(getPlugin().getEco().getBalance(playerName));
                 getPlugin().getEco().depositPlayer(playerName, amount.getDouble());
-                double after = getPlugin().getEco().getBalance(playerName);
-                getPlugin().getLogger().info(String.format("GIVE player='%s' amount='%s' before='%f' after='%f'", playerName, amount, before, after));
+                MoneyAmount after = new MoneyAmount(getPlugin().getEco().getBalance(playerName));
+                if (getPlugin().getDebugMode()) {
+                        getPlugin().getLogger().info(String.format("GIVE player='%s' amount='%s' before='%s' after='%s'", playerName, amount, before, after));
+                }
         }
 
         @Override
@@ -85,10 +87,12 @@ public class PlayerMerchant implements Merchant {
                 if (amount.getDouble() < 0.0) {
                         throw new IllegalArgumentException("take amount must be positive!");
                 }
-                double before = getPlugin().getEco().getBalance(playerName);
+                MoneyAmount before = new MoneyAmount(getPlugin().getEco().getBalance(playerName));
                 getPlugin().getEco().withdrawPlayer(playerName, amount.getDouble());
-                double after = getPlugin().getEco().getBalance(playerName);
-                getPlugin().getLogger().info(String.format("TAKE player='%s' amount='%s' before='%f' after='%f'", playerName, amount, before, after));
+                MoneyAmount after = new MoneyAmount(getPlugin().getEco().getBalance(playerName));
+                if (getPlugin().getDebugMode()) {
+                        getPlugin().getLogger().info(String.format("TAKE player='%s' amount='%s' before='%s' after='%s'", playerName, amount, before, after));
+                }
         }
 
         @Override

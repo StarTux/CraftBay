@@ -195,7 +195,7 @@ public class AuctionScheduler implements Runnable {
         }
 
         private void save() {
-                plugin.getLogger().info("saving");
+                if (plugin.getDebugMode()) plugin.getLogger().info("saving");
                 conf.set("current", current);
                 conf.set("queue", new ArrayList<Object>(queue));
                 conf.set("history", new ArrayList<Object>(history));

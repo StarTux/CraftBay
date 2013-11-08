@@ -32,6 +32,8 @@ countdown: [10, 5, 3, 2, 1]
 blacklistworlds: []
 # Expiration time of stored items in days
 itemexpiry: 30
+# Verbose logging to console
+debug: false
 # DefaultChat configuration
 defaultchat:
         # Are players listening by default?

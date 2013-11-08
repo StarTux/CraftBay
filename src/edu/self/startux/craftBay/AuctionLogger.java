@@ -42,6 +42,7 @@ public class AuctionLogger implements Listener {
 
         @EventHandler(priority = EventPriority.LOWEST)
         public void onAuctionCreate(AuctionCreateEvent event) {
+                if (!plugin.getDebugMode()) return;
                 Auction auction = event.getAuction();
                 auction.log(String.format("CREATE owner='%s' item='%s' minbid='%s' fee='%s'", auction.getOwner().getName(), auction.getItem().toString(), auction.getMinimalBid(), auction.getFee()));
         }

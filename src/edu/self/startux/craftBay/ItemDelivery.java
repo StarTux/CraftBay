@@ -50,17 +50,18 @@ public class ItemDelivery implements ConfigurationSerializable {
 
         public boolean deliver() {
                 attempt++;
+                final boolean debugMode = CraftBayPlugin.getInstance().getDebugMode();
                 if (recipient instanceof PlayerMerchant) {
                         PlayerMerchant player = (PlayerMerchant)recipient;
                         if (player.getPlayer() != null) {
                                 if (!player.getPlayer().hasPermission("auction.receive")) {
-                                        if (attempt == 1) {
+                                        if (debugMode && attempt == 1) {
                                                 CraftBayPlugin.getInstance().getLogger().info(String.format("DELIVER FAIL item='%s' recipient='%s' location='%s' reason='No Permission'", item.toString(), recipient.getName(), getLocation()));
                                         }
                                         return false;
                                 }
                                 if (CraftBayPlugin.getInstance().getBlacklistWorlds().contains(player.getPlayer().getWorld().getName())) {
-                                        if (attempt == 1) {
+                                        if (debugMode && attempt == 1) {
                                                 CraftBayPlugin.getInstance().getLogger().info(String.format("DELIVER FAIL item='%s' recipient='%s' location='%s' reason='World Blacklisted'", item.toString(), recipient.getName(), getLocation()));
                                         }
                                         return false;
@@ -72,14 +73,15 @@ public class ItemDelivery implements ConfigurationSerializable {
                         String msg = String.format("DELIVER item='%s' recipient='%s' location='%s'", item.toString(), recipient.getName(), getLocation());
                         if (auction != null) {
                                 auction.log(msg);
+                        } else {
+                                CraftBayPlugin.getInstance().getLogger().info(msg);
                         }
-                        CraftBayPlugin.getInstance().getLogger().info(msg);
                 } else {
                         String msg = String.format("DELIVER FAIL item='%s' recipient='%s' reason='Player offline'", item.toString(), recipient.getName());
                         if (auction != null) {
-                                if (attempt == 1) auction.log(msg);
+                                if (debugMode && attempt == 1) auction.log(msg);
                         } else {
-                                if (attempt == 1) CraftBayPlugin.getInstance().getLogger().info(msg);
+                                if (debugMode && attempt == 1) CraftBayPlugin.getInstance().getLogger().info(msg);
                         }
                 }
                 return result;

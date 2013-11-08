@@ -54,6 +54,7 @@ public class CraftBayPlugin extends JavaPlugin {
         private AuctionInventory inventory;
         private List<String> blacklistWorlds = new ArrayList<String>();
         private static CraftBayPlugin instance;
+        private boolean debugMode = false;
         
         public static CraftBayPlugin getInstance() {
                 return instance;
@@ -118,6 +119,7 @@ public class CraftBayPlugin extends JavaPlugin {
                 language = new Language(this, getConfig().getString("lang"));
                 tag = language.getMessage("Tag").toString();
                 Color.configure(getConfig().getConfigurationSection("colors"));
+                debugMode = getConfig().getBoolean("debug");
                 announcer.reloadConfig();
                 setupChat();
         }
@@ -199,6 +201,10 @@ public class CraftBayPlugin extends JavaPlugin {
 
         public String getTag() {
                 return tag;
+        }
+
+        public boolean getDebugMode() {
+                return debugMode;
         }
 
         public void broadcast(Message msg) {
