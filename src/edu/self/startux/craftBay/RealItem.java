@@ -91,6 +91,42 @@ public class RealItem implements Item {
                         sb.append(" ");
                 }
                 sb.append(getName());
+
+                // Append information Vault doesn't give us.
+                Map<Enchantment, Integer> enchantments = stack.getEnchantments();
+                if (enchantments == null || enchantments.isEmpty()) {
+                        ItemMeta meta = stack.getItemMeta();
+                        if (meta instanceof EnchantmentStorageMeta) {
+                                enchantments = ((EnchantmentStorageMeta)meta).getStoredEnchants();
+                        }
+                        if (meta instanceof SkullMeta) {
+                                SkullMeta skull = (SkullMeta)meta;
+                                if (skull.hasOwner()) {
+                                        sb.append(" <").append(skull.getOwner()).append(">");
+                                }
+                        }
+                }
+                if (enchantments != null && !enchantments.isEmpty()) {
+                        sb.append(" (");
+                        int i = 0;
+                        for (Enchantment enchantment : enchantments.keySet()) {
+                                if (i++ > 0) sb.append(", ");
+                                sb.append(getEnchantmentName(enchantment));
+                                sb.append(" ");
+                                sb.append(roman(enchantments.get(enchantment)));
+                        }
+                        sb.append(")");
+                }
+                // Non-Vanilla Spawn Eggs
+                if (stack.getType() == Material.MONSTER_EGG) {
+                        switch ((int)stack.getDurability()) {
+                        case 63: sb.append(" (Ender Dragon)"); break;
+                        case 64: sb.append(" (Wither)"); break;
+                        case 97: sb.append(" (Snow Golem)"); break;
+                        case 99: sb.append(" (Iron Golem)"); break;
+                        }
+                }
+                
                 return sb.toString();
         }
 
