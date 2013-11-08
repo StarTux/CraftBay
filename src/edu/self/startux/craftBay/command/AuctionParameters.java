@@ -20,6 +20,7 @@
 package edu.self.startux.craftBay.command;
 
 import edu.self.startux.craftBay.Auction;
+import edu.self.startux.craftBay.AuctionTime;
 import edu.self.startux.craftBay.CraftBayPlugin;
 import edu.self.startux.craftBay.MoneyAmount;
 import net.milkbowl.vault.item.ItemInfo;
@@ -93,5 +94,20 @@ public class AuctionParameters extends CommandParser {
                 }
                 if (amount < 0.0) throw new CommandParseException(plugin.getMessage("command.NotANumber").set("arg", arg));
                 return new MoneyAmount(amount);
+        }
+
+        @Parameter
+        public AuctionTime auctionTime(CommandSender sender, String arg) throws CommandParseException {
+                String[] tokens = arg.split(":", 2);
+                int minutes = 0;
+                int seconds = 0;
+                try {
+                        if (tokens.length >= 1) minutes = Integer.parseInt(tokens[0]);
+                        if (tokens.length >= 2) seconds = Integer.parseInt(tokens[1]);
+                        if (minutes < 0 || seconds < 0 || seconds >= 60) throw new CommandParseException(plugin.getMessage("command.BadTimeFormat").set("arg", arg));
+                } catch (NumberFormatException nfe) {
+                        throw new CommandParseException(plugin.getMessage("command.BadTimeFormat").set("arg", arg));
+                }
+                return new AuctionTime(minutes * 60 + seconds);
         }
 }

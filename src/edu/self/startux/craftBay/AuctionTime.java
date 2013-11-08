@@ -40,4 +40,8 @@ public class AuctionTime {
                 }
                 return String.format("%02d:%02d", minutes, seconds);
         }
+
+        public int getSeconds() {
+                return time;
+        }
 }

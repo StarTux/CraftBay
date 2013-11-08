@@ -91,7 +91,7 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
         }
         
         @SubCommand(perm = "start", shortcut = true, optional = 1)
-        public void end(CommandSender sender, Auction auction, Integer delay) {
+        public void end(CommandSender sender, Auction auction, AuctionTime time) {
                 if (!auction.getOwner().equals(new PlayerMerchant(sender.getName()))) {
                         if (!sender.hasPermission("auction.admin") && !sender.isOp()) {
                                 plugin.warn(sender, plugin.getMessage("commands.end.NotOwner").set(auction, sender));
@@ -99,14 +99,17 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
                         }
                 }
                 int min = plugin.getConfig().getInt("minauctiontime");
-                if (delay == null) delay = min;
+                int delay = min;
+                if (time != null) delay = time.getSeconds();
                 if (delay < 0) {
                         plugin.warn(sender, plugin.getMessage("commands.end.DelayNegative").set(auction, sender).set("arg", delay));
                         return;
                 }
                 if (delay < min) {
-                        plugin.warn(sender, plugin.getMessage("commands.end.DelayTooShort").set(auction, sender).set("arg", delay).set("min", new AuctionTime(min)));
-                        return;
+                        if (!sender.hasPermission("auction.admin") && !sender.isOp()) {
+                                plugin.warn(sender, plugin.getMessage("commands.end.DelayTooShort").set(auction, sender).set("arg", delay).set("min", new AuctionTime(min)));
+                                return;
+                        }
                 }
                 if (delay > auction.getTimeLeft()) {
                         if (!sender.hasPermission("auction.admin") && !sender.isOp()) {
