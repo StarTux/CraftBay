@@ -1,3 +1,8 @@
+1.2.7
+
+* Make item description more informative
+* Add a configurable minimum auction time
+
 1.2.6
 
 * Fix Delivery Fail spam on console
