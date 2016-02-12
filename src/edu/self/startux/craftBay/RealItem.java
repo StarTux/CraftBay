@@ -324,6 +324,8 @@ public class RealItem implements Item {
                 case 33: return "Silk Touch";
                 case 34: return "Unbreaking";
                 case 35: return "Fortune";
+                case 61: return "Luck";
+                case 62: return "Lure";
                 default: return enchantment.getName();
                 }
         }
