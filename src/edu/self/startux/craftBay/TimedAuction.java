@@ -205,6 +205,7 @@ public class TimedAuction extends AbstractAuction {
                 MoneyAmount oldPrice = getWinningBid();
                 Merchant oldWinner = getWinner();
                 addBid(new Bid(bidder, bid));
+                if (timeLeft < 10 && !oldWinner.equals(bidder)) { timeLeft = 10; }
                 AuctionBidEvent event = new AuctionBidEvent(this, bidder, bid, oldWinner, oldPrice);
                 getPlugin().getServer().getPluginManager().callEvent(event);
                 return true;

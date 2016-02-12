@@ -49,6 +49,21 @@ public class RealItem implements Item {
         public RealItem(ItemStack stack) {
                 this.stack = stack.clone();
                 if (stack.getType() == Material.AIR) throw new IllegalArgumentException();
+                ItemMeta meta = stack.getItemMeta();
+                if (meta.hasLore()) {
+                    List<String> lore = meta.getLore();
+                    if (!lore.isEmpty()) {
+                        if (lore.get(0).contains("" + ChatColor.RESET + ChatColor.BLACK + ChatColor.MAGIC)) {
+                            throw new IllegalArgumentException();
+                        }
+                    }
+                }
+                if (stack.getType() == Material.SKULL_ITEM && (int)stack.getDurability() == 3) {
+                    SkullMeta skull = (SkullMeta)meta;
+                    if (!skull.hasOwner() || skull.getOwner() == null) {
+                        throw new IllegalArgumentException();
+                    }
+                }
         }
 
         @Override
@@ -122,6 +137,7 @@ public class RealItem implements Item {
                         switch ((int)stack.getDurability()) {
                         case 63: sb.append(" (Ender Dragon)"); break;
                         case 64: sb.append(" (Wither)"); break;
+                        case 65: sb.append(" (Bat)"); break;
                         case 97: sb.append(" (Snow Golem)"); break;
                         case 99: sb.append(" (Iron Golem)"); break;
                         }
@@ -148,7 +164,7 @@ public class RealItem implements Item {
                 ItemMeta meta = stack.getItemMeta();
                 if (meta.hasDisplayName()) {
                         if (result.length() > 0) result.append(" ");
-                        result.append("\"").append(meta.getDisplayName()).append("\"");
+                        result.append("\"").append(ChatColor.stripColor(meta.getDisplayName())).append("\"");
                 }
                 if (meta instanceof BookMeta) {
                         BookMeta book = (BookMeta)meta;

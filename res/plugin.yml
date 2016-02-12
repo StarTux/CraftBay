@@ -16,34 +16,82 @@ commands:
     usage: /<command> [amount] - bid an amount
     permission: auction.bid
 permissions:
+# Group permissions
   auction.*:
     description: Get all permission nodes
     default: false
     children:
-      auction.info: true
-      auction.bid: true
-      auction.start: true
       auction.admin: true
+      auction.nofee: true
+      auction.notax: true
+  auction.admin:
+    description: Perform administrative commands
+    default: op
+    children:
+      auction.moderator: true
+      auction.cancel: true
+      auction.bank: true
+      auction.fake: true
+      auction.bankbid: true
+      auction.log: true
+      auction.reload: true
+      auction.anywhere: true
+# Participating in auctions
   auction.info:
     description: Query information about the ongoing auction
-    default: true
+    default: op
   auction.bid:
     description: Bid on an auction
-    default: true
+    default: op
     children:
       auction.receive: true
   auction.receive:
     description: Receive an item after winning an auction
-    default: false
+    default: op
   auction.start:
     description: Start an auction
-    default: false
-  auction.admin:
-    description: Perform administrative commands
     default: op
+  auction.end:
+    description: Shorten or end an auction
+    default: op
+  auction.cancel:
+    description: Cancel a future auction
+    default: op
+# Exemptions
   auction.nofee:
     description: Player does not have to pay the auction fee
     default: false
   auction.notax:
     description: Player does not have to pay the auction tax
     default: false
+  auction.anywhere:
+    description: Circumvent blacklisted areas
+    default: op
+  auction.anyduration:
+    description: Set an arbitrary auction time
+    default: op
+# Administrating auctions
+  auction.cancel.any:
+    description: Cancel any auction
+    default: op
+  auction.end.any:
+    description: End any auction
+    default: op
+  auction.end.any:
+    description: End any auction
+    default: op
+  auction.bank:
+    description: Start a bank auction
+    default: op
+  auction.fake:
+    description: Start a fake auction
+    default: op
+  auction.bankbid:
+    description: Bid on behalf of the bank
+    default: op
+  auction.log:
+    description: View auction logs
+    default: op
+  auction.reload:
+    description: Reload auction configuration
+    default: op
