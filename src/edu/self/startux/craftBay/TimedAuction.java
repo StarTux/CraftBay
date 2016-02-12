@@ -37,17 +37,19 @@ import java.util.Set;
 import java.util.HashSet;
 
 public class TimedAuction extends AbstractAuction {
-	private int timeLeft;
+        private int timeLeft;
         private double minbid;
         private double minIncrement = 5.0;
+        private double minRaise = 0.05;
         private LinkedList<Bid> bids = new LinkedList<Bid>();
 
-	public TimedAuction(CraftBayPlugin plugin, Merchant owner, Item item) {
+        public TimedAuction(CraftBayPlugin plugin, Merchant owner, Item item) {
                 super(plugin, owner, item);
                 minbid = plugin.getConfig().getDouble("startingbid");
                 timeLeft = plugin.getConfig().getInt("auctiontime");
-                minIncrement = plugin.getConfig().getDouble("minincrement");
-	}
+                minIncrement = plugin.getConfig().getDouble("minincrement", minIncrement);
+                minRaise = plugin.getConfig().getDouble("minraise", minRaise);
+        }
 
         @Override
         public void start() {
@@ -77,10 +79,10 @@ public class TimedAuction extends AbstractAuction {
                 minbid = amount.getDouble();
         }
 
-	@Override
-	public void tick() {
+        @Override
+        public void tick() {
                 if (timeLeft <= 0) {
-			end();
+                        end();
                         return;
                 }
                 getPlugin().getServer().getPluginManager().callEvent(new AuctionTickEvent(this));
@@ -95,7 +97,7 @@ public class TimedAuction extends AbstractAuction {
         }
 
         @Override
-	public void stop() {
+        public void stop() {
                 scheduleTick(false);
         }
 
@@ -105,7 +107,7 @@ public class TimedAuction extends AbstractAuction {
                 setState(AuctionState.CANCELED);
                 stop();
                 getPlugin().getAuctionScheduler().soon();
-	}
+        }
 
         @Override
         public Merchant getWinner() {
@@ -160,7 +162,9 @@ public class TimedAuction extends AbstractAuction {
         @Override
         public MoneyAmount getMinimalBid() {
                 if (bids.isEmpty()) return new MoneyAmount(minbid);
-                return new MoneyAmount(getWinningBid().getDouble() + minIncrement);
+                double winningBid = getWinningBid().getDouble();
+                double increment = Math.max(minIncrement, winningBid * minRaise);
+                return new MoneyAmount(winningBid + increment);
         }
 
         /**
@@ -184,22 +188,22 @@ public class TimedAuction extends AbstractAuction {
         }
 
         @Override
-	public boolean bid(Merchant bidder, MoneyAmount bid) {
+        public boolean bid(Merchant bidder, MoneyAmount bid) {
                 if (getState() != AuctionState.RUNNING) return false;
-		if (bidder.equals(getOwner()) && !bidder.equals(BankMerchant.getInstance())) {
-			bidder.warn(getPlugin().getMessage("auction.bid.IsOwner").set(this, bidder));
-			return false;
-		}
-		if (bidder.equals(getWinner()) && bid.getDouble() <= getMaxBid().getDouble() && bidder != BankMerchant.getInstance()) {
-			bidder.warn(getPlugin().getMessage("auction.bid.UnderbidSelf").set(this, bidder));
-		 	return false;
-		}
+                if (bidder.equals(getOwner()) && !bidder.equals(BankMerchant.getInstance())) {
+                        bidder.warn(getPlugin().getMessage("auction.bid.IsOwner").set(this, bidder));
+                        return false;
+                }
+                if (bidder.equals(getWinner()) && bid.getDouble() <= getMaxBid().getDouble() && bidder != BankMerchant.getInstance()) {
+                        bidder.warn(getPlugin().getMessage("auction.bid.UnderbidSelf").set(this, bidder));
+                        return false;
+                }
                 if (bid.getDouble() < getMinimalBid().getDouble()) {
-			bidder.warn(getPlugin().getMessage("auction.bid.BidTooSmall").set(this, bidder));
+                        bidder.warn(getPlugin().getMessage("auction.bid.BidTooSmall").set(this, bidder));
                         return false;
                 }
                 if (!bidder.hasAmount(bid)) {
-			bidder.warn(getPlugin().getMessage("auction.bid.TooPoor").set(this, bidder));
+                        bidder.warn(getPlugin().getMessage("auction.bid.TooPoor").set(this, bidder));
                         return false;
                 }
                 MoneyAmount oldPrice = getWinningBid();
