@@ -20,7 +20,6 @@
 package edu.self.startux.craftBay;
 
 import edu.self.startux.craftBay.chat.BukkitChat;
-import edu.self.startux.craftBay.chat.ChannelChat;
 import edu.self.startux.craftBay.chat.ChatPlugin;
 import edu.self.startux.craftBay.chat.HeroChat;
 import edu.self.startux.craftBay.command.AuctionCommand;
@@ -130,11 +129,6 @@ public class CraftBayPlugin extends JavaPlugin {
                         if (getConfig().getBoolean("herochat.enable")) {
                                 chatPlugin = new HeroChat(this);
                                 if (chatPlugin.enable(getConfig().getConfigurationSection("herochat"))) {
-                                        break;
-                                }
-                        } else if (getConfig().getBoolean("channelchat.enable")) {
-                                chatPlugin = new ChannelChat(this);
-                                if (chatPlugin.enable(getConfig().getConfigurationSection("channelchat"))) {
                                         break;
                                 }
                         }
