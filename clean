@@ -1,4 +1,0 @@
-#!/bin/bash
-
-rm -rvf target/ CraftBay.jar
-rm -vf files libs res/lang/list
