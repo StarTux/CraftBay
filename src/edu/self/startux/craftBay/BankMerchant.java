@@ -66,11 +66,6 @@ public class BankMerchant implements Merchant {
                 return true;
         }
 
-        @Override
-        public boolean giveItem(ItemStack lot) {
-                return true;
-        }
-
         /**
          * Check if the Bank has a Bukkit permission.
          * @param permission the permission

@@ -138,36 +138,6 @@ public class PlayerMerchant implements Merchant {
                 return true;
         }
 
-        @Override
-        public boolean giveItem(ItemStack stack) {
-                if (stack == null) return true;
-                Player player = getPlayer();
-                if (player == null) return false;
-                int due = stack.getAmount();
-                int stackSize = stack.getMaxStackSize();
-                if (stackSize < 1) {
-                        stackSize = 1;
-                }
-                while (due > 0) {
-                        ItemStack other = stack.clone();
-                        if (due < stackSize) {
-                                other.setAmount(due);
-                                due = 0;
-                        } else {
-                                other.setAmount(stackSize);
-                                due -= stackSize;
-                        }
-                        Map<Integer, ItemStack> ret = player.getInventory().addItem(other);
-                        for (ItemStack item : ret.values()) {
-                                player.getWorld().dropItem(player.getLocation(), item);
-                        }
-                }
-                if (!player.isOnline()) {
-                        player.saveData();
-                }
-                return true;
-        }
-
         /**
          * Check if the Player represented by the Merchant has a
          * Bukkit permission.

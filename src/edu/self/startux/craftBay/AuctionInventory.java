@@ -100,10 +100,9 @@ public class AuctionInventory implements Listener {
                         }
                 }
                 stack = stack.clone();
-                stack.setAmount(amount);
                 Item item = null;
                 try {
-                    item = new RealItem(stack);
+                    item = new RealItem(stack, amount);
                 } catch (IllegalArgumentException iae) {
                     for (ItemStack drop : items) if (drop != null) player.getWorld().dropItem(player.getLocation(), drop);
                     deletePlayer(player);

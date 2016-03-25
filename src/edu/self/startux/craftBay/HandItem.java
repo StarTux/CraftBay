@@ -28,7 +28,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class HandItem extends RealItem {
         public HandItem(Player player) {
-                super(player.getItemInHand().clone());
+                super(player.getInventory().getItemInMainHand().clone());
         }
 
         public HandItem(Player player, int amount) {
@@ -43,12 +43,12 @@ public class HandItem extends RealItem {
         public Item take(Merchant merchant) {
                 if (merchant instanceof PlayerMerchant) {
                         Player player = ((PlayerMerchant)merchant).getPlayer();
-                        ItemStack has = player.getItemInHand();
+                        ItemStack has = player.getInventory().getItemInMainHand();
                         //merchant.msg("stack: " + stack.getAmount());
                         //merchant.msg("amount = " + amount);
                         if (has.getAmount() == stack.getAmount()) {
                                 //merchant.msg("hand == amount");
-                                player.setItemInHand(null);
+                                player.getInventory().setItemInMainHand(null);
                                 return new RealItem(stack);
                         }
                         if (has.getAmount() > stack.getAmount()) {
@@ -59,7 +59,7 @@ public class HandItem extends RealItem {
                         // has.getAmount() < stack.getAmount()
                         ItemStack remainder = stack.clone();
                         remainder.setAmount(stack.getAmount() - has.getAmount());
-                        player.setItemInHand(null);
+                        player.getInventory().setItemInMainHand(null);
                         merchant.takeItem(remainder);
                         //merchant.msg("in Hand: " + stack.getAmount());
                         //merchant.msg("Remainder: " + remainder.getAmount());

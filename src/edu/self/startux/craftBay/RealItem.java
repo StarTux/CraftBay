@@ -30,6 +30,7 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -44,10 +45,17 @@ import org.bukkit.inventory.meta.SkullMeta;
  */
 public class RealItem implements Item {
         protected ItemStack stack;
+        int amount;
+    
         private static final String romans[] = {"", "I", "II", "III", "IV", "V"};
 
         public RealItem(ItemStack stack) {
+                this(stack, stack.getAmount());
+        }
+
+        public RealItem(ItemStack stack, int amount) {
                 this.stack = stack.clone();
+                this.amount = amount;
                 if (stack.getType() == Material.AIR) throw new IllegalArgumentException();
                 ItemMeta meta = stack.getItemMeta();
                 if (meta.hasLore()) {
@@ -69,10 +77,6 @@ public class RealItem implements Item {
         @Override
         public Item clone() {
                 return new RealItem(stack.clone());
-        }
-
-        public void setAmount(int amount) {
-                stack.setAmount(amount);
         }
 
         @Override
@@ -148,7 +152,7 @@ public class RealItem implements Item {
 
         @Override
         public ItemAmount getAmount() {
-                return new ItemAmount(stack.getAmount(), stack.getMaxStackSize());
+                return new ItemAmount(amount, stack.getMaxStackSize());
         }
 
         @Override
@@ -263,13 +267,42 @@ public class RealItem implements Item {
 
         @Override
         public boolean give(Merchant merchant) {
-                return merchant.giveItem(stack);
+                if (merchant instanceof PlayerMerchant) {
+                        PlayerMerchant playerMerchant = (PlayerMerchant)merchant;
+                        Player player = playerMerchant.getPlayer();
+                        if (player == null) return false;
+                        int due = amount;
+                        int stackSize = stack.getMaxStackSize();
+                        if (stackSize < 1) {
+                                stackSize = 1;
+                        }
+                        while (due > 0) {
+                                ItemStack other = stack.clone();
+                                if (due < stackSize) {
+                                        other.setAmount(due);
+                                        due = 0;
+                                } else {
+                                        other.setAmount(stackSize);
+                                        due -= stackSize;
+                                }
+                                Map<Integer, ItemStack> ret = player.getInventory().addItem(other);
+                                for (ItemStack item : ret.values()) {
+                                        player.getWorld().dropItem(player.getLocation(), item);
+                                }
+                        }
+                        if (!player.isOnline()) {
+                                player.saveData();
+                        }
+                        return true;
+                } else {
+                        return true;
+                }
         }
 
         @Override
         public String toString() {
                 String name = "";
-                name += "" + stack.getTypeId() + ":" + stack.getDurability() + " " + stack.getAmount();
+                name += "" + stack.getTypeId() + ":" + stack.getDurability() + " " + amount;
                 Map<Enchantment, Integer> enchantments = stack.getEnchantments();
                 if (!enchantments.isEmpty()) {
                         boolean comma = false;
@@ -326,8 +359,10 @@ public class RealItem implements Item {
                 case 35: return "Fortune";
                 case 61: return "Luck";
                 case 62: return "Lure";
-                default: return enchantment.getName();
+                default: break;
                 }
+                String result = enchantment.getName();
+                return result.substring(0, 1) + result.substring(1).toLowerCase();
         }
 
         private String roman(int i) {
@@ -342,11 +377,19 @@ public class RealItem implements Item {
         public Map<String, Object> serialize() {
                 Map<String, Object> result = new HashMap<String, Object>();
                 result.put("stack", stack);
+                result.put("amount", amount);
                 return result;
         }
 
         @SuppressWarnings("unchecked")
         public static RealItem deserialize(Map<String, Object> map) {
-                return new RealItem((ItemStack)map.get("stack"));
+                ItemStack stack = (ItemStack)map.get("stack");
+                Object ao = map.get("amount");
+                if (ao == null) {
+                        return new RealItem(stack);
+                } else {
+                        int amount = (Integer)ao;
+                        return new RealItem(stack, amount);
+                }
         }
 }
