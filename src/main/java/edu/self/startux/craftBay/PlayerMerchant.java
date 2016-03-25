@@ -18,11 +18,11 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 package edu.self.startux.craftBay;
-
 import edu.self.startux.craftBay.locale.Message;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -31,13 +31,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerMerchant implements Merchant {
+        private UUID playerUuid;
         private String playerName;
 
-        public PlayerMerchant(String name) {
+        public PlayerMerchant(UUID uuid, String name) {
+                playerUuid = uuid;
                 playerName = name;
         }
 
-        private PlayerMerchant(OfflinePlayer player) {
+        public PlayerMerchant(OfflinePlayer player) {
+                playerUuid = player.getUniqueId();
                 playerName = player.getName();
         }
 
@@ -45,8 +48,12 @@ public class PlayerMerchant implements Merchant {
                 return new PlayerMerchant(player);
         }
 
+        public OfflinePlayer getOfflinePlayer() {
+                return Bukkit.getServer().getOfflinePlayer(playerUuid);
+        }
+
         public Player getPlayer() {
-                return Bukkit.getServer().getPlayerExact(playerName);
+                return Bukkit.getServer().getPlayer(playerUuid);
         }
 
         private static CraftBayPlugin getPlugin() {
@@ -63,7 +70,7 @@ public class PlayerMerchant implements Merchant {
                 if (amount.getDouble() < 0.0) {
                         throw new IllegalArgumentException("given amount must be positive!");
                 }
-                if (!getPlugin().getEco().has(playerName, amount.getDouble())) {
+                if (!getPlugin().getEco().has(getOfflinePlayer(), amount.getDouble())) {
                         return false;
                 }
                 return true;
@@ -74,9 +81,9 @@ public class PlayerMerchant implements Merchant {
                 if (amount.getDouble() < 0.0) {
                         throw new IllegalArgumentException("given amount must be positive!");
                 }
-                MoneyAmount before = new MoneyAmount(getPlugin().getEco().getBalance(playerName));
+                MoneyAmount before = new MoneyAmount(getPlugin().getEco().getBalance(getOfflinePlayer()));
                 boolean success = getPlugin().getEco().depositPlayer(playerName, amount.getDouble()).transactionSuccess();
-                MoneyAmount after = new MoneyAmount(getPlugin().getEco().getBalance(playerName));
+                MoneyAmount after = new MoneyAmount(getPlugin().getEco().getBalance(getOfflinePlayer()));
                 if (getPlugin().getDebugMode()) {
                         getPlugin().getLogger().info(String.format("GIVE player='%s' amount='%s' success='%b' before='%s' after='%s'", playerName, amount, success, before, after));
                 }
@@ -88,9 +95,9 @@ public class PlayerMerchant implements Merchant {
                 if (amount.getDouble() < 0.0) {
                         throw new IllegalArgumentException("take amount must be positive!");
                 }
-                MoneyAmount before = new MoneyAmount(getPlugin().getEco().getBalance(playerName));
-                boolean success = getPlugin().getEco().withdrawPlayer(playerName, amount.getDouble()).transactionSuccess();
-                MoneyAmount after = new MoneyAmount(getPlugin().getEco().getBalance(playerName));
+                MoneyAmount before = new MoneyAmount(getPlugin().getEco().getBalance(getOfflinePlayer()));
+                boolean success = getPlugin().getEco().withdrawPlayer(getOfflinePlayer(), amount.getDouble()).transactionSuccess();
+                MoneyAmount after = new MoneyAmount(getPlugin().getEco().getBalance(getOfflinePlayer()));
                 if (getPlugin().getDebugMode()) {
                         getPlugin().getLogger().info(String.format("TAKE player='%s' amount='%s' success='%b' before='%s' after='%s'", playerName, amount, success, before, after));
                 }
@@ -166,30 +173,31 @@ public class PlayerMerchant implements Merchant {
         @Override
         public boolean equals(Object o) {
                 if (o == null) return false;
+                if (o == this) return true;
                 if (!(o instanceof PlayerMerchant)) return false;
                 PlayerMerchant other = (PlayerMerchant)o;
-                if (!playerName.equalsIgnoreCase(other.playerName)) return false;
-                return true;
+                return playerUuid.equals(other.playerUuid);
         }
 
         @Override
         public Map<String, Object> serialize() {
                 Map<String, Object> result = new HashMap<String, Object>();
-                result.put("player", playerName);
+                result.put("uuid", playerUuid.toString());
+                result.put("name", playerName);
                 return result;
         }
 
         @SuppressWarnings("unchecked")
         public static PlayerMerchant deserialize(Map<String, Object> map) {
+                // Legacy
                 Object o = map.get("player");
-                // support legacy serialization using OfflinePlayer
-                if (o instanceof OfflinePlayer) {
-                        return new PlayerMerchant((OfflinePlayer)o);
-                } else if (o instanceof String) {
-                        return new PlayerMerchant((String)o);
-                } else {
-                        return null;
+                if (o instanceof String) {
+                        return new PlayerMerchant(Bukkit.getServer().getOfflinePlayer((String)o));
                 }
+                //
+                UUID uuid = UUID.fromString((String)map.get("uuid"));
+                String name = (String)map.get("name");
+                return new PlayerMerchant(uuid, name);
         }
 
         @Override
@@ -201,6 +209,6 @@ public class PlayerMerchant implements Merchant {
 
         @Override
         public Merchant clone() {
-                return new PlayerMerchant(playerName);
+                return new PlayerMerchant(playerUuid, playerName);
         }
 }
