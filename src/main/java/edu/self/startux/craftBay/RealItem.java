@@ -76,7 +76,7 @@ public class RealItem implements Item {
 
         @Override
         public Item clone() {
-                return new RealItem(stack.clone());
+                return new RealItem(stack.clone(), amount);
         }
 
         @Override
