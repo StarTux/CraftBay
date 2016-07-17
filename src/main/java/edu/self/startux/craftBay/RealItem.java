@@ -38,7 +38,11 @@ import org.bukkit.inventory.meta.FireworkEffectMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionType;
 
 /**
  * Represent an actual item, in fact a bukkit ItemStack.
@@ -84,18 +88,21 @@ public class RealItem implements Item {
                 try {
                         return Items.itemByStack(stack).getName();
                 } catch (NullPointerException npe) {
-                        // if vault is outdated
-                        String[] parts = stack.getType().name().split("_");
-                        StringBuilder sb = new StringBuilder(capitalName(parts[0]));
-                        for (int i = 1; i < parts.length; ++i) {
-                                sb.append(" ").append(capitalName(parts[i]));
-                        }
-                        return sb.toString();
+                        return niceEnumName(stack.getType().name());
                 }
         }
 
         private static String capitalName(String in) {
                 return "" + Character.toUpperCase(in.charAt(0)) + in.substring(1, in.length()).toLowerCase();
+        }
+
+        static String niceEnumName(String in) {
+                String[] parts = in.split("_");
+                StringBuilder sb = new StringBuilder(capitalName(parts[0]));
+                for (int i = 1; i < parts.length; ++i) {
+                        sb.append(" ").append(capitalName(parts[i]));
+                }
+                return sb.toString();
         }
 
         @Override
@@ -113,16 +120,10 @@ public class RealItem implements Item {
 
                 // Append information Vault doesn't give us.
                 Map<Enchantment, Integer> enchantments = stack.getEnchantments();
+                ItemMeta meta = stack.getItemMeta();
                 if (enchantments == null || enchantments.isEmpty()) {
-                        ItemMeta meta = stack.getItemMeta();
                         if (meta instanceof EnchantmentStorageMeta) {
                                 enchantments = ((EnchantmentStorageMeta)meta).getStoredEnchants();
-                        }
-                        if (meta instanceof SkullMeta) {
-                                SkullMeta skull = (SkullMeta)meta;
-                                if (skull.hasOwner()) {
-                                        sb.append(" <").append(skull.getOwner()).append(">");
-                                }
                         }
                 }
                 if (enchantments != null && !enchantments.isEmpty()) {
@@ -135,6 +136,34 @@ public class RealItem implements Item {
                                 sb.append(roman(enchantments.get(enchantment)));
                         }
                         sb.append(")");
+                }
+                if (meta instanceof SkullMeta) {
+                        SkullMeta skull = (SkullMeta)meta;
+                        if (skull.hasOwner()) {
+                                sb.append(" <").append(skull.getOwner()).append(">");
+                        }
+                }
+                if (meta instanceof PotionMeta) {
+                        PotionMeta potions = (PotionMeta)meta;
+                        try {
+                                PotionData data = potions.getBasePotionData();
+                                if (data != null) {
+                                        sb.append(" ");
+                                        sb.append(niceEnumName(data.getType().name()));
+                                        if (data.isExtended()) sb.append(" Ext");
+                                        if (data.isUpgraded()) sb.append(" II");
+                                }
+                        } catch (IllegalArgumentException iae) {}
+                        if (potions.hasCustomEffects()) {
+                                for (PotionEffect effect: potions.getCustomEffects()) {
+                                        sb.append(" ");
+                                        sb.append(niceEnumName(effect.getType().getName()));
+                                        int amp = effect.getAmplifier();
+                                        if (amp > 0) {
+                                                sb.append(" ").append((amp+1));
+                                        }
+                                }
+                        }
                 }
                 // Non-Vanilla Spawn Eggs
                 if (stack.getType() == Material.MONSTER_EGG) {
@@ -186,7 +215,7 @@ public class RealItem implements Item {
                         FireworkMeta firework = (FireworkMeta)meta;
                         for (FireworkEffect effect : firework.getEffects()) {
                                 if (result.length() > 0) result.append(" ");
-                                result.append(capitalName(effect.getType().name()));
+                                result.append(niceEnumName(effect.getType().name()));
                         }
                         if (result.length() > 0) result.append(" ");
                         result.append(roman(firework.getPower()));
@@ -194,7 +223,7 @@ public class RealItem implements Item {
                 if (meta instanceof FireworkEffectMeta) {
                         FireworkEffectMeta effect = (FireworkEffectMeta)meta;
                         if (result.length() > 0) result.append(" ");
-                        result.append(capitalName(effect.getEffect().getType().name()));
+                        result.append(niceEnumName(effect.getEffect().getType().name()));
                 }
                 if (meta instanceof LeatherArmorMeta) {
                         LeatherArmorMeta armor = (LeatherArmorMeta)meta;
@@ -225,6 +254,28 @@ public class RealItem implements Item {
                                 Map.Entry<Enchantment, Integer> enchantment = iter.next();
                                 if (result.length() > 0) result.append(" ");
                                 result.append(getEnchantmentName(enchantment.getKey())).append(" ").append(roman(enchantment.getValue()));
+                        }
+                }
+                if (meta instanceof PotionMeta) {
+                        PotionMeta potions = (PotionMeta)meta;
+                        try {
+                                PotionData data = potions.getBasePotionData();
+                                if (data != null) {
+                                        if (result.length() > 0) result.append(" ");
+                                        result.append(niceEnumName(data.getType().name()));
+                                        if (data.isExtended()) result.append(" Ext");
+                                        if (data.isUpgraded()) result.append(" II");
+                                }
+                        } catch (IllegalArgumentException iae) {}
+                        if (potions.hasCustomEffects()) {
+                                for (PotionEffect effect: potions.getCustomEffects()) {
+                                        if (result.length() > 0) result.append(" ");
+                                        result.append(niceEnumName(effect.getType().getName()));
+                                        int amp = effect.getAmplifier();
+                                        if (amp > 0) {
+                                                result.append(" ").append((amp+1));
+                                        }
+                                }
                         }
                 }
                 if (meta.hasLore()) {
