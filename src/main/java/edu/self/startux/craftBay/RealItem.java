@@ -30,6 +30,7 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -40,6 +41,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.meta.SpawnEggMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
@@ -85,10 +87,27 @@ public class RealItem implements Item {
 
         @Override
         public String getName() {
-                try {
-                        return Items.itemByStack(stack).getName();
-                } catch (NullPointerException npe) {
-                        return niceEnumName(stack.getType().name());
+                if (stack.getType() == Material.MONSTER_EGG) {
+                        SpawnEggMeta meta = (SpawnEggMeta)stack.getItemMeta();
+                        EntityType et = meta.getSpawnedType();
+                        if (et != null) {
+                                switch (et) {
+                                case VINDICATOR:
+                                case EVOKER:
+                                case EVOKER_FANGS:
+                                        return niceEnumName(et.name()) + " Spawn Egg";
+                                default:
+                                        return niceEnumName(et.getName()) + " Spawn Egg";
+                                }
+                        } else {
+                                return "Spawn Egg";
+                        }
+                } else {
+                        ItemInfo info = Items.itemByStack(stack);
+                        if (info == null) {
+                                return niceEnumName(stack.getType().name());
+                        }
+                        return info.getName();
                 }
         }
 
@@ -147,7 +166,7 @@ public class RealItem implements Item {
                         PotionMeta potions = (PotionMeta)meta;
                         try {
                                 PotionData data = potions.getBasePotionData();
-                                if (data != null) {
+                                if (data != null && data.getType() != PotionType.UNCRAFTABLE) {
                                         sb.append(" ");
                                         sb.append(niceEnumName(data.getType().name()));
                                         if (data.isExtended()) sb.append(" Ext");
@@ -384,8 +403,8 @@ public class RealItem implements Item {
                 return pivot >= lower && pivot <= upper;
         }
 
-        private String getEnchantmentName(Enchantment enchantment) {
-                switch(enchantment.getId()) {
+        public static String getEnchantmentName(Enchantment enchantment) {
+                switch (enchantment.getId()) {
                 case 0: return "Protection";
                 case 1: return "Fire Protection";
                 case 2: return "Feather Falling";
@@ -394,26 +413,34 @@ public class RealItem implements Item {
                 case 5: return "Respiration";
                 case 6: return "Aqua Affinity";
                 case 7: return "Thorns";
+                case 8: return "Depth Strider";
+                case 9: return "Frost Walker";
+                case 10: return "Curse of Binding";
+                        //
                 case 16: return "Sharpness";
                 case 17: return "Smite";
                 case 18: return "Bane of Arthropods";
                 case 19: return "Knockback";
                 case 20: return "Fire Aspect";
                 case 21: return "Looting";
-                case 48: return "Power";
-                case 49: return "Punch";
-                case 50: return "Flame";
-                case 51: return "Infinity";
+                        //
                 case 32: return "Efficiency";
                 case 33: return "Silk Touch";
                 case 34: return "Unbreaking";
                 case 35: return "Fortune";
-                case 61: return "Luck";
+                        //
+                case 48: return "Power";
+                case 49: return "Punch";
+                case 50: return "Flame";
+                case 51: return "Infinity";
+                        //
+                case 61: return "Luck of the Sea";
                 case 62: return "Lure";
-                default: break;
+                        //
+                case 70: return "Mending";
+                case 71: return "Curse of Vanishing";
+                default: return niceEnumName(enchantment.getName());
                 }
-                String result = enchantment.getName();
-                return result.substring(0, 1) + result.substring(1).toLowerCase();
         }
 
         private String roman(int i) {
