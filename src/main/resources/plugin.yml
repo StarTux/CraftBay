@@ -4,7 +4,7 @@ version: 2.0
 author: StarTux
 description: Auction off your precious items
 depend: [Vault]
-softdepend: [ChannelChat, Herochat]
+softdepend: [ChannelChat, GenericEvents]
 commands:
   auction:
     description: Auction interface

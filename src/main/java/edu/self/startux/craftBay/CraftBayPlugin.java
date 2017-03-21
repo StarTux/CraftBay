@@ -21,7 +21,6 @@ package edu.self.startux.craftBay;
 
 import edu.self.startux.craftBay.chat.BukkitChat;
 import edu.self.startux.craftBay.chat.ChatPlugin;
-import edu.self.startux.craftBay.chat.HeroChat;
 import edu.self.startux.craftBay.command.AuctionCommand;
 import edu.self.startux.craftBay.locale.Color;
 import edu.self.startux.craftBay.locale.Language;
@@ -41,186 +40,188 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CraftBayPlugin extends JavaPlugin {
-	private String tag = "[CraftBay]";
-	private Economy economy;
-        private ChatPlugin chatPlugin;
-        private AuctionAnnouncer announcer;
-        private AuctionHouse house;
-        private AuctionScheduler scheduler;
-        private AuctionCommand executor;
-        private Language language;
-        private AuctionLogger auctionLogger;
-        private AuctionInventory inventory;
-        private List<String> blacklistWorlds = new ArrayList<String>();
-        private static CraftBayPlugin instance;
-        private boolean debugMode = false;
-        
-        public static CraftBayPlugin getInstance() {
-                return instance;
+    private String tag = "[CraftBay]";
+    private Economy economy;
+    private ChatPlugin chatPlugin;
+    private AuctionAnnouncer announcer;
+    private AuctionHouse house;
+    private AuctionScheduler scheduler;
+    private AuctionCommand executor;
+    private Language language;
+    private AuctionLogger auctionLogger;
+    private AuctionInventory inventory;
+    private List<String> blacklistWorlds = new ArrayList<String>();
+    private static CraftBayPlugin instance;
+    private boolean debugMode = false;
+    private GenericEventsHandler genericEventsHandler = null;
+
+    public static CraftBayPlugin getInstance() {
+        return instance;
+    }
+
+    public GenericEventsHandler getGenericEventsHandler() {
+        return genericEventsHandler;
+    }
+
+    public void onEnable() {
+        instance = this;
+        Language.writeLanguageFiles();
+        setupSerializations();
+        executor = new AuctionCommand(this);
+        getCommand("auction").setExecutor(executor);
+        getCommand("bid").setExecutor(executor);
+        if (!setupEconomy()) {
+            getLogger().severe("Failed to setup economy. CraftBay is not enabled!");
+            setEnabled(false);
+            return;
         }
-
-	public void onEnable() {
-                instance = this;
-                Language.writeLanguageFiles();
-                setupSerializations();
-                executor = new AuctionCommand(this);
-		getCommand("auction").setExecutor(executor);
-		getCommand("bid").setExecutor(executor);
-		if (!setupEconomy()) {
-			getLogger().severe("Failed to setup economy. CraftBay is not enabled!");
-			setEnabled(false);
-			return;
-		}
-                announcer = new AuctionAnnouncer(this);
-                house = new AuctionHouse(this);
-                scheduler = new AuctionScheduler(this);
-                auctionLogger = new AuctionLogger(this);
-                inventory = new AuctionInventory(this);
-                scheduler.soon();
-                loadAuctionConfig();
-                auctionLogger.enable();
-                house.enable();
-                announcer.enable();
-                scheduler.enable();
-	}
-
-	public void onDisable() {
-                if (scheduler != null) scheduler.disable();
-                economy = null;
-                if (chatPlugin != null) chatPlugin.disable();
-                chatPlugin = null;
-                announcer = null;
-                house = null;
-                scheduler = null;
-                auctionLogger = null;
-                instance = null;
-	}
-
-        public void setupSerializations() {
-                ConfigurationSerialization.registerClass(TimedAuction.class);
-                ConfigurationSerialization.registerClass(RealItem.class);
-                ConfigurationSerialization.registerClass(FakeItem.class);
-                ConfigurationSerialization.registerClass(Bid.class);
-                ConfigurationSerialization.registerClass(PlayerMerchant.class);
-                ConfigurationSerialization.registerClass(BankMerchant.class);
-                ConfigurationSerialization.registerClass(ItemDelivery.class);
+        if (getServer().getPluginManager().getPlugin("GenericEvents") != null) {
+            genericEventsHandler = new GenericEventsHandler();
         }
+        announcer = new AuctionAnnouncer(this);
+        house = new AuctionHouse(this);
+        scheduler = new AuctionScheduler(this);
+        auctionLogger = new AuctionLogger(this);
+        inventory = new AuctionInventory(this);
+        scheduler.soon();
+        loadAuctionConfig();
+        auctionLogger.enable();
+        house.enable();
+        announcer.enable();
+        scheduler.enable();
+    }
 
-        public void loadAuctionConfig() {
-		getConfig().options().copyDefaults(true);
-		saveConfig();
-                reloadAuctionConfig();
+    public void onDisable() {
+        if (scheduler != null) scheduler.disable();
+        economy = null;
+        if (chatPlugin != null) chatPlugin.disable();
+        chatPlugin = null;
+        announcer = null;
+        house = null;
+        scheduler = null;
+        auctionLogger = null;
+        instance = null;
+    }
+
+    public void setupSerializations() {
+        ConfigurationSerialization.registerClass(TimedAuction.class);
+        ConfigurationSerialization.registerClass(RealItem.class);
+        ConfigurationSerialization.registerClass(FakeItem.class);
+        ConfigurationSerialization.registerClass(Bid.class);
+        ConfigurationSerialization.registerClass(PlayerMerchant.class);
+        ConfigurationSerialization.registerClass(BankMerchant.class);
+        ConfigurationSerialization.registerClass(ItemDelivery.class);
+    }
+
+    public void loadAuctionConfig() {
+        getConfig().options().copyDefaults(true);
+        saveConfig();
+        reloadAuctionConfig();
+    }
+
+    public void reloadAuctionConfig() {
+        reloadConfig();
+        blacklistWorlds = getConfig().getStringList("blacklistworlds");
+        language = new Language(this, getConfig().getString("lang"));
+        tag = language.getMessage("Tag").toString();
+        Color.configure(getConfig().getConfigurationSection("colors"));
+        debugMode = getConfig().getBoolean("debug");
+        announcer.reloadConfig();
+        setupChat();
+    }
+
+    private void setupChat() {
+        if (chatPlugin != null) chatPlugin.disable();
+        do {
+            // if all fails, fall back to bukkit chat
+            chatPlugin = new BukkitChat(this);
+            chatPlugin.enable(getConfig().getConfigurationSection("defaultchat"));
+            getLogger().info("Falling back to default chat");
+        } while (false);
+    }
+
+    private Boolean setupEconomy()
+    {
+        RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
+        if (economyProvider != null) {
+            economy = economyProvider.getProvider();
         }
+        return (economy != null);
+    }
 
-        public void reloadAuctionConfig() {
-                reloadConfig();
-                blacklistWorlds = getConfig().getStringList("blacklistworlds");
-                language = new Language(this, getConfig().getString("lang"));
-                tag = language.getMessage("Tag").toString();
-                Color.configure(getConfig().getConfigurationSection("colors"));
-                debugMode = getConfig().getBoolean("debug");
-                announcer.reloadConfig();
-                setupChat();
+    public Economy getEco() {
+        return this.economy;
+    }
+
+    public Auction getAuction() {
+        return scheduler.getCurrentAuction();
+    }
+
+    public AuctionHouse getAuctionHouse() {
+        return house;
+    }
+
+    public AuctionScheduler getAuctionScheduler() {
+        return scheduler;
+    }
+
+    public AuctionInventory getAuctionInventory() {
+        return inventory;
+    }
+
+    public List<String> getBlacklistWorlds() {
+        return blacklistWorlds;
+    }
+
+    public void warn(CommandSender sender, Message msg) {
+        List<String> lines = msg.compile();
+        if (lines.isEmpty()) return;
+        lines.set(0, Color.ERROR + tag + " " + lines.get(0));
+        for (String line : lines) {
+            sender.sendMessage(line);
         }
+    }
 
-        private void setupChat() {
-                if (chatPlugin != null) chatPlugin.disable();
-                do {
-                        if (getConfig().getBoolean("herochat.enable")) {
-                                chatPlugin = new HeroChat(this);
-                                if (chatPlugin.enable(getConfig().getConfigurationSection("herochat"))) {
-                                        break;
-                                }
-                        }
-                        // if all fails, fall back to bukkit chat
-                        chatPlugin = new BukkitChat(this);
-                        chatPlugin.enable(getConfig().getConfigurationSection("defaultchat"));
-                        getLogger().info("Falling back to default chat");
-                } while (false);
+    public void msg(CommandSender sender, List<String> lines) {
+        if (lines.isEmpty()) return;
+        lines.set(0, Color.DEFAULT + tag + " " + lines.get(0));
+        for (String line : lines) {
+            sender.sendMessage(line);
         }
+    }
 
-	private Boolean setupEconomy()
-        {
-                RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
-                if (economyProvider != null) {
-                        economy = economyProvider.getProvider();
-                }
-                return (economy != null);
-        }
+    public void msg(CommandSender sender, Message msg) {
+        msg(sender, msg.compile());
+    }
 
-	public Economy getEco() {
-		return this.economy;
-	}
+    public String getTag() {
+        return tag;
+    }
 
-	public Auction getAuction() {
-		return scheduler.getCurrentAuction();
-	}
+    public boolean getDebugMode() {
+        return debugMode;
+    }
 
-        public AuctionHouse getAuctionHouse() {
-                return house;
-        }
+    public void broadcast(Message msg) {
+        List<String> lines = msg.compile();
+        if (lines.isEmpty()) return;
+        lines.set(0, Color.DEFAULT + tag + " " + lines.get(0));
+        chatPlugin.broadcast(lines);
+    }
 
-        public AuctionScheduler getAuctionScheduler() {
-                return scheduler;
-        }
+    public ChatPlugin getChatPlugin() {
+        return chatPlugin;
+    }
 
-        public AuctionInventory getAuctionInventory() {
-                return inventory;
-        }
+    public Language getLanguage() {
+        return language;
+    }
 
-        public List<String> getBlacklistWorlds() {
-                return blacklistWorlds;
-        }
+    public Message getMessage(String key) {
+        return language.getMessage(key);
+    }
 
-        public void warn(CommandSender sender, Message msg) {
-                List<String> lines = msg.compile();
-                if (lines.isEmpty()) return;
-                lines.set(0, Color.ERROR + tag + " " + lines.get(0));
-                for (String line : lines) {
-                        sender.sendMessage(line);
-                }
-        }
-
-        public void msg(CommandSender sender, List<String> lines) {
-                if (lines.isEmpty()) return;
-                lines.set(0, Color.DEFAULT + tag + " " + lines.get(0));
-                for (String line : lines) {
-                        sender.sendMessage(line);
-                }
-        }
-
-        public void msg(CommandSender sender, Message msg) {
-                msg(sender, msg.compile());
-        }
-
-        public String getTag() {
-                return tag;
-        }
-
-        public boolean getDebugMode() {
-                return debugMode;
-        }
-
-        public void broadcast(Message msg) {
-                List<String> lines = msg.compile();
-                if (lines.isEmpty()) return;
-                lines.set(0, Color.DEFAULT + tag + " " + lines.get(0));
-                chatPlugin.broadcast(lines);
-        }
-
-        public ChatPlugin getChatPlugin() {
-                return chatPlugin;
-        }
-
-        public Language getLanguage() {
-                return language;
-        }
-
-        public Message getMessage(String key) {
-                return language.getMessage(key);
-        }
-
-        public Message getMessages(String... keys) {
-                return language.getMessages(keys);
-        }
+    public Message getMessages(String... keys) {
+        return language.getMessages(keys);
+    }
 }
