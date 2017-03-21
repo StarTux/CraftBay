@@ -64,14 +64,6 @@ public class RealItem implements Item {
         this.amount = amount;
         if (stack.getType() == Material.AIR) throw new IllegalArgumentException();
         ItemMeta meta = stack.getItemMeta();
-        if (meta.hasLore()) {
-            List<String> lore = meta.getLore();
-            if (!lore.isEmpty()) {
-                if (lore.get(0).contains("" + ChatColor.RESET + ChatColor.BLACK + ChatColor.MAGIC)) {
-                    throw new IllegalArgumentException();
-                }
-            }
-        }
         if (stack.getType() == Material.SKULL_ITEM && (int)stack.getDurability() == 3) {
             SkullMeta skull = (SkullMeta)meta;
             if (!skull.hasOwner() || skull.getOwner() == null) {
@@ -202,7 +194,6 @@ public class RealItem implements Item {
             case 99: sb.append(" (Iron Golem)"); break;
             }
         }
-                
         return sb.toString();
     }
 
@@ -213,6 +204,10 @@ public class RealItem implements Item {
 
     @Override
     public String getItemInfo() {
+        if (CraftBayPlugin.getInstance().getGenericEventsHandler() != null) {
+            String result = CraftBayPlugin.getInstance().getGenericEventsHandler().getItemName(stack);
+            if (result != null) return result;
+        }
         StringBuffer result = new StringBuffer();
         if (canBeDamaged() && stack.getDurability() > 0) {
             int durability = stack.getType().getMaxDurability() - stack.getDurability();
