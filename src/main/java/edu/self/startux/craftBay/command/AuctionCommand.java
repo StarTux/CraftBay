@@ -29,6 +29,7 @@ import edu.self.startux.craftBay.HandItem;
 import edu.self.startux.craftBay.Item;
 import edu.self.startux.craftBay.Merchant;
 import edu.self.startux.craftBay.MoneyAmount;
+import edu.self.startux.craftBay.Msg;
 import edu.self.startux.craftBay.PlayerMerchant;
 import edu.self.startux.craftBay.RealItem;
 import edu.self.startux.craftBay.chat.ChatPlugin;
@@ -40,6 +41,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -81,7 +83,33 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
 
     @SubCommand(perm = "info", shortcut = true)
     public void info(CommandSender sender, Auction auction) {
-        plugin.msg(sender, plugin.getMessages("auction.info.Header", "auction.info.Owner", (auction.getItem() instanceof FakeItem ? "auction.info.FakeItem" : "auction.info.RealItem"), (auction.getWinner() != null ? "auction.info.Winner" : "auction.info.NoWinner"), (sender instanceof Player && auction.getWinner() != null && auction.getWinner().equals(PlayerMerchant.getByPlayer((Player)sender)) ? "auction.info.Self" : null), (auction.getState() == AuctionState.RUNNING ? "auction.info.Time" : "auction.info.State"), "auction.info.Help").set(auction, sender));
+        plugin.msg(sender, plugin.getMessages("auction.info.Header", "auction.info.Owner", (auction.getItem() instanceof FakeItem ? "auction.info.FakeItem" : "auction.info.RealItem"), (auction.getWinner() != null ? "auction.info.Winner" : "auction.info.NoWinner"), (sender instanceof Player && auction.getWinner() != null && auction.getWinner().equals(PlayerMerchant.getByPlayer((Player)sender)) ? "auction.info.Self" : null), (auction.getState() == AuctionState.RUNNING ? "auction.info.Time" : "auction.info.State")).set(auction, sender));
+        if (sender instanceof Player) {
+            Player player = (Player)sender;
+            Auction auc = plugin.getAuction();
+            if (auc != null) {
+                String minBidStr = auc.getMinimalBid().toString();
+                int minBid = (int)auc.getMinimalBid().getDouble();
+                Msg.raw(player,
+                        Msg.format("&3Your options: "),
+                        Msg.button(ChatColor.AQUA,
+                                   "&r[&bBid&r]", null,
+                                   "&9/bid " + minBidStr + "\n&rBid " + minBidStr + "\n&ron this auction.",
+                                   "/bid " + minBid + " "),
+                        " ",
+                        Msg.button(ChatColor.AQUA,
+                                   "&r[&bPreview&r]", null,
+                                   "&9/auc preview\n&rPreview this item.",
+                                   "/auc preview"));
+            }
+        }
+    }
+
+    @SubCommand(perm = "info", shortcut = true)
+    public void preview(Player player, Auction auction) {
+        if (!plugin.getAuctionInventory().initPreview(player, auction)) {
+            Msg.warn(player, "Preview not available!");
+        }
     }
 
     @SubCommand(perm = "bid", shortcut = true, optional = 1)
@@ -89,7 +117,7 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
         if (amount == null) amount = auction.getMinimalBid();
         auction.bid(PlayerMerchant.getByPlayer(player), amount);
     }
-        
+
     @SubCommand(perm = "start", shortcut = true, optional = 1)
     public void end(CommandSender sender, Auction auction, AuctionTime time) {
         Player player = sender instanceof Player ? (Player)sender : null;
@@ -160,7 +188,7 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
         if (amount == null) amount = auction.getMinimalBid();
         auction.bid(BankMerchant.getInstance(), amount);
     }
-        
+
     @SubCommand(perm = "info")
     public void listen(Player player) {
         ChatPlugin chatPlugin = plugin.getChatPlugin();

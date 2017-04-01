@@ -20,6 +20,7 @@
 package edu.self.startux.craftBay.chat;
 
 import edu.self.startux.craftBay.CraftBayPlugin;
+import edu.self.startux.craftBay.Msg;
 import edu.self.startux.craftBay.locale.Message;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,84 +28,89 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 public class BukkitChat implements ChatPlugin {
-        private CraftBayPlugin plugin;
-        private boolean whitelisted;
-        private HashSet<String> playerList = new HashSet<String>();
-        private FileConfiguration conf = new YamlConfiguration(); 
-        private static final String CONFIG_FILE_PATH = "defaultchat.yml";
+    private CraftBayPlugin plugin;
+    private boolean whitelisted;
+    private HashSet<String> playerList = new HashSet<String>();
+    private FileConfiguration conf = new YamlConfiguration(); 
+    private static final String CONFIG_FILE_PATH = "defaultchat.yml";
         
-        public BukkitChat(CraftBayPlugin plugin) {
-                this.plugin = plugin;
-        }
+    public BukkitChat(CraftBayPlugin plugin) {
+        this.plugin = plugin;
+    }
 
-        @Override
-        public boolean enable(ConfigurationSection section) {
-                whitelisted = !section.getBoolean("autojoin", true);
-                try {
-                        conf.load(new File(plugin.getDataFolder(), CONFIG_FILE_PATH));
-                } catch (FileNotFoundException fnfe) {
-                        // do nothing
-                } catch (Exception e) {
-                        e.printStackTrace();
-                }
-                if (whitelisted) {
-                        for (String name : conf.getStringList("whitelist")) playerList.add(name);
-                } else {
-                        for (String name : conf.getStringList("blacklist")) playerList.add(name);
-                }
-                return true;
+    @Override
+    public boolean enable(ConfigurationSection section) {
+        whitelisted = !section.getBoolean("autojoin", true);
+        try {
+            conf.load(new File(plugin.getDataFolder(), CONFIG_FILE_PATH));
+        } catch (FileNotFoundException fnfe) {
+            // do nothing
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        if (whitelisted) {
+            for (String name : conf.getStringList("whitelist")) playerList.add(name);
+        } else {
+            for (String name : conf.getStringList("blacklist")) playerList.add(name);
+        }
+        return true;
+    }
 
-        @Override
-        public void disable() {
-                if (whitelisted) {
-                        conf.set("whitelist", new ArrayList<String>(playerList));
-                } else {
-                        conf.set("blacklist", new ArrayList<String>(playerList));
-                }
-                try {
-                        conf.save(new File(plugin.getDataFolder(), CONFIG_FILE_PATH));
-                } catch (Exception e) {
-                        e.printStackTrace();
-                }
+    @Override
+    public void disable() {
+        if (whitelisted) {
+            conf.set("whitelist", new ArrayList<String>(playerList));
+        } else {
+            conf.set("blacklist", new ArrayList<String>(playerList));
         }
+        try {
+            conf.save(new File(plugin.getDataFolder(), CONFIG_FILE_PATH));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-        @Override
-        public void broadcast(List<String> lines) {
-                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                        if (isListening(player)) {
-                                for (String line : lines) {
-                                        player.sendMessage(line);
-                                }
-                        }
+    @Override
+    public void broadcast(List<String> lines) {
+        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+            if (isListening(player)) {
+                for (String line : lines) {
+                    Msg.raw(player,
+                            Msg.button(ChatColor.DARK_AQUA,
+                                       line, null,
+                                       "&9/auc\n&rAuction info",
+                                       "/auc"));
                 }
+            }
         }
+    }
 
-        @Override
-        public boolean listen(Player player, boolean on) {
-                if (whitelisted) {
-                        if (on) playerList.add(player.getName().toLowerCase());
-                        else playerList.remove(player.getName().toLowerCase());
-                } else {
-                        if (on) playerList.remove(player.getName().toLowerCase());
-                        else playerList.add(player.getName().toLowerCase());
-                }
-                return true;
+    @Override
+    public boolean listen(Player player, boolean on) {
+        if (whitelisted) {
+            if (on) playerList.add(player.getName().toLowerCase());
+            else playerList.remove(player.getName().toLowerCase());
+        } else {
+            if (on) playerList.remove(player.getName().toLowerCase());
+            else playerList.add(player.getName().toLowerCase());
         }
+        return true;
+    }
 
-        @Override
-        public boolean isListening(Player player) {
-                if (!player.hasPermission("auction.bid")) {
-                        return false;
-                }
-                if (!whitelisted && !playerList.contains(player.getName().toLowerCase())) return true;
-                else if (whitelisted && playerList.contains(player.getName().toLowerCase())) return true;
-                return false;
+    @Override
+    public boolean isListening(Player player) {
+        if (!player.hasPermission("auction.bid")) {
+            return false;
         }
+        if (!whitelisted && !playerList.contains(player.getName().toLowerCase())) return true;
+        else if (whitelisted && playerList.contains(player.getName().toLowerCase())) return true;
+        return false;
+    }
 }

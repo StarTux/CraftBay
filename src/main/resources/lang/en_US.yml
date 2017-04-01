@@ -117,7 +117,7 @@ auction:
     FeeDebited: '<dfl>Your account has been debited <hl>{fee}<dfl>.'
     OwnerCooldown: '<warn>You have to wait <warnhi>{cooldown}<warn>!'
   start:
-    Announce: '<hl>{owner}<dfl> is auctioning <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> for <hl>{minbid}<dfl>. Type <hl>/auc'
+    Announce: '<hl>{owner}<dfl> is auctioning <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> for <hl>{minbid}<dfl>. <hl>Click here.'
   gui:
     ChestTitle: 'Items for auction'
     ItemsNotEqual: '<warn>All items must be identical!'
@@ -140,8 +140,8 @@ auction:
     Fee: '<dfl>Fee: <hl>{fee}'
     Help: '<dfl>Type <hl>/auc ?<dfl> for a list of commands.'
   reminder:
-    NoWinner: '<dfl>Auction for <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> ends in <hl>{timeleft}<dfl>. Price: <hl>{minbid}<dfl>. Type <hl>/auc'
-    Winner: '<hl>{winner}<dfl> wins <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> for <hl>{price}<dfl> in <hl>{timeleft}<dfl>. Type <hl>/auc'
+    NoWinner: '<dfl>Auction for <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> ends in <hl>{timeleft}<dfl>. Price: <hl>{minbid}<dfl>. <hl>Click here.'
+    Winner: '<hl>{winner}<dfl> wins <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> for <hl>{price}<dfl> in <hl>{timeleft}<dfl>. <hl>Click here.'
   countdown:
     NoWinner: '<dfl>Auction for <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> ends in <hl>{timeleft}<dfl>!'
     Winner: '<hl>{winner}<dfl> wins <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> in <hl>{timeleft}<dfl>!'
