@@ -52,12 +52,6 @@ public class AuctionInventory implements Listener {
         }
     }
 
-    public MoneyAmount getMinbid(Player player) {
-        PlayerData data = playerData.get(player.getUniqueId());
-        if (data == null) return new MoneyAmount(0.0);
-        return data.minbid;
-    }
-
     public void setPlayer(Player player, MoneyAmount minbid, Inventory inventory, boolean preview) {
         PlayerData data = playerData.get(player.getUniqueId());
         if (data == null) {
@@ -142,7 +136,7 @@ public class AuctionInventory implements Listener {
             plugin.warn(player, plugin.getMessage("auction.gui.ItemsNotEqual"));
             return;
         }
-        MoneyAmount minbid = getMinbid(player);
+        MoneyAmount minbid = data.minbid;
         Auction auction = plugin.getAuctionHouse().createAuction(merchant, item, minbid, false);
         if (auction == null) {
             for (ItemStack drop : items) if (drop != null) player.getWorld().dropItem(player.getLocation(), drop);
