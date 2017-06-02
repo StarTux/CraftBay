@@ -116,7 +116,7 @@ public class Language {
 
         @SuppressWarnings("unchecked")
         private void loadLanguageStream(InputStream inp) {
-                ConfigurationSection conf = YamlConfiguration.loadConfiguration(inp);
+                ConfigurationSection conf = YamlConfiguration.loadConfiguration(new InputStreamReader(inp));
                 for (String key : conf.getKeys(true)) {
                         Message message;
                         Object o = conf.get(key);
