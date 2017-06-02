@@ -40,10 +40,6 @@ debug: false
 defaultchat:
         # Are players listening by default?
         autojoin: true
-# ChannelChat configuration
-channelchat:
-        enable: false
-        channel: Trade
 # Colors
 colors:
         default: dark_aqua
