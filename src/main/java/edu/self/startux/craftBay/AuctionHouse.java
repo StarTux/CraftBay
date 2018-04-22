@@ -34,7 +34,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.metadata.LazyMetadataValue;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public final class AuctionHouse implements Listener {
@@ -177,21 +177,19 @@ public final class AuctionHouse implements Listener {
     private void setupPlayer(Player player) {
         if (plugin.supportMiniMap) {
             final UUID uuid = player.getUniqueId();
-            player.setMetadata("MiniMapSettings", new LazyMetadataValue(plugin, LazyMetadataValue.CacheStrategy.NEVER_CACHE, () -> {
-                        Map<String, Object> map = new HashMap<>();
-                        map.put("Type", "Boolean");
-                        map.put("DisplayName", "Auction Notifications");
-                        map.put("Priority", plugin.miniMapPriority);
-                        map.put("Value", plugin.getChatPlugin().isListening(player));
-                        Runnable onUpdate = () -> {
-                            boolean v = map.get("Value") == Boolean.TRUE;
-                            Player p = plugin.getServer().getPlayer(uuid);
-                            if (p != null) plugin.getChatPlugin().listen(p, v);
-                        };
-                        List<Map> list = new ArrayList<>();
-                        list.add(map);
-                        return list;
-            }));
+            Map<String, Object> map = new HashMap<>();
+            map.put("Type", "Boolean");
+            map.put("DisplayName", "Auction Notifications");
+            map.put("Priority", plugin.miniMapPriority);
+            map.put("Value", plugin.getChatPlugin().isListening(player));
+            Runnable onUpdate = () -> {
+                boolean v = map.get("Value") == Boolean.TRUE;
+                Player p = plugin.getServer().getPlayer(uuid);
+                if (p != null) plugin.getChatPlugin().listen(p, v);
+            };
+            List<Map> list = new ArrayList<>();
+            list.add(map);
+            player.setMetadata("MiniMapSettings", new FixedMetadataValue(plugin, list));
         }
     }
 }
