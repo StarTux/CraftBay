@@ -40,6 +40,9 @@ debug: false
 defaultchat:
         # Are players listening by default?
         autojoin: true
+minimap:
+        enable: false
+        priority: 0
 # Colors
 colors:
         default: dark_aqua
