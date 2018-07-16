@@ -35,6 +35,7 @@ help:
 # Admin command help, accessed via "/auc help" for admins
 adminhelp:
   Bank: '<adm>/auc <admhi>bank <adm>\<<admhi>item<adm>\> [<admhi>amount<adm>] <adm>[<admhi>price<adm>] [<admhi>time<adm>] <h>Auction spawned items'
+  Bank: '<adm>/auc <admhi>bankhand <h>Auction item in hand on behalf of the bank'
   BankBid: '<adm>/auc <admhi>bankbid <adm>\<<admhi>amount<adm>\> <h>Place a bid on behalf of the bank'
   Reload: '<adm>/auc <admhi>reload <h>Reload configuration file'
   Log: '<adm>/auc <admhi>log <adm>[<admhi>id<adm>] <h>View auction log'
