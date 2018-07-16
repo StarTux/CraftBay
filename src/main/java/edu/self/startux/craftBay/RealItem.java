@@ -60,9 +60,12 @@ public class RealItem implements Item {
     }
 
     public RealItem(ItemStack stack, int amount) {
-        this.stack = stack.clone();
+        if (stack.getType() == Material.AIR || stack.getAmount() == 0) {
+            this.stack = new ItemStack(Material.STICK);
+        } else {
+            this.stack = stack.clone();
+        }
         this.amount = amount;
-        if (stack.getType() == Material.AIR) throw new IllegalArgumentException();
         ItemMeta meta = stack.getItemMeta();
         if (meta instanceof SkullMeta) {
             SkullMeta skull = (SkullMeta)meta;
