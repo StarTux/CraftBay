@@ -194,8 +194,6 @@ public class Message {
                 set("itemdesc", item.getDescription());
                 set("amount", item.getAmount());
                 set("totalamount", item.getAmount().getInt());
-                set("itemid", item.getId());
-                set("itemdamage", item.getDamage());
                 set("enchantments", item.getItemInfo());
                 set("iteminfo", item.getItemInfo());
                 return this;

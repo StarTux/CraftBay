@@ -59,16 +59,6 @@ public class FakeItem implements Item {
         }
 
         @Override
-        public int getId() {
-                return 0;
-        }
-
-        @Override
-        public int getDamage() {
-                return 0;
-        }
-
-        @Override
         public boolean has(Merchant merchant) {
                 if (merchant instanceof BankMerchant) {
                         return true;

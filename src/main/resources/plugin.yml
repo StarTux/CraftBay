@@ -1,6 +1,7 @@
 name: CraftBay
 main: edu.self.startux.craftBay.CraftBayPlugin
 version: 2.1
+api-version: 1.13
 author: StarTux
 description: Auction off your precious items
 depend: [Vault]

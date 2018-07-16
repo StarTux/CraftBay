@@ -64,7 +64,7 @@ public class RealItem implements Item {
         this.amount = amount;
         if (stack.getType() == Material.AIR) throw new IllegalArgumentException();
         ItemMeta meta = stack.getItemMeta();
-        if (stack.getType() == Material.SKULL_ITEM && (int)stack.getDurability() == 3) {
+        if (meta instanceof SkullMeta) {
             SkullMeta skull = (SkullMeta)meta;
             if (!skull.hasOwner() || skull.getOwner() == null) {
                 throw new IllegalArgumentException();
@@ -83,28 +83,11 @@ public class RealItem implements Item {
             String result = CraftBayPlugin.getInstance().getGenericEventsHandler().getItemName(stack);
             if (result != null) return result;
         }
-        if (stack.getType() == Material.MONSTER_EGG) {
-            SpawnEggMeta meta = (SpawnEggMeta)stack.getItemMeta();
-            EntityType et = meta.getSpawnedType();
-            if (et != null) {
-                switch (et) {
-                case VINDICATOR:
-                case EVOKER:
-                case EVOKER_FANGS:
-                    return niceEnumName(et.name()) + " Spawn Egg";
-                default:
-                    return niceEnumName(et.getName()) + " Spawn Egg";
-                }
-            } else {
-                return "Spawn Egg";
-            }
-        } else {
-            ItemInfo info = Items.itemByStack(stack);
-            if (info == null) {
-                return niceEnumName(stack.getType().name());
-            }
+        ItemInfo info = Items.itemByStack(stack);
+        if (info != null) {
             return info.getName();
         }
+        return niceEnumName(stack.getType().name());
     }
 
     private static String capitalName(String in) {
@@ -182,16 +165,6 @@ public class RealItem implements Item {
                         sb.append(" ").append((amp+1));
                     }
                 }
-            }
-        }
-        // Non-Vanilla Spawn Eggs
-        if (stack.getType() == Material.MONSTER_EGG) {
-            switch ((int)stack.getDurability()) {
-            case 63: sb.append(" (Ender Dragon)"); break;
-            case 64: sb.append(" (Wither)"); break;
-            case 65: sb.append(" (Bat)"); break;
-            case 97: sb.append(" (Snow Golem)"); break;
-            case 99: sb.append(" (Iron Golem)"); break;
             }
         }
         return sb.toString();
@@ -313,16 +286,6 @@ public class RealItem implements Item {
         return result.toString();
     }
 
-    @Override
-    public int getId() {
-        return stack.getTypeId();
-    }
-
-    @Override
-    public int getDamage() {
-        return stack.getDurability();
-    }
-
     public ItemStack getItemStack() {
         return stack.clone();
     }
@@ -375,7 +338,7 @@ public class RealItem implements Item {
     @Override
     public String toString() {
         String name = "";
-        name += "" + stack.getTypeId() + ":" + stack.getDurability() + " " + amount;
+        name += "" + stack.getType() + "x" + amount;
         Map<Enchantment, Integer> enchantments = stack.getEnchantments();
         if (!enchantments.isEmpty()) {
             boolean comma = false;
@@ -407,43 +370,7 @@ public class RealItem implements Item {
     }
 
     public static String getEnchantmentName(Enchantment enchantment) {
-        switch (enchantment.getId()) {
-        case 0: return "Protection";
-        case 1: return "Fire Protection";
-        case 2: return "Feather Falling";
-        case 3: return "Blast Protection";
-        case 4: return "Projectile Protection";
-        case 5: return "Respiration";
-        case 6: return "Aqua Affinity";
-        case 7: return "Thorns";
-        case 8: return "Depth Strider";
-        case 9: return "Frost Walker";
-        case 10: return "Curse of Binding";
-            //
-        case 16: return "Sharpness";
-        case 17: return "Smite";
-        case 18: return "Bane of Arthropods";
-        case 19: return "Knockback";
-        case 20: return "Fire Aspect";
-        case 21: return "Looting";
-            //
-        case 32: return "Efficiency";
-        case 33: return "Silk Touch";
-        case 34: return "Unbreaking";
-        case 35: return "Fortune";
-            //
-        case 48: return "Power";
-        case 49: return "Punch";
-        case 50: return "Flame";
-        case 51: return "Infinity";
-            //
-        case 61: return "Luck of the Sea";
-        case 62: return "Lure";
-            //
-        case 70: return "Mending";
-        case 71: return "Curse of Vanishing";
-        default: return niceEnumName(enchantment.getName());
-        }
+        return niceEnumName(enchantment.getKey().getKey());
     }
 
     private String roman(int i) {

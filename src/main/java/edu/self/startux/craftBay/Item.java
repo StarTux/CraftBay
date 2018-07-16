@@ -34,8 +34,6 @@ public interface Item extends ConfigurationSerializable {
 
         public ItemAmount getAmount();
         public String getItemInfo();
-        public int getId();
-        public int getDamage();
 
         /**
          * Check if a merchant has this item
