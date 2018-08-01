@@ -23,14 +23,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import net.milkbowl.vault.item.ItemInfo;
-import net.milkbowl.vault.item.Items;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -41,7 +38,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.inventory.meta.SpawnEggMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
@@ -86,10 +82,6 @@ public class RealItem implements Item {
             String result = CraftBayPlugin.getInstance().getGenericEventsHandler().getItemName(stack);
             if (result != null) return result;
         }
-        ItemInfo info = Items.itemByStack(stack);
-        if (info != null) {
-            return info.getName();
-        }
         return niceEnumName(stack.getType().name());
     }
 
@@ -122,8 +114,6 @@ public class RealItem implements Item {
             sb.append(" ");
         }
         sb.append(getName());
-
-        // Append information Vault doesn't give us.
         Map<Enchantment, Integer> enchantments = stack.getEnchantments();
         ItemMeta meta = stack.getItemMeta();
         if (enchantments == null || enchantments.isEmpty()) {
