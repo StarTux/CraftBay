@@ -1,64 +1,47 @@
 # File: plugins/CraftBay/lang/de_DE.yml
-#
-# WARNUNG: Diese Datei nicht direkt verändern! Sie wird bei jedem
-# Neustart überschrieben. Erzeuge stattdessen eine lokale kopie
-# mit einem einmaligen Namen.
-# Beispiel: "plugins/CraftBay/lang/meinserver.yml"
-#
-# Formatting
-# default: <default> <dfl>
-# header: <header> <head> <hd> <h>
-# highlight: <highlight> <hl> <hi>
-# shadow: <shadow> <dark> <shade> <shd>
-# shortcut: <shortcut> <sc> <s>
-# admin: <admin> <adm>
-# adminhighlight: <adminhighlight> <adminhigh> <adminhi> <admhl> <admhi>
-# error: <error> <err>
-# warn: <warning> <warn> <wrn>
-# warn: <warninghighlight> <warninghigh> <warnhigh> <warnhi> <wrnhi>
 
 Tag: 'Auktion:'
 # Command help, accessed via "/auc help"
 help:
-  Header: '<h>Auktionshilfe'
-  Help: '<dfl>/auc <hl>?<dfl> <h>Hilfebildschirm'
-  Info: '<dfl>/auc <s>i<hl>nfo <h>Zeige Auktionsinformationen'
-  Bid: '<dfl>/auc <s>b<hl>ID <dfl>[<hl>Betrag<dfl>] <h>Biete für die Auktion'
-  BidShort: '<dfl>/bid <dfl>[<hl>Betrag<dfl>] <h>Biete für die Auktion'
-  Start: '<dfl>/auc <s>s<hl>tart <dfl>[<hl>Preis<dfl>] <h>Versteigere ein Item'
-  Hand: '<dfl>/auc <hl>hand <dfl>[<hl>Preis<dfl>] <h>Versteigere Item in Hand'
-  Fee: '<dfl>Das Starten einer Auktion kostet <hl>{fee}<dfl>.'
-  Tax: '<dfl>Anfangsgebote über <hl>{minbid}<dfl> erfordern <hl>{tax}%<dfl> Gebühren.'
-  End: '<dfl>/auc <s>e<hl>nd <dfl>[<hl>Minuten<dfl>:<hl>Sekunden<dfl>] <h>Beende die Auktion'
-  Listen: '<dfl>/auc <hl>listen<dfl>|<hl>ignore <h>Lausche oder ignoriere Auktionen'
-  History: '<dfl>/auc <hl>history <dfl>[<hl>ID<dfl>] <h>Betrachte Auktionshistorie'
-  Cancel: '<dfl>/auc <s>c<hl>ancel <dfl>[<hl>ID<dfl>] <h>Löse eine Auktion auf'
+  Header: '&eAuktionshilfe'
+  Help: '&3/auc &b?&3 &eHilfebildschirm'
+  Info: '&3/auc &fi&bnfo &eZeige Auktionsinformationen'
+  Bid: '&3/auc &fb&bID &3[&bBetrag&3] &eBiete für die Auktion'
+  BidShort: '&3/bid &3[&bBetrag&3] &eBiete für die Auktion'
+  Start: '&3/auc &fs&btart &3[&bPreis&3] &eVersteigere ein Item'
+  Hand: '&3/auc &bhand &3[&bPreis&3] &eVersteigere Item in Hand'
+  Fee: '&3Das Starten einer Auktion kostet &b{fee}&3.'
+  Tax: '&3Anfangsgebote über &b{minbid}&3 erfordern &b{tax}%&3 Gebühren.'
+  End: '&3/auc &fe&bnd &3[&bMinuten&3:&bSekunden&3] &eBeende die Auktion'
+  Listen: '&3/auc &blisten&3|&bignore &eLausche oder ignoriere Auktionen'
+  History: '&3/auc &bhistory &3[&bID&3] &eBetrachte Auktionshistorie'
+  Cancel: '&3/auc &fc&bancel &3[&bID&3] &eLöse eine Auktion auf'
 # Admin command help, accessed via "/auc help" for admins
 adminhelp:
-  Bank: '<adm>/auc <admhi>bank <adm>\<<admhi>Item<adm>\> [<admhi>Anzahl<adm>] <adm>[<admhi>Preis<adm>] [<admhi>Frist<adm>] <h>Bankversteigerung'
-  BankBid: '<adm>/auc <admhi>bankbid <adm>\<<admhi>Betrag<adm>\> <h>Biete stellvertretend für die Bank'
-  Reload: '<adm>/auc <admhi>reload <h>Lade die Konfigurationsdatei erneut'
-  Log: '<adm>/auc <admhi>log <adm>[<admhi>ID<adm>] <h>Betrachte Auktionslogbuch'
-  Fake: '<adm>/auc <adminhi>fake <adm>\<<admhi>Titel<adm>\> [<admhi>Anzahl<adm>] [<admhi>Preis<adm>] <h>Versteigere Fälschung'
+  Bank: '&4/auc &cbank &4\<&cItem&4\> [&cAnzahl&4] &4[&cPreis&4] [&cFrist&4] &eBankversteigerung'
+  BankBid: '&4/auc &cbankbid &4\<&cBetrag&4\> &eBiete stellvertretend für die Bank'
+  Reload: '&4/auc &creload &eLade die Konfigurationsdatei erneut'
+  Log: '&4/auc &clog &4[&cID&4] &eBetrachte Auktionslogbuch'
+  Fake: '&4/auc &cfake &4\<&cTitel&4\> [&cAnzahl&4] [&cPreis&4] &eVersteigere Fälschung'
 # Error messages during command line parsing
 # Environment:
 #  player - the name of the player issuing the command
 #  cmd - the issued subcommand
 #  arg - the erroneous argument (if applicable)
 command:
-  NoEntry: '<warn>Unbekannter Befehl: "{cmd}"!'
-  NoPerm: "<warn>Du bist nicht befugt!"
-  BadWorld: '<warn>Das geht nicht in dieser Welt!'
-  NotAPlayer: '<warn>Spieler erwartet!'
-  NoCurrentAuction: '<warn>Keine laufende Auktion!'
-  NoSuchAuction: '<warn>Unbekannte Auktion: <warnhi>{arg}<warn>!'
-  ArgsTooSmall: '<warn>Nicht genügend Parameter!'
-  ArgsTooBig: '<warn>Zu viele Parameter!'
-  NotANumber: '<warn>Zahl erwartet: <warnhi>{arg}<warn>!'
-  BadTimeFormat: '<warn>Ungültiges Zeitformat: <warnhi>{arg}<warn>!'
-  NoSuchItem: '<warn>Unbekannter Gegenstand: <warnhi>{arg}<warn>!'
-  IllegalItem: '<warn>Ungültiger Gegenstand: <warnhi>{arg}<warn>!'
-  UnclosedQuote: '<warn>Anführungs- ohne Schlusszeichen!'
+  NoEntry: '&cUnbekannter Befehl: "{cmd}"!'
+  NoPerm: "&cDu bist nicht befugt!"
+  BadWorld: '&cDas geht nicht in dieser Welt!'
+  NotAPlayer: '&cSpieler erwartet!'
+  NoCurrentAuction: '&cKeine laufende Auktion!'
+  NoSuchAuction: '&cUnbekannte Auktion: &4{arg}&c!'
+  ArgsTooSmall: '&cNicht genügend Parameter!'
+  ArgsTooBig: '&cZu viele Parameter!'
+  NotANumber: '&cZahl erwartet: &4{arg}&c!'
+  BadTimeFormat: '&cUngültiges Zeitformat: &4{arg}&c!'
+  NoSuchItem: '&cUnbekannter Gegenstand: &4{arg}&c!'
+  IllegalItem: '&cUngültiger Gegenstand: &4{arg}&c!'
+  UnclosedQuote: '&cAnführungs- ohne Schlusszeichen!'
 # Error messages from commands
 # Environment:
 #   player - the name of the player issuing the command
@@ -66,32 +49,32 @@ command:
 #   arg - the erroneous argument, if applicable
 commands:
   listen:
-    AlreadyListen: '<warn>Du lauschst den Auktionen bereits!'
-    AlreadyIgnore : '<warn>Du ignorierst Auktionen bereits!'
-    ListenError: '<warn>Es ist ein Fehler aufgetreten!'
-    IgnoreError: '<warn>Es ist ein Fehler aufgetreten!'
-    ListenSuccess: '<dfl>Du lauschst nun den Auktionen'
-    IgnoreSuccess: '<dfl>Auktionen werden nun ignoriert.'
+    AlreadyListen: '&cDu lauschst den Auktionen bereits!'
+    AlreadyIgnore : '&cDu ignorierst Auktionen bereits!'
+    ListenError: '&cEs ist ein Fehler aufgetreten!'
+    IgnoreError: '&cEs ist ein Fehler aufgetreten!'
+    ListenSuccess: '&3Du lauschst nun den Auktionen'
+    IgnoreSuccess: '&3Auktionen werden nun ignoriert.'
   history:
-    NoEntry: '<warn>Unbekannte ID: {id}'
+    NoEntry: '&cUnbekannte ID: {id}'
   start:
-    HandEmpty: '<warn>Du hältst nichts in deiner Hand!'
-    AmountTooSmall: '<warn>Positive Anzahl erwartet!'
-    CreativeDenial: '<warn>Du kannst keine Auktionen im Kreativmodus starten!'
-    Success: '<dfl>Dein <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> wird bald versteigert werden!'
+    HandEmpty: '&cDu hältst nichts in deiner Hand!'
+    AmountTooSmall: '&cPositive Anzahl erwartet!'
+    CreativeDenial: '&cDu kannst keine Auktionen im Kreativmodus starten!'
+    Success: '&3Dein &b{amount}&3x&b{itemdesc}&3 wird bald versteigert werden!'
   end:
-    NotOwner: '<warn>Das ist nicht deine Auktion!'
-    DelayTooLong: '<warn>Du kannst die Auktion nicht verlängern!'
-    DelayTooShort: '<warn>Restzeit muss {min} ode mehr sein!'
-    DelayNegative: '<warn>Positive Frist erwartet!'
+    NotOwner: '&cDas ist nicht deine Auktion!'
+    DelayTooLong: '&cDu kannst die Auktion nicht verlängern!'
+    DelayTooShort: '&cRestzeit muss {min} ode mehr sein!'
+    DelayNegative: '&cPositive Frist erwartet!'
   cancel:
-    NotOwner: '<warn>Das ist nicht deine Auktion!'
-    Running: '<warn>Laufende Auktionen können nicht abgebrochen werden!'
-    Canceled: '<warn>Die Auktion wurde bereits abgebrochen!'
-    Ended: '<warn>Diese Auktion is vorüber!'
+    NotOwner: '&cDas ist nicht deine Auktion!'
+    Running: '&cLaufende Auktionen können nicht abgebrochen werden!'
+    Canceled: '&cDie Auktion wurde bereits abgebrochen!'
+    Ended: '&cDiese Auktion is vorüber!'
   fake:
-    Fail: '<warn>Versteigerung der Fälschung schlug fehl!'
-    Success: '<dfl>Die Fälschung wird bald versteigert werden.'
+    Fail: '&cVersteigerung der Fälschung schlug fehl!'
+    Success: '&3Die Fälschung wird bald versteigert werden.'
 # Error messages from auctions
 # Environment (where applicable):
 #   id - the auction id
@@ -110,68 +93,68 @@ commands:
 #   fee - the total fee
 auction:
   create:
-    QueueFull: '<warn>Bitte warte bis andere Auktionen vorüber sind!'
-    NotEnoughItems: '<warn>Du hast nicht genug <warnhi>{itemdesc}<warn>!'
-    FeeTooHigh: '<warn>Du kannst dir die <warnhi>{fee}<warnhi> Gebühr nicht leisten!'
-    FeeDebited: '<dfl>Dein Konto wurde mit <hl>{fee}<dfl> belastet.'
-    OwnerCooldown: '<warn>Du musst noch <warnhi>{cooldown}<warn> warten!'
+    QueueFull: '&cBitte warte bis andere Auktionen vorüber sind!'
+    NotEnoughItems: '&cDu hast nicht genug &4{itemdesc}&c!'
+    FeeTooHigh: '&cDu kannst dir die &4{fee}&4 Gebühr nicht leisten!'
+    FeeDebited: '&3Dein Konto wurde mit &b{fee}&3 belastet.'
+    OwnerCooldown: '&cDu musst noch &4{cooldown}&c warten!'
   start:
-    Announce: '<hl>{owner}<dfl> versteigert <hl>{amount}<dfl>x<hl>{itemdesc}<dfl>. Preis: <hl>{minbid}<dfl>. Gib <hl>/auc<dfl> ein.'
+    Announce: '&b{owner}&3 versteigert &b{amount}&3x&b{itemdesc}&3. Preis: &b{minbid}&3. Gib &b/auc&3 ein.'
   gui:
     ChestTitle: 'Gegenstände zum Versteigern'
-    ItemsNotEqual: '<warn>Alle Gegenstände müssen gleich sein!'
-    Success: '<dfl>Dein <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> wird bald versteigert werden!'
+    ItemsNotEqual: '&cAlle Gegenstände müssen gleich sein!'
+    Success: '&3Dein &b{amount}&3x&b{itemdesc}&3 wird bald versteigert werden!'
   state:
     Queued: Warteschlange
     Running: Laufend
     Canceled: Abgebrochen
     Ended: Beendet
   info:
-    Header: '<h>Auktionsinformationen'
-    Owner: '<dfl>Auktionär: <hl>{owner}'
-    RealItem: '<dfl>Gegenstand: <hl>{totalamount}<dfl>x<hl>{item}<dfl> <hl>{iteminfo}<dfl>'
-    FakeItem: '<dfl>Gegenstand: <hl>{item}'
-    Winner: '<dfl>Sieger: <hl>{winner}<dfl> for <hl>{price}'
-    NoWinner: '<dfl>Anfangsgebot: <hl>{minbid}'
-    Self: '<dfl>Dein Gebot: <hl>{maxbid}'
-    Time: '<dfl>Frist: <hl>{timeleft}'
-    State: '<dfl>Zustand: <hl>{state}'
-    Fee: '<dfl>Gebühr: <hl>{fee}'
-    Help: '<dfl>Gib <hl>/auc ?<dfl> ein für eine Befehlsliste.'
+    Header: '&eAuktionsinformationen'
+    Owner: '&3Auktionär: &b{owner}'
+    RealItem: '&3Gegenstand: &b{totalamount}&3x&b{item}&3 &b{iteminfo}&3'
+    FakeItem: '&3Gegenstand: &b{item}'
+    Winner: '&3Sieger: &b{winner}&3 for &b{price}'
+    NoWinner: '&3Anfangsgebot: &b{minbid}'
+    Self: '&3Dein Gebot: &b{maxbid}'
+    Time: '&3Frist: &b{timeleft}'
+    State: '&3Zustand: &b{state}'
+    Fee: '&3Gebühr: &b{fee}'
+    Help: '&3Gib &b/auc ?&3 ein für eine Befehlsliste.'
   reminder:
-    NoWinner: '<dfl>Auktion für <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> endet it <hl>{timeleft}<dfl>. Preis: <hl>{minbid}<dfl>. Gib <hl>/auc<dfl> ein.'
-    Winner: '<hl>{winner}<dfl> gewinnt <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> für <hl>{price}<dfl> in <hl>{timeleft}<dfl>! Gib <hl>/auc<dfl> ein.'
+    NoWinner: '&3Auktion für &b{amount}&3x&b{itemdesc}&3 endet it &b{timeleft}&3. Preis: &b{minbid}&3. Gib &b/auc&3 ein.'
+    Winner: '&b{winner}&3 gewinnt &b{amount}&3x&b{itemdesc}&3 für &b{price}&3 in &b{timeleft}&3! Gib &b/auc&3 ein.'
   countdown:
-    NoWinner: '<dfl>Auktion für <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> endet in <hl>{timeleft}<dfl>!'
-    Winner: '<hl>{winner}<dfl> gewinnt <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> in <hl>{timeleft}<dfl>!'
+    NoWinner: '&3Auktion für &b{amount}&3x&b{itemdesc}&3 endet in &b{timeleft}&3!'
+    Winner: '&b{winner}&3 gewinnt &b{amount}&3x&b{itemdesc}&3 in &b{timeleft}&3!'
   bid:
-    IsOwner: '<warn>Du kannst nicht für deine eigene Auktion bieten!'
-    UnderbidSelf: '<warn>Du hast bereits ein größeres Gebot gemacht!'
-    BidTooSmall: '<warn>Du musst wenigstens <warnhi>{minbid}<warn> bieten!'
-    TooPoor: '<warn>Das kannst du dir nicht leisten!'
-    Win: '<dfl>Du hast nun den Zuschlag für <hl>{price}<dfl>!'
-    Fail: '<hl>{winner}<dfl> behält den Zuschlag aber der Preis steigt auf <hl>{price}<dfl>!'
-    ToLoser: '<dfl>{winner} hat dich besiegt mit {price}!'
-    NewPrice: '<dfl>Der Preis für <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> ist nun <hl>{price}<dfl> für <hl>{winner}<dfl>'
-    NewWinner: '<hl>{winner}<dfl> schlägt {oldwinner}. Preis <hl>{price}'
-    UnderBid: '<dfl>{player} erhöht, doch <hl>{winner}<dfl> ist höher. Preis <hl>{price}<dfl>.'
-    Still: '<dfl>Du gewinnst nach wie vor für <hl>{price}<dfl>.'
+    IsOwner: '&cDu kannst nicht für deine eigene Auktion bieten!'
+    UnderbidSelf: '&cDu hast bereits ein größeres Gebot gemacht!'
+    BidTooSmall: '&cDu musst wenigstens &4{minbid}&c bieten!'
+    TooPoor: '&cDas kannst du dir nicht leisten!'
+    Win: '&3Du hast nun den Zuschlag für &b{price}&3!'
+    Fail: '&b{winner}&3 behält den Zuschlag aber der Preis steigt auf &b{price}&3!'
+    ToLoser: '&3{winner} hat dich besiegt mit {price}!'
+    NewPrice: '&3Der Preis für &b{amount}&3x&b{itemdesc}&3 ist nun &b{price}&3 für &b{winner}&3'
+    NewWinner: '&b{winner}&3 schlägt {oldwinner}. Preis &b{price}'
+    UnderBid: '&3{player} erhöht, doch &b{winner}&3 ist höher. Preis &b{price}&3.'
+    Still: '&3Du gewinnst nach wie vor für &b{price}&3.'
   end:
-    ToWinner: '<dfl>Viel Spaß mit deinem <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> für <hl>{price}<dfl>!'
-    OwnerSell: '<dfl>Dein <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> wurde für <hl>{price}<dfl> an <hl>{winner}<dfl> verkauft.'
-    OwnerReturn: '<dfl>Hier hast du dein <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> zurück.'
-    OwnerPaymentError: '<warn>Fehler bei der Bezahlung. Auktion wird abgebrochen.'
-    Winner: '<hl>{winner}<dfl> kauft <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> für <hl>{price}<dfl>.'
-    WinnerPaymentError: '<warn>Fehler bei der Bezahlung. Auktion wird abgebrochen.'
-    PaymentError: '<warnhi>{winner}<warn> kann seine Rechnung nicht bezahlen. Auf ihn!'
-    NoBid: '<dfl>Auktion für <hl>{amount}<dfl>x<hl>{itemdesc}<dfl> endet ohne Gebote.'
-    Manual: '<hl>{player}<dfl> hat die Auktion beendet.'
+    ToWinner: '&3Viel Spaß mit deinem &b{amount}&3x&b{itemdesc}&3 für &b{price}&3!'
+    OwnerSell: '&3Dein &b{amount}&3x&b{itemdesc}&3 wurde für &b{price}&3 an &b{winner}&3 verkauft.'
+    OwnerReturn: '&3Hier hast du dein &b{amount}&3x&b{itemdesc}&3 zurück.'
+    OwnerPaymentError: '&cFehler bei der Bezahlung. Auktion wird abgebrochen.'
+    Winner: '&b{winner}&3 kauft &b{amount}&3x&b{itemdesc}&3 für &b{price}&3.'
+    WinnerPaymentError: '&cFehler bei der Bezahlung. Auktion wird abgebrochen.'
+    PaymentError: '&4{winner}&c kann seine Rechnung nicht bezahlen. Auf ihn!'
+    NoBid: '&3Auktion für &b{amount}&3x&b{itemdesc}&3 endet ohne Gebote.'
+    Manual: '&b{player}&3 hat die Auktion beendet.'
   cancel:
-    Announce: '<admin>Auktion abgebrochen durch <adminhi>{player}<admin>!'
-    ToOwner: '<warn>Deine Auktion wurde abgebrochen!'
-    FeeReturn: '<dfl>Deine <hl>{fee}<dfl> Gebühren wurden zurückerstattet.'
+    Announce: '&4Auktion abgebrochen durch &c{player}&4!'
+    ToOwner: '&cDeine Auktion wurde abgebrochen!'
+    FeeReturn: '&3Deine &b{fee}&3 Gebühren wurden zurückerstattet.'
   time:
-    Change: '<hl>{player}<dfl> setzt die Frist auf <hl>{newtimeleft}<dfl>.'
+    Change: '&b{player}&3 setzt die Frist auf &b{newtimeleft}&3.'
 # Special item describing strings not covered by Vault
 item:
   damaged:
@@ -206,10 +189,10 @@ item:
 # Display of the history.
 # Environment: see auction.*
 history:
-  Header: '<h>Auktionshistorie'
-  Queue: '<shd>[{id}] {owner} <hl>{totalamount}<dfl>x<hl>{itemdesc}'
-  Current: '<h>[{id}] {owner} <hl>{totalamount}<dfl>x<hl>{itemdesc}'
-  History: '<dfl>[<hl>{id}<dfl>] {owner} <hl>{totalamount}<dfl>x<hl>{itemdesc}'
+  Header: '&eAuktionshistorie'
+  Queue: '&8[{id}] {owner} &b{totalamount}&3x&b{itemdesc}'
+  Current: '&e[{id}] {owner} &b{totalamount}&3x&b{itemdesc}'
+  History: '&3[&b{id}&3] {owner} &b{totalamount}&3x&b{itemdesc}'
 log:
-  Header: '<header>Auktionslogbuch [{id}]'
-  Log: '<admin>{log}'
+  Header: '&eAuktionslogbuch [{id}]'
+  Log: '&4{log}'

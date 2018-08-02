@@ -1,0 +1,200 @@
+# File: plugins/CraftBay/lang/ru_RU.yml
+
+Tag: 'Auction:'
+# Command help, accessed via "/auc help"
+help:
+  Header: '&eСписок команд'
+  Help: '&3/auc &b?&3 &eПоказать этот список'
+  Info: '&3/auc &fi&bnfo &eПоказать информацию об аукционе'
+  Bid: '&3/auc &fb&bid &3[&bamount&3] &eСделать ставку'
+  BidShort: '&3/bid &3[&bamount&3] &eСделать ставку на последний аукцион'
+  Start: '&3/auc &fs&btart &3[&bprice&3] &eНачать аукцион'
+  Hand: '&3/auc &bhand &3[&bprice&3] &eВыставить на аукцион предмет в руке'
+  Fee: '&3Стоимость начала аукциона: &b{fee}&3.'
+  Tax: '&3Начальные ставки выше &b{minbid}&3 Облагаются налогом в: &b{tax}%&3.'
+  End: '&3/auc &fe&bnd &3[&bminutes&3:&bseconds&3] &eЗакончить текущий аукцион'
+  Listen: '&3/auc &blisten&3|&bignore &eВкл./Выкл. сообщения об аукционах'
+  History: '&3/auc &bhistory &3[&bid&3] &eПоказать предыдущие аукционы и текущую очередь аукционов'
+  Cancel: '&3/auc &fc&bancel &3[&bid&3] &eОтменить аукцион'
+# Admin command help, accessed via "/auc help" for admins
+adminhelp:
+  Bank: '&4/auc &cbank &4\<&citem&4\> [&camount&4] &4[&cprice&4] [&ctime&4] &eAuction spawned items'
+  BankBid: '&4/auc &cbankbid &4\<&camount&4\> &ePlace a bid on behalf of the bank'
+  Reload: '&4/auc &creload &eReload configuration file'
+  Log: '&4/auc &clog &4[&cid&4] &eView auction log'
+  Fake: '&4/auc &cfake &4\<&ctitle&4\> [&camount&4] [&cprice&4] &eAuction off a fake item'
+# Error messages during command line parsing
+# Environment:
+#  player - the name of the player issuing the command
+#  cmd - the issued subcommand
+#  arg - the erroneous argument (if applicable)
+command:
+  NoEntry: '&cЭта команда не существует: "{cmd}"!'
+  NoPerm: "&cУ вас нет прав!"
+  BadWorld: '&cВы не можете этого сделать в этом мире!'
+  NotAPlayer: '&cТолько простые игроки могут это делать!'
+  NoCurrentAuction: '&cНет текущих аукционов!'
+  NoSuchAuction: '&cНет текущих аукционов с этим именем: &4{arg}&c!'
+  ArgsTooSmall: '&cНедостаточно аргументов!'
+  ArgsTooBig: '&cСлишком много аргументов!'
+  NotANumber: '&cПредполагалось число: &4{arg}&c!'
+  BadTimeFormat: '&cНеверный формат времени: &4{arg}&c!'
+  NoSuchItem: '&cНедействительный предмет: &4{arg}&c!'
+  IllegalItem: '&cЗапрещенный предмет: &4{arg}&c!'
+  UnclosedQuote: '&cNo closing quote!'
+# Error messages from commands
+# Environment:
+#   player - the name of the player issuing the command
+#   auction variables where applicable, see auction.*
+#   arg - the erroneous argument, if applicable
+commands:
+  listen:
+    AlreadyListen: Вы уже прослушиваете аукционы!
+    AlreadyIgnore : Вы уже игнорируете аукционы!
+    ListenError: Произошла ошибка при попытке использовать эту команду!
+    IgnoreError: Произошла ошибка при попытке использовать эту команду!
+    ListenSuccess: Прослушивание аукционов включено
+    IgnoreSuccess: Игнорирование аукционов включено
+  history:
+    NoEntry: '&cНедействительный ID предмета: {id}'
+  start:
+    HandEmpty: '&cВ вашей руке ничего нет!'
+    AmountTooSmall: '&cСлишком маленькое количество!'
+    CreativeDenial: '&cВЫ не можете начать аукционы из творческого режима!'
+    Success: '&3Ваш аукцион на предметы: &b{amount}&3x&b{itemdesc}&3 скоро начнётся!'
+  end:
+    NotOwner: '&cВы не являетесь владельцем этого аукциона!'
+    DelayTooLong: '&cВы лишь можете сократить время вашего аукциона!'
+    DelayTooShort: '&cЗадержка должная быть не менее: {min}!'
+    DelayNegative: '&cЗадержка не может быть отрицательной!'
+  cancel:
+    NotOwner: '&cВы не владелец этого аукциона!'
+    Running: '&cВы не можете отменить действующий аукцион!'
+    Canceled: '&cЭтот аукцион уже отмён!'
+    Ended: '&cЭтот аукцион окончен!'
+  fake:
+    Fail: '&cСоздание фальшивого аукциона не удалось успешно'
+    Success: '&3Фальшивый аукцион успешно создан'
+# Error messages from auctions
+# Environment (where applicable):
+#   id - the auction id
+#   item - the item name
+#   itemdesc - a description of the item (the name and whether it is enchanted ot not)
+#   amount - the item amount, user friendly
+#   totalamount - the item amount, bare number
+#   iteminfo, enchantments - mixed item information
+#   itemid - the item's id
+#   itemdamage - the item's damage value
+#   owner - the owner's name
+#   winner - the winner, if any
+#   minbid - smallest possible bid to participate
+#   maxbid - highest placed bid
+#   price - the current price
+#   state - the state of this auction
+#   timeleft - the remaining auction duration
+#   fee - the total fee
+auction:
+  create:
+    QueueFull: '&cПодождите окончания других аукционов!'
+    NotEnoughItems: '&cУ вас недостаточно следующих вещей: &4{itemdesc}&c!'
+    FeeTooHigh: '&cВы не можете позволить себе оплатить пошлину &4{fee}&4!'
+    FeeDebited: '&3Вы оплатили пошлину &b{fee}&3.'
+    OwnerCooldown: '&cВам нужно подождать &4{cooldown}&c!'
+  start:
+    Announce: '&b{owner}&3 выставил на аукцион &b{amount}&3x&b{itemdesc}&3 for &b{minbid}&3. &bClick here.'
+  gui:
+    ChestTitle: 'Предметы на аукцион'
+    ItemsNotEqual: '&cВсе предметы должны быть идентичными!'
+    Success: '&3Ваш аукцион на &b{amount}&3x&b{itemdesc}&3 скоро начнётся!'
+  state:
+    Queued: В очереди
+    Running: Действует
+    Canceled: Отменён
+    Ended: Закончен
+  info:
+    Header: '&eИнформация об аукционе'
+    Owner: '&3Аукционер: &b{owner}'
+    RealItem: '&3Предметы: &b{totalamount}&3x&b{item}&3 [&b{itemid}&3:&b{itemdamage}&3] &b{iteminfo}&3'
+    FakeItem: '&3Предметы: &b{item}'
+    Winner: '&3Выигрывает: &b{winner}&3 за &b{price}'
+    NoWinner: '&3Минимальная ставка: &b{minbid}'
+    Self: '&3Ваша ставка: &b{maxbid}'
+    Time: '&3Времени осталось: &b{timeleft}'
+    State: '&3Состояние: &b{state}'
+    Fee: '&3Пошлина: &b{fee}'
+    Help: '&3Наберите&b/auc ?&3 для списка команд.'
+  reminder:
+    NoWinner: '&3Аукцион на &b{amount}&3x&b{itemdesc}&3 заканчивается через &b{timeleft}&3. Цена: &b{minbid}&3. &bНажмите здесь.'
+    Winner: '&b{winner}&3 выиграет &b{amount}&3x&b{itemdesc}&3 за &b{price}&3 через &b{timeleft}&3. &bНажмите здесь.'
+  countdown:
+    NoWinner: '&3Аукцион на &b{amount}&3x&b{itemdesc}&3 закончится через &b{timeleft}&3!'
+    Winner: '&b{winner}&3 выигрывает &b{amount}&3x&b{itemdesc}&3 через &b{timeleft}&3!'
+  bid:
+    IsOwner: "&cВы не можете делать ставки на собственном аукционе!"
+    UnderbidSelf: '&cВы уже сделали наивысшую ставку!'
+    BidTooSmall: '&cВы должны поставить не менее &4{minbid}&c!'
+    TooPoor: '&cУ вас недостаточно денег!'
+    Win: '&3Вы держите наивысшую ставку в &b{price}&3!'
+    Fail: '&b{winner}&3 все еще выигрывает, но вы сделали ставку в &b{price}&3!'
+    ToLoser: '&3{winner} побил вашу ставку своей размером в {price}!'
+    NewPrice: '&3Цена за &b{amount}&3x&b{itemdesc}&3 теперь равна &b{price}&3 и установлена &b{winner}&3'
+    NewWinner: '&b{winner}&3 перебивает ставку {oldwinner}. Цена &b{price}'
+    UnderBid: '&3{player} поднимает ставку, но ставка &b{winner}&3 все равно выше. Цена &b{price}'
+    Still: '&3Вы все ещё выигрываете этот аукцион со ставкой: &b{price}&3.'
+  end:
+    ToWinner: '&3Наслаждайтесь своим выигрышем: &b{amount}&3x&b{itemdesc}&3 за &b{price}&3!'
+    OwnerSell: '&3Ваш лот &b{amount}&3x&b{itemdesc}&3 был продан &b{winner}&3 за &b{price}&3.'
+    OwnerReturn: '&3Ваш лот &b{amount}&3x&b{itemdesc}&3 был возвращён вам.'
+    OwnerPaymentError: '&cОшибка при оплате. Аукцион отменяется.'
+    Winner: '&b{winner}&3 покупает &b{amount}&3x&b{itemdesc}&3 за &b{price}&3.'
+    WinnerPaymentError: '&cОшибка при оплате. Аукцион отменяется.'
+    PaymentError: '&4{winner}&c не может позволить себе оплатить &4{price}&c, которые он поставил. Накажите его!'
+    NoBid: '&3Аукцион на &b{amount}&3x&b{itemdesc}&3 завершился без ставок.'
+    Manual: '&b{player}&3 завершил аукцион.'
+  cancel:
+    Announce: '&4Аукцион отменён &c{player}&4!'
+    ToOwner: '&cВаш аукцион был отменён!'
+    FeeReturn: '&3Ваша пошлина в &b{fee}&3 была возвращена вам.'
+  time:
+    Change: '&b{player}&3 изменил оставшееся время для аукциона на &b{newtimeleft}&3.'
+# Special item describing strings not covered by Vault
+item:
+  damaged:
+    Singular: 'Повреждено'
+    Plural: 'Повреждено'
+  enchanted:
+    Singular: 'Зачаровано'
+    Plural: 'Зачаровано'
+  minute:
+    Singular: 'минута'
+    Plural: 'минут(ы)'
+  second:
+    Singular: 'секунда'
+    Plural: 'секунд(ы)'
+  stack:
+    Singular: 'Стак'
+    Plural: 'Стака(ов)'
+  chest:
+    Singular: 'Сундук'
+    Plural:   'Сундука(ов)'
+  doubleChest:
+    Singular: 'Двойной сундук'
+    Plural:   'Двойных сундука(ов)'
+  inventory:
+    Singular: 'Инвентарь'
+    Plural: 'Инвентари'
+  page:
+    Singular: 'страница'
+    Plural: 'страниц(ы)'
+  book:
+    ByAuthor: ' от '
+# Display of the history.
+# Environment: see auction.*
+history:
+  Header: '&eИстория аукционов'
+  Queue: '&8[{id}] {owner} &b{totalamount}&3x&b{itemdesc}'
+  Current: '&e[{id}] {owner} &b{totalamount}&3x&b{itemdesc}'
+  History: '&3[&b{id}&3] {owner} &b{totalamount}&3x&b{itemdesc}'
+log:
+  Header: '&eЛок аукционов [{id}]'
+  Log: '&4{log}'

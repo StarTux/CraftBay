@@ -4,7 +4,7 @@
   <groupId>com.winthier.craftbay</groupId>
   <artifactId>craftbay</artifactId>
   <packaging>jar</packaging>
-  <version>2.2-SNAPSHOT</version>
+  <version>2.21-SNAPSHOT</version>
   <name>CraftBay</name>
   <url>https://cavetale.com</url>
   <properties>
