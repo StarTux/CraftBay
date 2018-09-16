@@ -2,6 +2,13 @@
 
 Auction off your precious items! CraftBay is an auctioning system that allows players to trade their items by bidding for them. After a set amount of time, the highest bid wins. Payment is handled via **Vault**.
 
+## Links
+- [GitHub page](https://github.com/StarTux/CraftBay) *(Source code)*
+- [SpigotMC resource page](https://www.spigotmc.org/resources/craftbay.58813/) *(1.13+ downloads)*
+- [BukkitDev plugin page](https://dev.bukkit.org/projects/craftbay) *(Current and legacy downloads)*
+- [Configuration file](https://github.com/StarTux/CraftBay/blob/master/src/main/resources/config.yml) *(yaml)*
+- [Language file](https://github.com/StarTux/CraftBay/blob/master/src/main/resources/lang/en_US.yml) *(yaml)*
+
 ## Intended use
 Despite the wide availability of shopping plugins, an auction is still the best way for auctioneers to achieve the maximum price for their goods by reaching a broad audience and having them duke it out. Experience shows that especially rare items such as enchanted tools and armor can make for a very intense and exciting fight for the highest bid. The winning bid may even exceed the price for the same item available in shops.
 
