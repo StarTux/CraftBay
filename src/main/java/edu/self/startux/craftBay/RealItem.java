@@ -62,11 +62,15 @@ public class RealItem implements Item {
             this.stack = stack.clone();
         }
         this.amount = amount;
-        ItemMeta meta = stack.getItemMeta();
-        if (meta instanceof SkullMeta) {
-            SkullMeta skull = (SkullMeta)meta;
-            if (!skull.hasOwner() || skull.getOwner() == null) {
-                throw new IllegalArgumentException();
+        // Questionable check.  Assuming it was for player skull meta.
+        // Consider removal (testing needed).
+        if (stack.getType() == Material.PLAYER_HEAD) {
+            ItemMeta meta = stack.getItemMeta();
+            if (meta instanceof SkullMeta) {
+                SkullMeta skull = (SkullMeta)meta;
+                if (!skull.hasOwner() || skull.getOwner() == null) {
+                    throw new IllegalArgumentException();
+                }
             }
         }
     }
@@ -351,7 +355,7 @@ public class RealItem implements Item {
     }
 
     public static boolean canMerge(ItemStack a, ItemStack b) {
-        return a.getType() == b.getType() && a.getDurability() == b.getDurability() && a.getItemMeta().equals(b.getItemMeta());
+        return a.isSimilar(b);
     }
 
     private boolean canBeDamaged() {
