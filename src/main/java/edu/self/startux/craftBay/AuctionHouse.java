@@ -47,9 +47,6 @@ public final class AuctionHouse implements Listener {
 
     public void enable() {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        for (Player player: plugin.getServer().getOnlinePlayers()) {
-            setupPlayer(player);
-        }
     }
 
     public boolean checkCooldown(Merchant merchant) {
@@ -133,7 +130,6 @@ public final class AuctionHouse implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
         ItemDelivery.deliverAll();
-        setupPlayer(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -171,25 +167,6 @@ public final class AuctionHouse implements Listener {
         if (auction.getFee().getDouble() > 0.0) {
             auction.getOwner().giveAmount(auction.getFee());
             auction.getOwner().msg(plugin.getMessage("auction.cancel.FeeReturn").set(auction));
-        }
-    }
-
-    private void setupPlayer(Player player) {
-        if (plugin.supportMiniMap) {
-            final UUID uuid = player.getUniqueId();
-            Map<String, Object> map = new HashMap<>();
-            map.put("Type", "Boolean");
-            map.put("DisplayName", "Auction Notifications");
-            map.put("Priority", plugin.miniMapPriority);
-            map.put("Value", plugin.getChatPlugin().isListening(player));
-            Runnable onUpdate = () -> {
-                boolean v = map.get("Value") == Boolean.TRUE;
-                Player p = plugin.getServer().getPlayer(uuid);
-                if (p != null) plugin.getChatPlugin().listen(p, v);
-            };
-            List<Map> list = new ArrayList<>();
-            list.add(map);
-            player.setMetadata("MiniMapSettings", new FixedMetadataValue(plugin, list));
         }
     }
 }

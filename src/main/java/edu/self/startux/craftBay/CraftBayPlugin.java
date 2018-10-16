@@ -53,8 +53,6 @@ public class CraftBayPlugin extends JavaPlugin {
     private List<String> blacklistWorlds = new ArrayList<String>();
     private static CraftBayPlugin instance;
     private boolean debugMode = false;
-    boolean supportMiniMap = false;
-    int miniMapPriority = 0;
     private GenericEventsHandler genericEventsHandler = null;
 
     public static CraftBayPlugin getInstance() {
@@ -129,8 +127,6 @@ public class CraftBayPlugin extends JavaPlugin {
         tag = language.getMessage("Tag").toString();
         Color.configure(getConfig().getConfigurationSection("colors"));
         debugMode = getConfig().getBoolean("debug");
-        supportMiniMap = getConfig().getBoolean("minimap.enable");
-        miniMapPriority = getConfig().getInt("minimap.priority");
         announcer.reloadConfig();
         setupChat();
     }
