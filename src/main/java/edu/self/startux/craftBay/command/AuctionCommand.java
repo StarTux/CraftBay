@@ -320,7 +320,7 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
     @SubCommand(aliases = { "h", "?" })
     public void help(CommandSender sender) {
 //                String[] cmds = { "Header", "Help", "Info", "History", "Bid", "BidShort", "Start", "Hand", "End", "Cancel", "Listen" };
-        String[] cmds = { "Header", "Info", "BidShort", "Start", "Hand", "End", "Cancel", "Listen", "Help" };
+        String[] cmds = { "Header", "Info", "BidShort", "Start", "Hand", "End", "Cancel", "Listen", "History", "Help" };
         Message msg = new Message();
         int fee = plugin.getConfig().getInt("auctionfee");
         int tax = plugin.getConfig().getInt("auctiontax");
