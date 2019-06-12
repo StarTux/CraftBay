@@ -49,7 +49,11 @@ public final class Language {
     public static void writeLanguageFiles() {
         CraftBayPlugin plugin = CraftBayPlugin.getInstance();
         for (String str: Arrays.asList("de_DE", "en_US", "zh_CN", "ru_RU")) {
-            plugin.saveResource("lang/" + str + ".yml", false);
+            File file = new File(plugin.getDataFolder(),
+                                 "lang" + File.separator + str + ".yml");
+            if (!file.exists()) {
+                plugin.saveResource("lang/" + str + ".yml", false);
+            }
         }
     }
 
