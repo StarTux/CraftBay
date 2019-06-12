@@ -4,7 +4,7 @@
   <groupId>com.winthier.craftbay</groupId>
   <artifactId>craftbay</artifactId>
   <packaging>jar</packaging>
-  <version>2.23-SNAPSHOT</version>
+  <version>2.24-SNAPSHOT</version>
   <name>CraftBay</name>
   <url>https://cavetale.com</url>
   <properties>
@@ -52,7 +52,7 @@
     </dependency>
   </dependencies>
   <build>
-    <finalName>${project.name}</finalName>
+    <finalName>${project.name}-${project.version}</finalName>
     <plugins>
       <!-- Java 8 -->
       <plugin>
