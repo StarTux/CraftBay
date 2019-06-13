@@ -130,6 +130,7 @@ auction:
   bid:
     IsOwner: '&cDu kannst nicht für deine eigene Auktion bieten!'
     UnderbidSelf: '&cDu hast bereits ein größeres Gebot gemacht!'
+    DoubleBid: '&cYou kannst nicht zweimal hintereinander bieten!'
     BidTooSmall: '&cDu musst wenigstens &4{minbid}&c bieten!'
     TooPoor: '&cDas kannst du dir nicht leisten!'
     Win: '&3Du hast nun den Zuschlag für &b{price}&3!'

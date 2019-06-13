@@ -34,6 +34,8 @@ countdown: [10, 5, 3, 2, 1]
 blacklistworlds: []
 # Expiration time of stored items in days
 itemexpiry: 30
+# If true, people cannot bid on the same auction twice in a row.
+denydoublebid: false
 # Verbose logging to console
 debug: false
 # DefaultChat configuration

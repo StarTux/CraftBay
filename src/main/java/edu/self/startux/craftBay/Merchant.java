@@ -21,6 +21,7 @@ package edu.self.startux.craftBay;
 
 import edu.self.startux.craftBay.locale.Message;
 import java.util.List;
+import java.util.UUID;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
@@ -34,67 +35,73 @@ import org.bukkit.inventory.ItemStack;
  * players and The Bank in the same way.
  */
 public interface Merchant extends ConfigurationSerializable {
-        /**
-         * Get the name of this Merchant.
-         * @return the name
-         */
-        public String getName();
+    /**
+     * Get the name of this Merchant.
+     * @return the name
+     */
+    public String getName();
 
-        /**
-         * Check if this Merchant has a given amount
-         * @param amount the amount
-         * @return true if he has enough, false otherwise
-         */
-        public boolean hasAmount(MoneyAmount amount);
+    /**
+     * Get the unique ID of this Merchant.
+     * @return the UUID, never null.
+     */
+    public UUID getUuid();
 
-        /**
-         * Add some money to this merchant's account.
-         * @param amount the amount
-         * @return transaction success
-         */
-        public boolean giveAmount(MoneyAmount amount);
+    /**
+     * Check if this Merchant has a given amount
+     * @param amount the amount
+     * @return true if he has enough, false otherwise
+     */
+    public boolean hasAmount(MoneyAmount amount);
 
-        /**
-         * Debit this merchant's account.
-         * @param amount the amount
-         * @return transaction success
-         */
-        public boolean takeAmount(MoneyAmount amount);
+    /**
+     * Add some money to this merchant's account.
+     * @param amount the amount
+     * @return transaction success
+     */
+    public boolean giveAmount(MoneyAmount amount);
 
-        /**
-         * Check this merchant's inventory for availabilty of an
-         * ItemStack.
-         * @param lot the ItemStack
-         * @return true if he as it, false otherwise
-         */
-        public boolean hasItem(ItemStack lot);
+    /**
+     * Debit this merchant's account.
+     * @param amount the amount
+     * @return transaction success
+     */
+    public boolean takeAmount(MoneyAmount amount);
 
-        /**
-         * Remove an ItemStack from this merchant's inventory.
-         * @param lot the ItemStack
-         * @return true if the item could be taken, false otherwise
-         */
-        public boolean takeItem(ItemStack lot);
+    /**
+     * Check this merchant's inventory for availabilty of an
+     * ItemStack.
+     * @param lot the ItemStack
+     * @return true if he as it, false otherwise
+     */
+    public boolean hasItem(ItemStack lot);
 
-        /**
-         * Check if this merchant has a Bukkit permission.
-         * @param permission the permission
-         * @return true if he has it, false otherwise
-         */
-        public boolean hasPermission(String permission);
+    /**
+     * Remove an ItemStack from this merchant's inventory.
+     * @param lot the ItemStack
+     * @return true if the item could be taken, false otherwise
+     */
+    public boolean takeItem(ItemStack lot);
 
-        /**
-         * Send a message to this merchant.
-         * @param msg the message
-         */
-        public void msg(Message msg);
+    /**
+     * Check if this merchant has a Bukkit permission.
+     * @param permission the permission
+     * @return true if he has it, false otherwise
+     */
+    public boolean hasPermission(String permission);
 
-        /**
-         * Send a warning to this merchant.
-         * @param msg the warning
-         */
-        public void warn(Message msg);
+    /**
+     * Send a message to this merchant.
+     * @param msg the message
+     */
+    public void msg(Message msg);
 
-        public boolean isListening();
-        public Merchant clone();
+    /**
+     * Send a warning to this merchant.
+     * @param msg the warning
+     */
+    public void warn(Message msg);
+
+    public boolean isListening();
+    public Merchant clone();
 }

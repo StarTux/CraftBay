@@ -52,6 +52,7 @@ public class CraftBayPlugin extends JavaPlugin {
     private AuctionInventory inventory;
     private List<String> blacklistWorlds = new ArrayList<String>();
     private static CraftBayPlugin instance;
+    private boolean denyDoubleBid = false;
     private boolean debugMode = false;
     private GenericEventsHandler genericEventsHandler = null;
 
@@ -126,6 +127,7 @@ public class CraftBayPlugin extends JavaPlugin {
         language = new Language(this, getConfig().getString("lang"));
         tag = language.getMessage("Tag").toString();
         Color.configure(getConfig().getConfigurationSection("colors"));
+        denyDoubleBid = getConfig().getBoolean("denydoublebid");
         debugMode = getConfig().getBoolean("debug");
         announcer.reloadConfig();
         setupChat();
@@ -151,7 +153,7 @@ public class CraftBayPlugin extends JavaPlugin {
     }
 
     public Economy getEco() {
-        return this.economy;
+        return economy;
     }
 
     public Auction getAuction() {
@@ -197,6 +199,10 @@ public class CraftBayPlugin extends JavaPlugin {
 
     public String getTag() {
         return tag;
+    }
+
+    public boolean getDenyDoubleBid() {
+        return denyDoubleBid;
     }
 
     public boolean getDebugMode() {
