@@ -85,7 +85,8 @@ public class CraftBayPlugin extends JavaPlugin {
         auctionLogger = new AuctionLogger(this);
         inventory = new AuctionInventory(this);
         scheduler.soon();
-        loadAuctionConfig();
+        saveDefaultConfig();
+        reloadAuctionConfig();
         auctionLogger.enable();
         house.enable();
         announcer.enable();
@@ -113,12 +114,6 @@ public class CraftBayPlugin extends JavaPlugin {
         ConfigurationSerialization.registerClass(PlayerMerchant.class);
         ConfigurationSerialization.registerClass(BankMerchant.class);
         ConfigurationSerialization.registerClass(ItemDelivery.class);
-    }
-
-    public void loadAuctionConfig() {
-        getConfig().options().copyDefaults(true);
-        saveConfig();
-        reloadAuctionConfig();
     }
 
     public void reloadAuctionConfig() {
