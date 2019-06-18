@@ -234,9 +234,9 @@ public class TimedAuction extends AbstractAuction {
         result.put("bids", bids);
         result.put("fee", getFee().getDouble());
         result.put("log", new ArrayList<String>(getLog()));
-        result.put("lastbidder", lastBidder != null
-                   ? lastBidder.toString()
-                   : null);
+        if (lastBidder != null) {
+            result.put("lastbidder", lastBidder.toString());
+        }
         return result;
     }
 
@@ -252,9 +252,10 @@ public class TimedAuction extends AbstractAuction {
         result.bids = new LinkedList<Bid>((List<Bid>)map.get("bids"));
         result.setFee(new MoneyAmount(map.get("fee")));
         result.log = new LinkedList((List<String>)map.get("log"));
-        result.lastBidder = map.containsKey("lastbidder")
-            ? UUID.fromString((String)map.get("lastbidder"))
-            : null;
+        final Object lastBidder = map.get("lastbidder");
+        if (lastBidder instanceof String) {
+            result.lastBidder = UUID.fromString((String) lastBidder);
+        }
         return result;
     }
 }
