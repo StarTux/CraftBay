@@ -84,9 +84,11 @@ public class BukkitChat implements ChatPlugin {
             if (isListening(player)) {
                 for (String line : lines) {
                     ChatColor color = Color.DEFAULT.getChatColor();
-                    if (line.length() >= 2 && line.startsWith("&")) {
-                        ChatColor tmp = ChatColor.getByChar(line.charAt(1));
-                        if (tmp != null) color = tmp;
+                    if (line.length() >= 2) {
+                        if (line.startsWith("&") || line.charAt(0) == ChatColor.COLOR_CHAR) {
+                            ChatColor tmp = ChatColor.getByChar(line.charAt(1));
+                            if (tmp != null) color = tmp;
+                        }
                     }
                     Msg.raw(player,
                             Msg.button(color,
