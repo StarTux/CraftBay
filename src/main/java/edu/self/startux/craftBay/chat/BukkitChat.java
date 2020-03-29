@@ -21,6 +21,7 @@ package edu.self.startux.craftBay.chat;
 
 import edu.self.startux.craftBay.CraftBayPlugin;
 import edu.self.startux.craftBay.Msg;
+import edu.self.startux.craftBay.locale.Color;
 import edu.self.startux.craftBay.locale.Message;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -82,8 +83,13 @@ public class BukkitChat implements ChatPlugin {
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             if (isListening(player)) {
                 for (String line : lines) {
+                    ChatColor color = Color.DEFAULT.getChatColor();
+                    if (line.length() >= 2 && line.startsWith("&")) {
+                        ChatColor tmp = ChatColor.getByChar(line.charAt(1));
+                        if (tmp != null) color = tmp;
+                    }
                     Msg.raw(player,
-                            Msg.button(ChatColor.DARK_AQUA,
+                            Msg.button(color,
                                        line, null,
                                        "&9/auc\n&rAuction info",
                                        "/auc"));
