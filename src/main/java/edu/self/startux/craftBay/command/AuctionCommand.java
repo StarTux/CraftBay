@@ -122,7 +122,7 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
     public void end(CommandSender sender, Auction auction, AuctionTime time) {
         Player player = sender instanceof Player ? (Player)sender : null;
         if (player != null && !auction.getOwner().equals(new PlayerMerchant(player))) {
-            if (!sender.hasPermission("auction.admin") && !sender.isOp()) {
+            if (!sender.hasPermission("auction.admin") && !sender.hasPermission("auction.end.any") && !sender.isOp()) {
                 plugin.warn(sender, plugin.getMessage("commands.end.NotOwner").set(auction, sender));
                 return;
             }
