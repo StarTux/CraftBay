@@ -63,6 +63,7 @@ commands:
     AmountTooSmall: '&cPositive amount expected!'
     CreativeDenial: '&cYou cannot start auctions in creative mode!'
     Success: '&3Your auction for &b{amount}&3x&b{itemdesc}&3 will start soon!'
+    StartingBidTooLow: '&cStarting bid must be at least {startingbid}!'
   end:
     NotOwner: '&cYou are not the owner of this auction!'
     DelayTooLong: '&cYou can only shorten your auction!'

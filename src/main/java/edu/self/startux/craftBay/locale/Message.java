@@ -21,8 +21,10 @@ package edu.self.startux.craftBay.locale;
 
 import edu.self.startux.craftBay.Auction;
 import edu.self.startux.craftBay.AuctionTime;
+import edu.self.startux.craftBay.CraftBayPlugin;
 import edu.self.startux.craftBay.Item;
 import edu.self.startux.craftBay.Merchant;
+import edu.self.startux.craftBay.MoneyAmount;
 import edu.self.startux.craftBay.event.AuctionBidEvent;
 import edu.self.startux.craftBay.event.AuctionTimeChangeEvent;
 import java.util.ArrayList;
@@ -52,7 +54,7 @@ public final class Message {
     private LinkedList<Object> tokens = new LinkedList<Object>();
     private Map<String, Object> environment = new HashMap<String, Object>();
 
-    public Message(List<String> input) {
+    public Message(final List<String> input) {
         for (String inp : input) {
             tokens.add(inp);
             tokens.add(endl);
@@ -62,7 +64,7 @@ public final class Message {
         filterVariables();
     }
 
-    public Message(String input) {
+    public Message(final String input) {
         tokens.add(input);
         tokens.add(endl);
         filterEscapes();
@@ -71,7 +73,15 @@ public final class Message {
     }
 
     /**
-     * Empty message
+     * Copy constructor.
+     */
+    public Message(final Message other) {
+        tokens = other.tokens;
+        environment = new HashMap<String, Object>(other.environment);
+    }
+
+    /**
+     * Empty message.
      */
     public Message() {
     }
@@ -82,21 +92,13 @@ public final class Message {
         return this;
     }
 
-    /**
-     * Copy constructor
-     */
-    public Message(Message other) {
-        tokens = other.tokens;
-        environment = new HashMap<String, Object>(other.environment);
-    }
-
     private void filterEscapes() {
         ListIterator<Object> iter = tokens.listIterator();
         while (iter.hasNext()) {
             Object o = iter.next();
             if (!(o instanceof String)) continue;
             iter.remove();
-            String string = (String)o;
+            String string = (String) o;
             Pattern pattern = Pattern.compile("\\\\(.)");
             Matcher matcher = pattern.matcher(string);
             int lastIndex = 0;
@@ -115,7 +117,7 @@ public final class Message {
             Object o = iter.next();
             if (!(o instanceof String)) continue;
             iter.remove();
-            String string = ChatColor.translateAlternateColorCodes('&', (String)o);
+            String string = ChatColor.translateAlternateColorCodes('&', (String) o);
             Pattern pattern = Pattern.compile("<([^>]+)>");
             Matcher matcher = pattern.matcher(string);
             int lastIndex = 0;
@@ -136,7 +138,7 @@ public final class Message {
             Object o = iter.next();
             if (!(o instanceof String)) continue;
             iter.remove();
-            String string = (String)o;
+            String string = (String) o;
             Pattern pattern = Pattern.compile("\\{([^\\}]+)\\}");
             Matcher matcher = pattern.matcher(string);
             int lastIndex = 0;
@@ -160,7 +162,7 @@ public final class Message {
                 result.add(sb.toString());
                 sb = new StringBuilder();
             } else if (o instanceof Variable) {
-                sb.append(environment.get(((Variable)o).key).toString());
+                sb.append(environment.get(((Variable) o).key).toString());
             } else {
                 sb.append(o.toString());
             }
@@ -176,7 +178,7 @@ public final class Message {
                 result.add(sb.toString());
                 sb = new StringBuilder();
             } else if (o instanceof Variable) {
-                sb.append(environment.get(((Variable)o).key).toString());
+                sb.append(environment.get(((Variable) o).key).toString());
             } else if (o instanceof Color) {
                 continue;
             } else {
@@ -217,6 +219,7 @@ public final class Message {
 
     public Message set(CommandSender sender) {
         set("player", sender.getName());
+        set("startingbid", new MoneyAmount(CraftBayPlugin.getInstance().getConfig().getDouble("startingbid")));
         return this;
     }
 

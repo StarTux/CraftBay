@@ -19,57 +19,55 @@
 
 package edu.self.startux.craftBay;
 
-public class MoneyAmount implements Comparable<MoneyAmount> {
-        double amount;
+import lombok.Value;
 
-        public MoneyAmount(double amount) {
-                this.amount = amount;
-        }
+@Value
+public final class MoneyAmount implements Comparable<MoneyAmount> {
+    private final double amount;
 
-        /**
-         * This constructor is there mostly for support of legacy
-         * auction.yml files where money wasexpressed solely as
-         * Integer. The additional support for String and Object
-         * is just a catch-call precaution. Use it sparingly.
-         */
-        public MoneyAmount(Object o) {
-                if (o instanceof Number) amount = ((Number)o).doubleValue();
-                else if (o instanceof String) {
-                        try {
-                                amount = Double.parseDouble((String)o);
-                        } catch (NumberFormatException nfe) {
-                                amount = 0.0;
-                        }
-                } else {
-                        try {
-                                amount = Double.parseDouble(o.toString());
-                        } catch (NumberFormatException nfe) {
-                                amount = 0.0;
-                        }
-                }
-        }
+    public MoneyAmount(final double amount) {
+        this.amount = amount;
+    }
 
-        public double getDouble() {
-                return amount;
+    /**
+     * This constructor is there mostly for support of legacy
+     * auction.yml files where money wasexpressed solely as
+     * Integer. The additional support for String and Object
+     * is just a catch-call precaution. Use it sparingly.
+     */
+    public MoneyAmount(final Object o) {
+        if (o instanceof Number) {
+            amount = ((Number) o).doubleValue();
+        } else if (o instanceof String) {
+            double v = 0.0;
+            try {
+                v = Double.parseDouble((String) o);
+            } catch (NumberFormatException nfe) { }
+            amount = v;
+        } else {
+            double v = 0.0;
+            try {
+                v = Double.parseDouble(o.toString());
+            } catch (NumberFormatException nfe) { }
+            amount = v;
         }
+    }
 
-        @Override
-        public boolean equals(Object other) {
-                if (!(other instanceof MoneyAmount)) return false;
-                return amount == ((MoneyAmount)other).amount;
-        }
+    public double getDouble() {
+        return amount;
+    }
 
-        @Override
-        public int compareTo(MoneyAmount other) {
-                return new Double(amount).compareTo(other.amount);
-        }
+    @Override
+    public int compareTo(MoneyAmount other) {
+        return new Double(amount).compareTo(other.amount);
+    }
 
-        @Override
-                public String toString() {
-                try {
-                        return CraftBayPlugin.getInstance().getEco().format((double)amount);
-                } catch (RuntimeException e) {
-                        return "" + amount;
-                }
+    @Override
+    public String toString() {
+        try {
+            return CraftBayPlugin.getInstance().getEco().format((double) amount);
+        } catch (RuntimeException e) {
+            return "" + amount;
         }
+    }
 }
