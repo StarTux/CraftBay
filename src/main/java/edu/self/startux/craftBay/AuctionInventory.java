@@ -67,7 +67,7 @@ public class AuctionInventory implements Listener {
     public void initPlayer(Player player, MoneyAmount minbid) {
         String title = plugin.getMessage("auction.gui.ChestTitle").toString();
         if (title.length() > 32) title = title.substring(0, 32);
-        Inventory inventory = Bukkit.createInventory(player, 54, title);
+        Inventory inventory = Bukkit.createInventory(null, 54, title);
         player.openInventory(inventory);
         setPlayer(player, minbid, inventory, false);
     }
@@ -88,7 +88,7 @@ public class AuctionInventory implements Listener {
         }
         if (items.isEmpty()) return false;
         int invSize = ((items.size() - 1) / 9 + 1) * 9;
-        Inventory inventory = Bukkit.createInventory(player, invSize, "Auction Preview");
+        Inventory inventory = Bukkit.createInventory(null, invSize, "Auction Preview");
         for (ItemStack stack: items) inventory.addItem(stack);
         player.openInventory(inventory);
         setPlayer(player, new MoneyAmount(0.0), inventory, true);
