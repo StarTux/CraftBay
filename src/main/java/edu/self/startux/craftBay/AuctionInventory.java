@@ -139,7 +139,12 @@ public class AuctionInventory implements Listener {
         MoneyAmount minbid = data.minbid;
         Auction auction = plugin.getAuctionHouse().createAuction(merchant, item, minbid, false);
         if (auction == null) {
-            for (ItemStack drop : items) if (drop != null) player.getWorld().dropItem(player.getLocation(), drop);
+            for (ItemStack retour : items) {
+                if (retour == null) continue;
+                for (ItemStack drop : player.getInventory().addItem(retour).values()) {
+                    player.getWorld().dropItem(player.getEyeLocation(), drop);
+                }
+           }
         } else {
             PlayerMerchant.getByPlayer(player).msg(plugin.getMessage("auction.gui.Success").set(auction, merchant));
         }
