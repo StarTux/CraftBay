@@ -29,12 +29,14 @@ import edu.self.startux.craftBay.event.AuctionBidEvent;
 import edu.self.startux.craftBay.event.AuctionTimeChangeEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -51,13 +53,16 @@ public final class Message {
         }
     }
 
-    private LinkedList<Object> tokens = new LinkedList<Object>();
+    private List<Object> tokens = new ArrayList<Object>();
     private Map<String, Object> environment = new HashMap<String, Object>();
 
     public Message(final List<String> input) {
-        for (String inp : input) {
-            tokens.add(inp);
-            tokens.add(endl);
+        if (!input.isEmpty()) {
+            tokens.add(input.get(0));
+            for (int i = 1; i < input.size(); i += 1) {
+                tokens.add(endl);
+                tokens.add(input.get(i));
+            }
         }
         filterEscapes();
         filterColors();
@@ -66,7 +71,6 @@ public final class Message {
 
     public Message(final String input) {
         tokens.add(input);
-        tokens.add(endl);
         filterEscapes();
         filterColors();
         filterVariables();
@@ -83,10 +87,13 @@ public final class Message {
     /**
      * Empty message.
      */
-    public Message() {
-    }
+    public Message() { }
 
     public Message append(Message other) {
+        if (other.tokens.isEmpty()) return this;
+        if (!tokens.isEmpty()) {
+            tokens.add(endl);
+        }
         tokens.addAll(other.tokens);
         environment.putAll(other.environment);
         return this;
@@ -154,38 +161,25 @@ public final class Message {
         }
     }
 
-    public List<String> compile() {
-        List<String> result = new ArrayList<String>();
-        StringBuilder sb = new StringBuilder();
+    public Component compile() {
+        TextComponent.Builder cb = Component.text();
         for (Object o : tokens) {
             if (o == endl) {
-                result.add(sb.toString());
-                sb = new StringBuilder();
+                cb.append(Component.newline());
             } else if (o instanceof Variable) {
-                sb.append(environment.get(((Variable) o).key).toString());
+                Variable variable = (Variable) o;
+                Object object = environment.get(variable.key);
+                if (object instanceof Component) {
+                    cb.append((Component) object);
+                } else {
+                    String string = object != null ? object.toString() : "";
+                    cb.append(Component.text(string));
+                }
             } else {
-                sb.append(o.toString());
+                cb.append(Component.text(o.toString()));
             }
         }
-        return result;
-    }
-
-    public List<String> compileNoColor() {
-        List<String> result = new ArrayList<String>();
-        StringBuilder sb = new StringBuilder();
-        for (Object o : tokens) {
-            if (o == endl) {
-                result.add(sb.toString());
-                sb = new StringBuilder();
-            } else if (o instanceof Variable) {
-                sb.append(environment.get(((Variable) o).key).toString());
-            } else if (o instanceof Color) {
-                continue;
-            } else {
-                sb.append(o.toString());
-            }
-        }
-        return result;
+        return cb.build();
     }
 
     public Message set(String key, Object value) {
@@ -194,7 +188,7 @@ public final class Message {
     }
 
     public Message set(Item item) {
-        set("item", item.getName());
+        set("item", item.toComponent());
         set("itemdesc", item.getDescription());
         set("amount", item.getAmount());
         set("totalamount", item.getAmount().getInt());
@@ -263,9 +257,6 @@ public final class Message {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (String line : compileNoColor()) sb.append(line).append('\n');
-        if (sb.length() > 0) sb.setLength(sb.length() - 1);
-        return sb.toString();
+        return PlainComponentSerializer.plain().serialize(compile());
     }
 }

@@ -19,31 +19,35 @@
 
 package edu.self.startux.craftBay.locale;
 
+import edu.self.startux.craftBay.CraftBayPlugin;
 import java.util.HashMap;
 import java.util.Map;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
-import edu.self.startux.craftBay.CraftBayPlugin;
 
-public class Color {
-    public static Color DEFAULT = new Color(new String[]{ "DEFAULT", "DFL" }, ChatColor.BLUE);
-    public static Color HEADER = new Color(new String[]{ "HEADER", "HEAD", "HD", "H" }, ChatColor.YELLOW);
-    public static Color HIGHLIGHT = new Color(new String[]{ "HIGHLIGHT", "HL", "HI" }, ChatColor.AQUA);
-    public static Color SHADOW = new Color(new String[]{ "SHADOW", "DARK", "SHADE", "SHD" }, ChatColor.DARK_GRAY);
-    public static Color SHORTCUT = new Color(new String[]{ "SHORTCUT", "SC", "S" }, ChatColor.WHITE);
-    public static Color ADMIN = new Color(new String[]{ "ADMIN", "ADM" }, ChatColor.DARK_RED);
-    public static Color ADMINHIGHLIGHT = new Color(new String[]{ "ADMINHIGHLIGHT", "ADMINHIGH", "ADMINHI", "ADMHL", "ADMHI" }, ChatColor.RED);
-    public static Color ERROR = new Color(new String[]{ "ERROR", "ERR" }, ChatColor.DARK_RED);
-    public static Color WARN = new Color(new String[]{ "WARNING", "WARN", "WRN" }, ChatColor.RED);
-    public static Color WARNHIGHLIGHT = new Color(new String[]{ "WARNINGHIGHLIGHT", "WARNINGHIGH", "WARNHIGH", "WARNHI", "WRNHI" }, ChatColor.DARK_RED);
+public final class Color {
+    public static final Color DEFAULT = new Color(new String[]{"DEFAULT", "DFL"}, ChatColor.BLUE);
+    public static final Color HEADER = new Color(new String[]{"HEADER", "HEAD", "HD", "H"}, ChatColor.YELLOW);
+    public static final Color HIGHLIGHT = new Color(new String[]{"HIGHLIGHT", "HL", "HI"}, ChatColor.AQUA);
+    public static final Color SHADOW = new Color(new String[]{"SHADOW", "DARK", "SHADE", "SHD"}, ChatColor.DARK_GRAY);
+    public static final Color SHORTCUT = new Color(new String[]{"SHORTCUT", "SC", "S"}, ChatColor.WHITE);
+    public static final Color ADMIN = new Color(new String[]{"ADMIN", "ADM"}, ChatColor.DARK_RED);
+    public static final Color ADMINHIGHLIGHT = new Color(new String[]{"ADMINHIGHLIGHT", "ADMINHIGH", "ADMINHI", "ADMHL", "ADMHI"}, ChatColor.RED);
+    public static final Color ERROR = new Color(new String[]{"ERROR", "ERR"}, ChatColor.DARK_RED);
+    public static final Color WARN = new Color(new String[]{"WARNING", "WARN", "WRN"}, ChatColor.RED);
+    public static final Color WARNHIGHLIGHT = new Color(new String[]{"WARNINGHIGHLIGHT", "WARNINGHIGH", "WARNHIGH", "WARNHI", "WRNHI"}, ChatColor.DARK_RED);
 
     private static Map<String, Color> nameMap;
     private ChatColor chatColor;
+    private TextColor textColor;
 
-    private Color(String[] aliases, ChatColor dfl) {
+    private Color(final String[] aliases, final ChatColor dfl) {
         if (nameMap == null) nameMap = new HashMap<String, Color>();
         for (String alias : aliases) nameMap.put(alias.toLowerCase(), this);
         this.chatColor = dfl;
+        this.textColor = NamedTextColor.NAMES.value(dfl.name().toLowerCase());
     }
 
     public static Color getByName(String name) {
@@ -53,8 +57,9 @@ public class Color {
 
     public void setColor(ChatColor color) {
         this.chatColor = color;
+        this.textColor = NamedTextColor.NAMES.value(color.name().toLowerCase());
     }
-        
+
     @Override
     public String toString() {
         return chatColor.toString();
@@ -64,8 +69,16 @@ public class Color {
         return chatColor;
     }
 
+    public TextColor getTextColor() {
+        return textColor;
+    }
+
     public static ChatColor getChatColorByName(String name) {
-        for (ChatColor col : ChatColor.values()) if (col.name().equalsIgnoreCase(name)) return col;
+        for (ChatColor col : ChatColor.values()) {
+            if (col.name().equalsIgnoreCase(name)) {
+                return col;
+            }
+        }
         throw new IllegalArgumentException("No such ChatColor: " + name);
     }
 

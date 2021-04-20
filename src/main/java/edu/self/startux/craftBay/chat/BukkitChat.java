@@ -20,14 +20,14 @@
 package edu.self.startux.craftBay.chat;
 
 import edu.self.startux.craftBay.CraftBayPlugin;
-import edu.self.startux.craftBay.Msg;
 import edu.self.startux.craftBay.locale.Color;
-import edu.self.startux.craftBay.locale.Message;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -35,14 +35,14 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-public class BukkitChat implements ChatPlugin {
+public final class BukkitChat implements ChatPlugin {
     private CraftBayPlugin plugin;
     private boolean whitelisted;
     private HashSet<String> playerList = new HashSet<String>();
-    private FileConfiguration conf = new YamlConfiguration(); 
+    private FileConfiguration conf = new YamlConfiguration();
     private static final String CONFIG_FILE_PATH = "defaultchat.yml";
-        
-    public BukkitChat(CraftBayPlugin plugin) {
+
+    public BukkitChat(final CraftBayPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -80,7 +80,7 @@ public class BukkitChat implements ChatPlugin {
 
     ChatColor findColor(String line) {
         if (line.length() < 2) return null;
-        for (int i = line.length() - 2; i >= 0; i-= 1) {
+        for (int i = line.length() - 2; i >= 0; i -= 1) {
             char c = line.charAt(i);
             if (c == '&' || c == ChatColor.COLOR_CHAR) {
                 ChatColor color = ChatColor.getByChar(line.charAt(i + 1));
@@ -91,18 +91,12 @@ public class BukkitChat implements ChatPlugin {
     }
 
     @Override
-    public void broadcast(List<String> lines) {
+    public void broadcast(Component component) {
+        component = component.clickEvent(ClickEvent.runCommand("/auc"))
+            .hoverEvent(HoverEvent.showText(Component.text("/auc", Color.HIGHLIGHT.getTextColor())));
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             if (isListening(player)) {
-                for (String line : lines) {
-                    ChatColor color = findColor(line);
-                    if (color == null) color = Color.DEFAULT.getChatColor();
-                    Msg.raw(player,
-                            Msg.button(color,
-                                       line, null,
-                                       "&9/auc\n&rAuction info",
-                                       "/auc"));
-                }
+                player.sendMessage(component);
             }
         }
     }
@@ -124,8 +118,11 @@ public class BukkitChat implements ChatPlugin {
         if (!player.hasPermission("auction.bid")) {
             return false;
         }
-        if (!whitelisted && !playerList.contains(player.getName().toLowerCase())) return true;
-        else if (whitelisted && playerList.contains(player.getName().toLowerCase())) return true;
+        if (!whitelisted && !playerList.contains(player.getName().toLowerCase())) {
+            return true;
+        } else if (whitelisted && playerList.contains(player.getName().toLowerCase())) {
+            return true;
+        }
         return false;
     }
 }

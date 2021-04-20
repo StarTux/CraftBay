@@ -21,27 +21,21 @@ package edu.self.startux.craftBay;
 
 import edu.self.startux.craftBay.event.AuctionCreateEvent;
 import edu.self.startux.craftBay.event.AuctionEndEvent;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public final class AuctionHouse implements Listener {
     private CraftBayPlugin plugin;
     private Map<String, Date> lastAuctions = new HashMap<String, Date>();
 
-    public AuctionHouse(CraftBayPlugin plugin) {
+    public AuctionHouse(final CraftBayPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -65,7 +59,7 @@ public final class AuctionHouse implements Listener {
         if (merchant instanceof BankMerchant) return 0;
         Date date = lastAuctions.get(merchant.getName());
         if (date == null) return 0;
-        int delay = (int)((System.currentTimeMillis() - date.getTime()) / 1000l);
+        int delay = (int) ((System.currentTimeMillis() - date.getTime()) / 1000L);
         int remain = cooldown - delay;
         if (remain <= 0) return 0;
         return remain;
@@ -76,7 +70,7 @@ public final class AuctionHouse implements Listener {
         lastAuctions.put(merchant.getName(), new Date());
     }
 
-    public Auction createAuction(Merchant owner, Item item, MoneyAmount startingBid, boolean takeItems) {
+    public Auction createAuction(Merchant owner, Item item, MoneyAmount startingBid) {
         // check
         if (!checkCooldown(owner)) {
             owner.warn(plugin.getMessage("auction.create.OwnerCooldown").set(owner).set("cooldown", new AuctionTime(getCooldown(owner))));
@@ -84,10 +78,6 @@ public final class AuctionHouse implements Listener {
         }
         if (!plugin.getAuctionScheduler().canQueue()) {
             owner.warn(plugin.getMessage("auction.create.QueueFull").set(owner));
-            return null;
-        }
-        if (takeItems && !item.has(owner)) {
-            owner.warn(plugin.getMessage("auction.create.NotEnoughItems").set(item).set(owner));
             return null;
         }
         double fee = 0.0;
@@ -108,10 +98,6 @@ public final class AuctionHouse implements Listener {
             }
             owner.msg(plugin.getMessage("auction.create.FeeDebited").set(owner).set("fee", feetax));
         }
-        // take
-        if (takeItems) {
-            item = item.take(owner);
-        }
         touchCooldown(owner);
         // create
         Auction auction = new TimedAuction(plugin, owner, item);
@@ -121,10 +107,6 @@ public final class AuctionHouse implements Listener {
         plugin.getAuctionScheduler().queueAuction(auction);
         plugin.getServer().getPluginManager().callEvent(new AuctionCreateEvent(auction));
         return auction;
-    }
-
-    public Auction createAuction(Merchant owner, Item item, MoneyAmount startingBid) {
-        return createAuction(owner, item, startingBid, true);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

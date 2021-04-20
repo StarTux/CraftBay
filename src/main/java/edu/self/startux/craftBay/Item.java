@@ -1,5 +1,5 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright 2012 StarTux
+ * Copyright 2012-2021 StarTux
  *
  * This file is part of CraftBay.
  *
@@ -19,42 +19,38 @@
 
 package edu.self.startux.craftBay;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 /**
  * This class represents an item that is for auction.
  */
 public interface Item extends ConfigurationSerializable {
-        /**
-         * Get the simple name
-         * @return the name
-         */
-        public String getName();
-        public String getDescription();
+    /**
+     * Get the simple name.
+     * @return the name
+     */
+    String getName();
+    String getDescription();
 
-        public ItemAmount getAmount();
-        public String getItemInfo();
+    ItemAmount getAmount();
+    String getItemInfo();
 
-        /**
-         * Check if a merchant has this item
-         * @param merchant the merchant
-         * @return true if the merchant has enough, false otherwise
-         */
-        public boolean has(Merchant merchant);
+    /**
+     * Check if a merchant has this item.
+     * @param merchant the merchant
+     * @return true if the merchant has enough, false otherwise
+     */
+    boolean has(Merchant merchant);
 
-        /**
-         * Take the item away from a merchant
-         * @param merchant the merchant
-         * @return Item the retrieved Item or null on failure
-         */
-        public Item take(Merchant merchant);
+    /**
+     * Give this item to a merchant.
+     * @param merchant the merchant
+     * @return true if the item could be given to merchant, false otherwise
+     */
+    boolean give(Merchant merchant);
 
-        /**
-         * Give this item to a merchant.
-         * @param merchant the merchant
-         * @return true if the item could be given to merchant, false otherwise
-         */
-        public boolean give(Merchant merchant);
+    Item clone();
 
-        public Item clone();
+    Component toComponent();
 }

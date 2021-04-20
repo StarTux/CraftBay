@@ -19,43 +19,42 @@
 
 package edu.self.startux.craftBay.chat;
 
-import edu.self.startux.craftBay.locale.Message;
-import java.util.List;
+import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 public interface ChatPlugin {
-        /**
-         * Initialization routine. Configure according to section.
-         * @param section the ConfigurationSection
-         * @return true on success, false if there were errors
-         */
-        public boolean enable(ConfigurationSection section);
+    /**
+     * Initialization routine. Configure according to section.
+     * @param section the ConfigurationSection
+     * @return true on success, false if there were errors
+     */
+    boolean enable(ConfigurationSection section);
 
-        /**
-         * Destruction routine. This is where data should be
-         * saved, if any.
-         */
-        public void disable();
+    /**
+     * Destruction routine. This is where data should be
+     * saved, if any.
+     */
+    void disable();
 
-        /**
-         * Broadcast a list of Strings to everyone listening.
-         * @param lines the list of lines
-         */
-        public void broadcast(List<String> lines);
+    /**
+     * Broadcast a Component to everyone listening.
+     * @param component the component
+     */
+    void broadcast(Component component);
 
-        /**
-         * Set whether a player is listening or not
-         * @param player the player
-         * @param on true if the player should listen, false otherwise
-         * @return true if player is now listening, false otherwise
-         */
-        public boolean listen(Player player, boolean on);
+    /**
+     * Set whether a player is listening or not.
+     * @param player the player
+     * @param on true if the player should listen, false otherwise
+     * @return true if player is now listening, false otherwise
+     */
+    boolean listen(Player player, boolean on);
 
-        /**
-         * Check whether a player is listening or not
-         * @param player the player
-         * @return true if the player is listening, false otherwise
-         */
-        public boolean isListening(Player player);
+    /**
+     * Check whether a player is listening or not.
+     * @param player the player
+     * @return true if the player is listening, false otherwise
+     */
+    boolean isListening(Player player);
 }

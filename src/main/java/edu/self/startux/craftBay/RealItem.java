@@ -1,5 +1,5 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright 2012 StarTux
+ * Copyright 2012-2021 StarTux
  *
  * This file is part of CraftBay.
  *
@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -45,34 +47,24 @@ import org.bukkit.potion.PotionType;
 /**
  * Represent an actual item, in fact a bukkit ItemStack.
  */
-public class RealItem implements Item {
-    protected ItemStack stack;
-    int amount;
+public final class RealItem implements Item {
+    private ItemStack stack;
+    private int amount;
 
-    private static final String romans[] = {"", "I", "II", "III", "IV", "V"};
+    private static final String[] ROMANS = {"", "I", "II", "III", "IV", "V"};
 
-    public RealItem(ItemStack stack) {
+    public RealItem(final ItemStack stack) {
         this(stack, stack.getAmount());
     }
 
-    public RealItem(ItemStack stack, int amount) {
+    public RealItem(final ItemStack stack, final int amount) {
         if (stack.getType() == Material.AIR || stack.getAmount() == 0) {
             this.stack = new ItemStack(Material.STICK);
         } else {
             this.stack = stack.clone();
         }
         this.amount = amount;
-        // Questionable check.  Assuming it was for player skull meta.
-        // Consider removal (testing needed).
-        if (stack.getType() == Material.PLAYER_HEAD) {
-            ItemMeta meta = stack.getItemMeta();
-            if (meta instanceof SkullMeta) {
-                SkullMeta skull = (SkullMeta)meta;
-                if (!skull.hasOwner() || skull.getOwner() == null) {
-                    throw new IllegalArgumentException();
-                }
-            }
-        }
+        this.stack.setAmount(1);
     }
 
     @Override
@@ -122,7 +114,7 @@ public class RealItem implements Item {
         ItemMeta meta = stack.getItemMeta();
         if (enchantments == null || enchantments.isEmpty()) {
             if (meta instanceof EnchantmentStorageMeta) {
-                enchantments = ((EnchantmentStorageMeta)meta).getStoredEnchants();
+                enchantments = ((EnchantmentStorageMeta) meta).getStoredEnchants();
             }
         }
         if (enchantments != null && !enchantments.isEmpty()) {
@@ -137,13 +129,13 @@ public class RealItem implements Item {
             sb.append(")");
         }
         if (meta instanceof SkullMeta) {
-            SkullMeta skull = (SkullMeta)meta;
+            SkullMeta skull = (SkullMeta) meta;
             if (skull.hasOwner()) {
                 sb.append(" <").append(skull.getOwner()).append(">");
             }
         }
         if (meta instanceof PotionMeta) {
-            PotionMeta potions = (PotionMeta)meta;
+            PotionMeta potions = (PotionMeta) meta;
             try {
                 PotionData data = potions.getBasePotionData();
                 if (data != null && data.getType() != PotionType.UNCRAFTABLE) {
@@ -152,14 +144,14 @@ public class RealItem implements Item {
                     if (data.isExtended()) sb.append(" Ext");
                     if (data.isUpgraded()) sb.append(" II");
                 }
-            } catch (IllegalArgumentException iae) {}
+            } catch (IllegalArgumentException iae) { }
             if (potions.hasCustomEffects()) {
                 for (PotionEffect effect: potions.getCustomEffects()) {
                     sb.append(" ");
                     sb.append(niceEnumName(effect.getType().getName()));
                     int amp = effect.getAmplifier();
                     if (amp > 0) {
-                        sb.append(" ").append((amp+1));
+                        sb.append(" ").append((amp + 1));
                     }
                 }
             }
@@ -192,7 +184,7 @@ public class RealItem implements Item {
             result.append("\"").append(ChatColor.stripColor(meta.getDisplayName())).append("\"");
         }
         if (meta instanceof BookMeta) {
-            BookMeta book = (BookMeta)meta;
+            BookMeta book = (BookMeta) meta;
             if (result.length() > 0) result.append(" ");
             if (book.hasTitle()) {
                 result.append("'").append(book.getTitle()).append("'");
@@ -201,10 +193,12 @@ public class RealItem implements Item {
                 result.append(CraftBayPlugin.getInstance().getMessage("item.book.ByAuthor")).append(book.getAuthor());
             }
             int pageCount = book.getPageCount();
-            result.append(" (").append(pageCount).append(" ").append(CraftBayPlugin.getInstance().getMessage(pageCount == 1 ? "item.page.Singular" : "item.page.Plural")).append(")");
+            result.append(" (").append(pageCount).append(" ")
+                .append(CraftBayPlugin.getInstance().getMessage(pageCount == 1 ? "item.page.Singular" : "item.page.Plural"))
+                .append(")");
         }
         if (meta instanceof FireworkMeta) {
-            FireworkMeta firework = (FireworkMeta)meta;
+            FireworkMeta firework = (FireworkMeta) meta;
             for (FireworkEffect effect : firework.getEffects()) {
                 if (result.length() > 0) result.append(" ");
                 result.append(niceEnumName(effect.getType().name()));
@@ -213,24 +207,24 @@ public class RealItem implements Item {
             result.append(roman(firework.getPower()));
         }
         if (meta instanceof FireworkEffectMeta) {
-            FireworkEffectMeta effect = (FireworkEffectMeta)meta;
+            FireworkEffectMeta effect = (FireworkEffectMeta) meta;
             if (result.length() > 0) result.append(" ");
             result.append(niceEnumName(effect.getEffect().getType().name()));
         }
         if (meta instanceof LeatherArmorMeta) {
-            LeatherArmorMeta armor = (LeatherArmorMeta)meta;
+            LeatherArmorMeta armor = (LeatherArmorMeta) meta;
             Color color = armor.getColor();
             if (result.length() > 0) result.append(" ");
             result.append(color.getRed()).append("r,").append(color.getGreen()).append("g,").append(color.getBlue()).append("b");
         }
         if (meta instanceof SkullMeta) {
-            SkullMeta skull = (SkullMeta)meta;
+            SkullMeta skull = (SkullMeta) meta;
             if (skull.hasOwner()) {
                 if (result.length() > 0) result.append(" ");
                 result.append("<").append(skull.getOwner()).append(">");
             }
         }
-        {
+        do {
             Map<Enchantment, Integer> enchantments = meta.getEnchants();
             Iterator<Map.Entry<Enchantment, Integer>> iter = enchantments.entrySet().iterator();
             while (iter.hasNext()) {
@@ -238,9 +232,9 @@ public class RealItem implements Item {
                 if (result.length() > 0) result.append(" ");
                 result.append(getEnchantmentName(enchantment.getKey())).append(" ").append(roman(enchantment.getValue()));
             }
-        }
+        } while (false);
         if (meta instanceof EnchantmentStorageMeta) {
-            Map<Enchantment, Integer> enchantments = ((EnchantmentStorageMeta)meta).getStoredEnchants();
+            Map<Enchantment, Integer> enchantments = ((EnchantmentStorageMeta) meta).getStoredEnchants();
             Iterator<Map.Entry<Enchantment, Integer>> iter = enchantments.entrySet().iterator();
             while (iter.hasNext()) {
                 Map.Entry<Enchantment, Integer> enchantment = iter.next();
@@ -249,7 +243,7 @@ public class RealItem implements Item {
             }
         }
         if (meta instanceof PotionMeta) {
-            PotionMeta potions = (PotionMeta)meta;
+            PotionMeta potions = (PotionMeta) meta;
             try {
                 PotionData data = potions.getBasePotionData();
                 if (data != null) {
@@ -258,14 +252,14 @@ public class RealItem implements Item {
                     if (data.isExtended()) result.append(" Ext");
                     if (data.isUpgraded()) result.append(" II");
                 }
-            } catch (IllegalArgumentException iae) {}
+            } catch (IllegalArgumentException iae) { }
             if (potions.hasCustomEffects()) {
                 for (PotionEffect effect: potions.getCustomEffects()) {
                     if (result.length() > 0) result.append(" ");
                     result.append(niceEnumName(effect.getType().getName()));
                     int amp = effect.getAmplifier();
                     if (amp > 0) {
-                        result.append(" ").append((amp+1));
+                        result.append(" ").append((amp + 1));
                     }
                 }
             }
@@ -293,15 +287,9 @@ public class RealItem implements Item {
     }
 
     @Override
-    public Item take(Merchant merchant) {
-        merchant.takeItem(stack);
-        return this;
-    }
-
-    @Override
     public boolean give(Merchant merchant) {
         if (merchant instanceof PlayerMerchant) {
-            PlayerMerchant playerMerchant = (PlayerMerchant)merchant;
+            PlayerMerchant playerMerchant = (PlayerMerchant) merchant;
             Player player = playerMerchant.getPlayer();
             if (player == null) return false;
             int due = amount;
@@ -372,7 +360,7 @@ public class RealItem implements Item {
 
     private String roman(int i) {
         try {
-            return romans[i];
+            return ROMANS[i];
         } catch (ArrayIndexOutOfBoundsException aioobe) {
             return "" + i;
         }
@@ -388,13 +376,28 @@ public class RealItem implements Item {
 
     @SuppressWarnings("unchecked")
     public static RealItem deserialize(Map<String, Object> map) {
-        ItemStack stack = (ItemStack)map.get("stack");
+        ItemStack stack = (ItemStack) map.get("stack");
         Object ao = map.get("amount");
         if (ao == null) {
             return new RealItem(stack);
         } else {
-            int amount = (Integer)ao;
+            int amount = (Integer) ao;
             return new RealItem(stack, amount);
         }
+    }
+
+    @Override
+    public Component toComponent() {
+        Component itemName;
+        if (stack.hasItemMeta()) {
+            ItemMeta itemMeta = stack.getItemMeta();
+            itemName = itemMeta.hasDisplayName()
+                ? itemMeta.displayName()
+                : Component.text(stack.getI18NDisplayName());
+        } else {
+            itemName = Component.text(stack.getI18NDisplayName());
+        }
+        return itemName.hoverEvent(stack.asHoverEvent())
+            .clickEvent(ClickEvent.runCommand("/auc preview"));
     }
 }

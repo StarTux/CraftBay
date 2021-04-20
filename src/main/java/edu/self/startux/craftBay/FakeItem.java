@@ -19,79 +19,76 @@
 
 package edu.self.startux.craftBay;
 
-import edu.self.startux.craftBay.locale.Color;
 import java.util.HashMap;
 import java.util.Map;
+import net.kyori.adventure.text.Component;
 
 /**
  * Represents a fake item that is nothing but a name.
  */
-public class FakeItem implements Item {
-        private String name;
+public final class FakeItem implements Item {
+    private String name;
 
-        public FakeItem(String name) {
-                this.name = name;
-        }
+    public FakeItem(final String name) {
+        this.name = name;
+    }
 
-        @Override
-        public Item clone() {
-                return new FakeItem(name);
-        }
+    @Override
+    public Item clone() {
+        return new FakeItem(name);
+    }
 
-        @Override
-        public String getName() {
-                return name;
-        }
+    @Override
+    public String getName() {
+        return name;
+    }
 
-        @Override
-        public String getDescription() {
-                return getName();
-        }
+    @Override
+    public String getDescription() {
+        return getName();
+    }
 
-        @Override
-        public ItemAmount getAmount() {
-                return new ItemAmount(1);
-        }
+    @Override
+    public ItemAmount getAmount() {
+        return new ItemAmount(1);
+    }
 
-        @Override
-        public String getItemInfo() {
-                return "";
-        }
+    @Override
+    public String getItemInfo() {
+        return "";
+    }
 
-        @Override
-        public boolean has(Merchant merchant) {
-                if (merchant instanceof BankMerchant) {
-                        return true;
-                }
-                return false;
+    @Override
+    public boolean has(Merchant merchant) {
+        if (merchant instanceof BankMerchant) {
+            return true;
         }
+        return false;
+    }
 
-        @Override
-        public Item take(Merchant merchant) {
-                if (merchant instanceof BankMerchant) {
-                        return this;
-                }
-                return null;
-        }
+    @Override
+    public boolean give(Merchant merchant) {
+        return true;
+    }
 
-        @Override
-        public boolean give(Merchant merchant) {
-                return true;
-        }
+    @Override
+    public Map<String, Object> serialize() {
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("name", name);
+        return result;
+    }
 
-        @Override
-        public Map<String, Object> serialize() {
-                Map<String, Object> result = new HashMap<String, Object>();
-                result.put("name", name);
-                return result;
-        }
+    public static FakeItem deserialize(Map<String, Object> map) {
+        return new FakeItem((String) map.get("name"));
+    }
 
-        public static FakeItem deserialize(Map<String, Object> map) {
-                return new FakeItem((String)map.get("name"));
-        }
+    @Override
+    public String toString() {
+        return name;
+    }
 
-        @Override
-        public String toString() {
-                return name;
-        }
+    @Override
+    public Component toComponent() {
+        return Component.text(name);
+    }
 }

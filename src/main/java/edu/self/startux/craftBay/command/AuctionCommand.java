@@ -25,7 +25,6 @@ import edu.self.startux.craftBay.AuctionTime;
 import edu.self.startux.craftBay.BankMerchant;
 import edu.self.startux.craftBay.CraftBayPlugin;
 import edu.self.startux.craftBay.FakeItem;
-import edu.self.startux.craftBay.HandItem;
 import edu.self.startux.craftBay.Merchant;
 import edu.self.startux.craftBay.MoneyAmount;
 import edu.self.startux.craftBay.Msg;
@@ -39,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -55,7 +55,10 @@ public final class AuctionCommand extends AuctionParameters implements CommandEx
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] argv) {
-        if (sender instanceof Player && plugin.getBlacklistWorlds().contains(((Player) sender).getWorld().getName()) && !((Player) sender).hasPermission("auction.anywhere")) {
+        boolean isBadWorld = sender instanceof Player
+            && plugin.getBlacklistWorlds().contains(((Player) sender).getWorld().getName())
+            && !((Player) sender).hasPermission("auction.anywhere");
+        if (isBadWorld) {
             plugin.warn(sender, plugin.getMessage("command.BadWorld").set("cmd", cmd));
             return true;
         }
@@ -81,7 +84,18 @@ public final class AuctionCommand extends AuctionParameters implements CommandEx
 
     @SubCommand(perm = "info", shortcut = true)
     public void info(CommandSender sender, Auction auction) {
-        plugin.msg(sender, plugin.getMessages("auction.info.Header", "auction.info.Owner", (auction.getItem() instanceof FakeItem ? "auction.info.FakeItem" : "auction.info.RealItem"), (auction.getWinner() != null ? "auction.info.Winner" : "auction.info.NoWinner"), (sender instanceof Player && auction.getWinner() != null && auction.getWinner().equals(PlayerMerchant.getByPlayer((Player) sender)) ? "auction.info.Self" : null), (auction.getState() == AuctionState.RUNNING ? "auction.info.Time" : "auction.info.State")).set(auction, sender));
+        String[] keys = {
+            "auction.info.Header",
+            "auction.info.Owner",
+            (auction.getItem() instanceof FakeItem ? "auction.info.FakeItem" : "auction.info.RealItem"),
+            (auction.getWinner() != null ? "auction.info.Winner" : "auction.info.NoWinner"),
+            (sender instanceof Player
+             && auction.getWinner() != null
+             && auction.getWinner().equals(PlayerMerchant.getByPlayer((Player) sender))
+             ? "auction.info.Self" : null),
+            (auction.getState() == AuctionState.RUNNING ? "auction.info.Time" : "auction.info.State")
+        };
+        plugin.msg(sender, plugin.getMessages(keys).set(auction, sender));
         if (sender instanceof Player) {
             Player player = (Player) sender;
             Auction auc = plugin.getAuction();
@@ -273,9 +287,9 @@ public final class AuctionCommand extends AuctionParameters implements CommandEx
             plugin.warn(player, plugin.getMessage("commands.start.CreativeDenial").set(player));
             return;
         }
-        HandItem item;
+        RealItem item;
         try {
-            item = new HandItem(player);
+            item = new RealItem(player.getInventory().getItemInMainHand());
         } catch (IllegalArgumentException iae) {
             plugin.warn(player, plugin.getMessage("commands.start.HandEmpty"));
             return;
@@ -289,6 +303,7 @@ public final class AuctionCommand extends AuctionParameters implements CommandEx
         Merchant merchant = PlayerMerchant.getByPlayer(player);
         Auction auction = plugin.getAuctionHouse().createAuction(merchant, item, price);
         if (auction != null) {
+            player.getInventory().setItemInMainHand(null);
             merchant.msg(plugin.getMessage("commands.start.Success").set(auction, merchant));
         }
     }
@@ -309,10 +324,10 @@ public final class AuctionCommand extends AuctionParameters implements CommandEx
             for (Auction auction : plugin.getAuctionScheduler().getHistory()) {
                 msgs.addFirst(plugin.getMessage("history.History").set(auction));
             }
-            List<String> out = new ArrayList<String>(msgs.size());
-            out.addAll(plugin.getMessage("history.Header").set(sender).compile());
-            for (Message msg : msgs) out.addAll(msg.compile());
-            plugin.msg(sender, out);
+            List<Component> out = new ArrayList<>(msgs.size() + 1);
+            out.add(plugin.getMessage("history.Header").set(sender).compile());
+            for (Message msg : msgs) out.add(msg.compile());
+            plugin.msg(sender, Component.join(Component.newline(), out));
             return;
         }
         Auction auction = plugin.getAuctionScheduler().getById(id);
@@ -320,7 +335,14 @@ public final class AuctionCommand extends AuctionParameters implements CommandEx
             plugin.warn(sender, plugin.getMessage("commands.history.NoEntry").set(sender).set("id", id));
             return;
         }
-        plugin.msg(sender, plugin.getMessages("auction.info.Header", "auction.info.Owner", (auction.getItem() instanceof FakeItem ? "auction.info.FakeItem" : "auction.info.RealItem"), (auction.getWinner() != null ? "auction.info.Winner" : "auction.info.NoWinner"), "auction.info.State").set(auction, sender));
+        String[] keys = {
+            "auction.info.Header",
+            "auction.info.Owner",
+            (auction.getItem() instanceof FakeItem ? "auction.info.FakeItem" : "auction.info.RealItem"),
+            (auction.getWinner() != null ? "auction.info.Winner" : "auction.info.NoWinner"),
+            "auction.info.State"
+        };
+        plugin.msg(sender, plugin.getMessages(keys).set(auction, sender));
     }
 
     @SubCommand(aliases = { "h", "?" })
@@ -362,12 +384,12 @@ public final class AuctionCommand extends AuctionParameters implements CommandEx
                 return;
             }
         }
-        List<String> lines = new LinkedList<String>();
-        lines.addAll(plugin.getMessage("log.Header").set(auction, sender).compile());
+        List<Component> lines = new LinkedList<>();
+        lines.add(plugin.getMessage("log.Header").set(auction, sender).compile());
         for (String log : auction.getLog()) {
-            lines.addAll(plugin.getMessage("log.Log").set(auction, sender).set("log", log).compile());
+            lines.add(plugin.getMessage("log.Log").set(auction, sender).set("log", log).compile());
         }
-        plugin.msg(sender, lines);
+        plugin.msg(sender, Component.join(Component.newline(), lines));
     }
 
     @SubCommand(perm = "admin", optional = 2)

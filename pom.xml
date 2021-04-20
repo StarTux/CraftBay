@@ -14,10 +14,10 @@
   </properties>
   <repositories>
 
-    <!-- Spigot Repo -->
+    <!-- Paper Repo -->
     <repository>
-      <id>spigot-repo</id>
-      <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+      <id>papermc</id>
+      <url>https://papermc.io/repo/repository/maven-public/</url>
     </repository>
 
     <!-- Cavetale Repo -->
@@ -29,13 +29,12 @@
   </repositories>
   <dependencies>
 
-    <!-- Spigot-API -->
+    <!-- Paper API -->
     <dependency>
-      <groupId>org.spigotmc</groupId>
-      <artifactId>spigot-api</artifactId>
+      <groupId>com.destroystokyo.paper</groupId>
+      <artifactId>paper-api</artifactId>
       <version>1.16.5-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
-      <optional>true</optional>
     </dependency>
 
     <!-- Lombok -->
@@ -43,8 +42,7 @@
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>1.18.16</version>
-      <scope>compile</scope>
-      <optional>true</optional>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Vault -->
@@ -53,7 +51,6 @@
       <artifactId>VaultAPI</artifactId>
       <version>1.7</version>
       <scope>provided</scope>
-      <optional>true</optional>
     </dependency>
 
     <!-- GenericEvents -->
@@ -62,7 +59,6 @@
       <artifactId>generic_events</artifactId>
       <version>0.1</version>
       <scope>provided</scope>
-      <optional>true</optional>
     </dependency>
 
   </dependencies>

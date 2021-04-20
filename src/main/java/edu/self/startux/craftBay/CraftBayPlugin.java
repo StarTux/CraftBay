@@ -25,21 +25,17 @@ import edu.self.startux.craftBay.command.AuctionCommand;
 import edu.self.startux.craftBay.locale.Color;
 import edu.self.startux.craftBay.locale.Language;
 import edu.self.startux.craftBay.locale.Message;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class CraftBayPlugin extends JavaPlugin {
+public final class CraftBayPlugin extends JavaPlugin {
     private String tag = "[CraftBay]";
     private Economy economy;
     private ChatPlugin chatPlugin;
@@ -138,8 +134,7 @@ public class CraftBayPlugin extends JavaPlugin {
         } while (false);
     }
 
-    private Boolean setupEconomy()
-    {
+    private Boolean setupEconomy() {
         RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
         if (economyProvider != null) {
             economy = economyProvider.getProvider();
@@ -172,24 +167,19 @@ public class CraftBayPlugin extends JavaPlugin {
     }
 
     public void warn(CommandSender sender, Message msg) {
-        List<String> lines = msg.compile();
-        if (lines.isEmpty()) return;
-        lines.set(0, Color.ERROR + tag + " " + lines.get(0));
-        for (String line : lines) {
-            sender.sendMessage(line);
-        }
+        sender.sendMessage(TextComponent.ofChildren(Component.text(tag, Color.ERROR.getTextColor()),
+                                                    Component.space(),
+                                                    msg.compile()));
     }
 
-    public void msg(CommandSender sender, List<String> lines) {
-        if (lines.isEmpty()) return;
-        lines.set(0, Color.DEFAULT + tag + " " + lines.get(0));
-        for (String line : lines) {
-            sender.sendMessage(line);
-        }
+    public void msg(CommandSender sender, Component component) {
+        sender.sendMessage(TextComponent.ofChildren(Component.text(tag, Color.ERROR.getTextColor()),
+                                                    Component.space(),
+                                                    component));
     }
 
     public void msg(CommandSender sender, Message msg) {
-        msg(sender, msg.compile());
+        sender.sendMessage(msg.compile());
     }
 
     public String getTag() {
@@ -205,10 +195,12 @@ public class CraftBayPlugin extends JavaPlugin {
     }
 
     public void broadcast(Message msg) {
-        List<String> lines = msg.compile();
-        if (lines.isEmpty()) return;
-        lines.set(0, Color.DEFAULT + tag + " " + lines.get(0));
-        chatPlugin.broadcast(lines);
+        Component txt = msg.compile();
+        if (Component.empty().equals(txt)) return;
+        Component c = TextComponent.ofChildren(Component.text(tag, Color.DEFAULT.getTextColor()),
+                                               Component.space(),
+                                               txt);
+        chatPlugin.broadcast(c);
     }
 
     public ChatPlugin getChatPlugin() {

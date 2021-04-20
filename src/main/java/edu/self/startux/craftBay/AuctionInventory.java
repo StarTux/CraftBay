@@ -1,5 +1,5 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright 2012 StarTux
+ * Copyright 2012-2021 StarTux
  *
  * This file is part of CraftBay.
  *
@@ -36,11 +36,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class AuctionInventory implements Listener {
+public final class AuctionInventory implements Listener {
     private CraftBayPlugin plugin;
     private Map<UUID, PlayerData> playerData = new HashMap<>();
 
-    public AuctionInventory(CraftBayPlugin plugin) {
+    public AuctionInventory(final CraftBayPlugin plugin) {
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
@@ -75,7 +75,7 @@ public class AuctionInventory implements Listener {
     public boolean initPreview(Player player, Auction auction) {
         if (!(auction.getItem() instanceof RealItem)) return false;
         if (playerData.get(player.getUniqueId()) != null) return false;
-        RealItem real = (RealItem)auction.getItem();
+        RealItem real = (RealItem) auction.getItem();
         ItemStack item = real.getItemStack();
         List<ItemStack> items = new ArrayList<>();
         int amount = real.getAmount().getInt();
@@ -102,7 +102,7 @@ public class AuctionInventory implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onInventoryClose(InventoryCloseEvent event) {
         if (!(event.getPlayer() instanceof Player)) return;
-        Player player = (Player)event.getPlayer();
+        Player player = (Player) event.getPlayer();
         PlayerData data = playerData.get(player.getUniqueId());
         if (data == null) return;
         deletePlayer(player);
@@ -117,12 +117,16 @@ public class AuctionInventory implements Listener {
         if (stack == null) return;
         int amount = 0;
         PlayerMerchant merchant = PlayerMerchant.getByPlayer(player);
-        for(ItemStack slot : items) {
+        for (ItemStack slot : items) {
             if (slot == null) continue;
             if (RealItem.canMerge(slot, stack)) {
                 amount += slot.getAmount();
             } else {
-                for (ItemStack drop : items) if (drop != null) player.getWorld().dropItem(player.getLocation(), drop);
+                for (ItemStack drop : items) {
+                    if (drop != null) {
+                        player.getWorld().dropItem(player.getLocation(), drop);
+                    }
+                }
                 plugin.warn(player, plugin.getMessage("auction.gui.ItemsNotEqual"));
                 return;
             }
@@ -132,12 +136,16 @@ public class AuctionInventory implements Listener {
         try {
             item = new RealItem(stack, amount);
         } catch (IllegalArgumentException iae) {
-            for (ItemStack drop : items) if (drop != null) player.getWorld().dropItem(player.getLocation(), drop);
+            for (ItemStack drop : items) {
+                if (drop != null) {
+                    player.getWorld().dropItem(player.getLocation(), drop);
+                }
+            }
             plugin.warn(player, plugin.getMessage("auction.gui.ItemsNotEqual"));
             return;
         }
         MoneyAmount minbid = data.minbid;
-        Auction auction = plugin.getAuctionHouse().createAuction(merchant, item, minbid, false);
+        Auction auction = plugin.getAuctionHouse().createAuction(merchant, item, minbid);
         if (auction == null) {
             for (ItemStack retour : items) {
                 if (retour == null) continue;
@@ -152,7 +160,7 @@ public class AuctionInventory implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        final Player player = (Player)event.getWhoClicked();
+        final Player player = (Player) event.getWhoClicked();
         PlayerData data = playerData.get(player.getUniqueId());
         if (data == null) return;
         if (!data.preview) return;
@@ -166,7 +174,7 @@ public class AuctionInventory implements Listener {
 
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent event) {
-        final Player player = (Player)event.getWhoClicked();
+        final Player player = (Player) event.getWhoClicked();
         PlayerData data = playerData.get(player.getUniqueId());
         if (data == null) return;
         if (!data.preview) return;
@@ -179,11 +187,11 @@ public class AuctionInventory implements Listener {
     }
 
     private static class PlayerData {
-        public MoneyAmount minbid;
-        public Inventory inventory;
-        public boolean preview;
+        private MoneyAmount minbid;
+        private Inventory inventory;
+        private boolean preview;
 
-        public PlayerData(MoneyAmount minbid, Inventory inventory, boolean preview) {
+        PlayerData(final MoneyAmount minbid, final Inventory inventory, final boolean preview) {
             this.minbid = minbid;
             this.inventory = inventory;
             this.preview = preview;
