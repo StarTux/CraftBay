@@ -19,12 +19,16 @@
 
 package edu.self.startux.craftBay;
 
+import edu.self.startux.craftBay.locale.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Tag;
+import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -34,7 +38,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.inventory.meta.BlockStateMeta;
 
 public final class AuctionInventory implements Listener {
     private CraftBayPlugin plugin;
@@ -88,8 +92,22 @@ public final class AuctionInventory implements Listener {
         }
         if (items.isEmpty()) return false;
         int invSize = ((items.size() - 1) / 9 + 1) * 9;
-        Inventory inventory = Bukkit.createInventory(null, invSize, "Auction Preview");
+        Component name = Component.text("Auction Preview", Color.DEFAULT.getTextColor());
+        Inventory inventory = Bukkit.createInventory(null, invSize, name);
         for (ItemStack stack: items) inventory.addItem(stack);
+        player.openInventory(inventory);
+        setPlayer(player, new MoneyAmount(0.0), inventory, true);
+        return true;
+    }
+
+    public boolean initPreview(Player player, Inventory original) {
+        Component name = Component.text("Auction Preview", Color.DEFAULT.getTextColor());
+        Inventory inventory = Bukkit.createInventory(null, original.getSize(), name);
+        for (int i = 0; i < original.getSize(); i += 1) {
+            ItemStack itemStack = original.getItem(i);
+            if (itemStack == null) continue;
+            inventory.setItem(i, itemStack.clone());
+        }
         player.openInventory(inventory);
         setPlayer(player, new MoneyAmount(0.0), inventory, true);
         return true;
@@ -163,13 +181,23 @@ public final class AuctionInventory implements Listener {
         final Player player = (Player) event.getWhoClicked();
         PlayerData data = playerData.get(player.getUniqueId());
         if (data == null) return;
-        if (!data.preview) return;
-        event.setCancelled(true);
-        new BukkitRunnable() {
-            @Override public void run() {
-                player.closeInventory();
+        if (data.preview) {
+            event.setCancelled(true);
+            ItemStack itemStack = event.getCurrentItem();
+            if (itemStack != null && Tag.SHULKER_BOXES.isTagged(itemStack.getType())) {
+                BlockStateMeta meta = (BlockStateMeta) itemStack.getItemMeta();
+                ShulkerBox box = (ShulkerBox) meta.getBlockState();
+                Inventory boxInventory = box.getSnapshotInventory();
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                        deletePlayer(player);
+                        initPreview(player, boxInventory);
+                    });
+                return;
             }
-        }.runTask(plugin);
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                    player.closeInventory();
+                });
+        }
     }
 
     @EventHandler
@@ -179,11 +207,9 @@ public final class AuctionInventory implements Listener {
         if (data == null) return;
         if (!data.preview) return;
         event.setCancelled(true);
-        new BukkitRunnable() {
-            @Override public void run() {
+        Bukkit.getScheduler().runTask(plugin, () -> {
                 player.closeInventory();
-            }
-        }.runTask(plugin);
+            });
     }
 
     private static class PlayerData {
