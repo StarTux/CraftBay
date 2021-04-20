@@ -24,30 +24,28 @@ import java.util.HashMap;
 import java.util.Map;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 public final class Color {
-    public static final Color DEFAULT = new Color(new String[]{"DEFAULT", "DFL"}, ChatColor.BLUE);
-    public static final Color HEADER = new Color(new String[]{"HEADER", "HEAD", "HD", "H"}, ChatColor.YELLOW);
-    public static final Color HIGHLIGHT = new Color(new String[]{"HIGHLIGHT", "HL", "HI"}, ChatColor.AQUA);
-    public static final Color SHADOW = new Color(new String[]{"SHADOW", "DARK", "SHADE", "SHD"}, ChatColor.DARK_GRAY);
-    public static final Color SHORTCUT = new Color(new String[]{"SHORTCUT", "SC", "S"}, ChatColor.WHITE);
-    public static final Color ADMIN = new Color(new String[]{"ADMIN", "ADM"}, ChatColor.DARK_RED);
-    public static final Color ADMINHIGHLIGHT = new Color(new String[]{"ADMINHIGHLIGHT", "ADMINHIGH", "ADMINHI", "ADMHL", "ADMHI"}, ChatColor.RED);
-    public static final Color ERROR = new Color(new String[]{"ERROR", "ERR"}, ChatColor.DARK_RED);
-    public static final Color WARN = new Color(new String[]{"WARNING", "WARN", "WRN"}, ChatColor.RED);
-    public static final Color WARNHIGHLIGHT = new Color(new String[]{"WARNINGHIGHLIGHT", "WARNINGHIGH", "WARNHIGH", "WARNHI", "WRNHI"}, ChatColor.DARK_RED);
+    public static final Color DEFAULT = new Color(new String[]{"DEFAULT", "DFL"}, NamedTextColor.BLUE);
+    public static final Color HEADER = new Color(new String[]{"HEADER", "HEAD", "HD", "H"}, NamedTextColor.YELLOW);
+    public static final Color HIGHLIGHT = new Color(new String[]{"HIGHLIGHT", "HL", "HI"}, NamedTextColor.AQUA);
+    public static final Color SHADOW = new Color(new String[]{"SHADOW", "DARK", "SHADE", "SHD"}, NamedTextColor.DARK_GRAY);
+    public static final Color SHORTCUT = new Color(new String[]{"SHORTCUT", "SC", "S"}, NamedTextColor.WHITE);
+    public static final Color ADMIN = new Color(new String[]{"ADMIN", "ADM"}, NamedTextColor.DARK_RED);
+    public static final Color ADMINHIGHLIGHT = new Color(new String[]{"ADMINHIGHLIGHT", "ADMINHIGH", "ADMINHI", "ADMHL", "ADMHI"}, NamedTextColor.RED);
+    public static final Color ERROR = new Color(new String[]{"ERROR", "ERR"}, NamedTextColor.DARK_RED);
+    public static final Color WARN = new Color(new String[]{"WARNING", "WARN", "WRN"}, NamedTextColor.RED);
+    public static final Color WARNHIGHLIGHT = new Color(new String[]{"WARNINGHIGHLIGHT", "WARNINGHIGH", "WARNHIGH", "WARNHI", "WRNHI"}, NamedTextColor.DARK_RED);
+    public static final Color MONEY = new Color(new String[]{"MONEY"}, NamedTextColor.GOLD);
 
     private static Map<String, Color> nameMap;
-    private ChatColor chatColor;
     private TextColor textColor;
 
-    private Color(final String[] aliases, final ChatColor dfl) {
+    private Color(final String[] aliases, final TextColor dfl) {
         if (nameMap == null) nameMap = new HashMap<String, Color>();
         for (String alias : aliases) nameMap.put(alias.toLowerCase(), this);
-        this.chatColor = dfl;
-        this.textColor = NamedTextColor.NAMES.value(dfl.name().toLowerCase());
+        this.textColor = dfl;
     }
 
     public static Color getByName(String name) {
@@ -55,31 +53,17 @@ public final class Color {
         return nameMap.get(name.toLowerCase());
     }
 
-    public void setColor(ChatColor color) {
-        this.chatColor = color;
-        this.textColor = NamedTextColor.NAMES.value(color.name().toLowerCase());
+    public void setColor(TextColor color) {
+        this.textColor = color;
     }
 
     @Override
     public String toString() {
-        return chatColor.toString();
-    }
-
-    public ChatColor getChatColor() {
-        return chatColor;
+        return textColor.toString();
     }
 
     public TextColor getTextColor() {
         return textColor;
-    }
-
-    public static ChatColor getChatColorByName(String name) {
-        for (ChatColor col : ChatColor.values()) {
-            if (col.name().equalsIgnoreCase(name)) {
-                return col;
-            }
-        }
-        throw new IllegalArgumentException("No such ChatColor: " + name);
     }
 
     public static void configure(ConfigurationSection section) {
@@ -91,16 +75,18 @@ public final class Color {
                 continue;
             }
             String value = section.getString(key);
+            TextColor textColor;
             try {
-                if (value.length() == 1) {
-                    color.setColor(ChatColor.getByChar(value));
+                if (value.startsWith("#")) {
+                    textColor = TextColor.fromHexString(value.substring(1));
                 } else {
-                    color.setColor(getChatColorByName(value));
+                    textColor = NamedTextColor.NAMES.value(value);
                 }
             } catch (Exception e) {
                 CraftBayPlugin.getInstance().getLogger().warning("Unknown color value: " + value);
                 continue;
             }
+            color.setColor(textColor);
         }
     }
 }

@@ -171,6 +171,8 @@ public final class Message {
                 Object object = environment.get(variable.key);
                 if (object instanceof Component) {
                     cb.append((Component) object);
+                } else if (object instanceof MoneyAmount) {
+                    cb.append(((MoneyAmount) object).toComponent());
                 } else {
                     String string = object != null ? object.toString() : "";
                     cb.append(Component.text(string));

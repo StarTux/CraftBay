@@ -3,46 +3,46 @@
 Tag: 'Auction:'
 # Command help, accessed via "/auc help"
 help:
-  Header: '&eAuction Help'
-  Help: '&3/auc &b?&3 &eAuction help'
-  Info: '&3/auc &fi&bnfo &eDisplay auction information'
-  Bid: '&3/auc &fb&bid &3[&bamount&3] &ePlace a bid'
-  BidShort: '&3/bid &3[&bamount&3] &ePlace a bid'
-  Start: '&3/auc &fs&btart &3[&bprice&3] &eStart an auction'
-  Hand: '&3/auc &bhand &3[&bprice&3] &eAuction the item in your hand'
-  Fee: '&3Starting an auction costs &b{fee}&3.'
-  Tax: '&3Starting bids above &b{minbid}&3 will cause &b{tax}%&3 tax.'
-  End: '&3/auc &fe&bnd &3[&bminutes&3:&bseconds&3] &eEnd current auction'
-  Listen: '&3/auc &blisten&3|&bignore &eListen to or ignore auctions'
-  History: '&3/auc &bhistory &3[&bid&3] &eView past or queued auctions'
-  Cancel: '&3/auc &fc&bancel &3[&bid&3] &eCancel an auction'
+  Header: 'Auction Help'
+  Help: '/auc ? Auction help'
+  Info: '/auc info Display auction information'
+  Bid: '/auc bid [amount] Place a bid'
+  BidShort: '/bid [amount] Place a bid'
+  Start: '/auc start [price] Start an auction'
+  Hand: '/auc hand [price] Auction the item in your hand'
+  Fee: 'Starting an auction costs {fee}.'
+  Tax: 'Starting bids above {minbid} will cause {tax}% tax.'
+  End: '/auc end [minutes:seconds] End current auction'
+  Listen: '/auc listen|ignore Listen to or ignore auctions'
+  History: '/auc history [id] View past or queued auctions'
+  Cancel: '/auc cancel [id] Cancel an auction'
 # Admin command help, accessed via "/auc help" for admins
 adminhelp:
-  Bank: '&4/auc &cbank &4\<&citem&4\> [&camount&4] &4[&cprice&4] [&ctime&4] &eAuction spawned items'
-  Bank: '&4/auc &cbankhand &eAuction item in hand on behalf of the bank'
-  BankBid: '&4/auc &cbankbid &4\<&camount&4\> &ePlace a bid on behalf of the bank'
-  Reload: '&4/auc &creload &eReload configuration file'
-  Log: '&4/auc &clog &4[&cid&4] &eView auction log'
-  Fake: '&4/auc &cfake &4\<&ctitle&4\> [&camount&4] [&cprice&4] &eAuction off a fake item'
+  Bank: '/auc bank \<item\> [amount] [price] [time] Auction spawned items'
+  Bank: '/auc bankhand Auction item in hand on behalf of the bank'
+  BankBid: '/auc bankbid \<amount\> Place a bid on behalf of the bank'
+  Reload: '/auc reload Reload configuration file'
+  Log: '/auc log [id] View auction log'
+  Fake: '/auc fake \<title\> [amount] [price] Auction off a fake item'
 # Error messages during command line parsing
 # Environment:
 #  player - the name of the player issuing the command
 #  cmd - the issued subcommand
 #  arg - the erroneous argument (if applicable)
 command:
-  NoEntry: '&cNo such command: "{cmd}"!'
-  NoPerm: "&cYou don't have permission!"
-  BadWorld: '&cYou cannot do that in this world!'
-  NotAPlayer: '&cOnly players can do that!'
-  NoCurrentAuction: '&cNo auction running!'
-  NoSuchAuction: '&cUnknown such auction: &4{arg}&c!'
-  ArgsTooSmall: '&cNot enough arguments!'
-  ArgsTooBig: '&cToo many arguments!'
-  NotANumber: '&cNumber expected: &4{arg}&c!'
-  BadTimeFormat: '&cBad time format: &4{arg}&c!'
-  NoSuchItem: '&cInvalid item: &4{arg}&c!'
-  IllegalItem: '&cInvalid item: &4{arg}&c!'
-  UnclosedQuote: '&cNo closing quote!'
+  NoEntry: 'No such command: "{cmd}"!'
+  NoPerm: "You don't have permission!"
+  BadWorld: 'You cannot do that in this world!'
+  NotAPlayer: 'Only players can do that!'
+  NoCurrentAuction: 'No auction running!'
+  NoSuchAuction: 'Unknown such auction: {arg}!'
+  ArgsTooSmall: 'Not enough arguments!'
+  ArgsTooBig: 'Too many arguments!'
+  NotANumber: 'Number expected: {arg}!'
+  BadTimeFormat: 'Bad time format: {arg}!'
+  NoSuchItem: 'Invalid item: {arg}!'
+  IllegalItem: 'Invalid item: {arg}!'
+  UnclosedQuote: 'No closing quote!'
 # Error messages from commands
 # Environment:
 #   player - the name of the player issuing the command
@@ -57,26 +57,26 @@ commands:
     ListenSuccess: Listening to auctions
     IgnoreSuccess: Ignoring auctions
   history:
-    NoEntry: '&cNo such id: {id}'
+    NoEntry: 'No such id: {id}'
   start:
-    HandEmpty: '&cThere is nothing in your hand!'
-    AmountTooSmall: '&cPositive amount expected!'
-    CreativeDenial: '&cYou cannot start auctions in creative mode!'
-    Success: '&3Your auction for &b{amount}&3x&b{itemdesc}&3 will start soon!'
-    StartingBidTooLow: '&cStarting bid must be at least {startingbid}!'
+    HandEmpty: 'There is nothing in your hand!'
+    AmountTooSmall: 'Positive amount expected!'
+    CreativeDenial: 'You cannot start auctions in creative mode!'
+    Success: 'Your auction for {amount}x{itemdesc} will start soon!'
+    StartingBidTooLow: 'Starting bid must be at least {startingbid}!'
   end:
-    NotOwner: '&cYou are not the owner of this auction!'
-    DelayTooLong: '&cYou can only shorten your auction!'
-    DelayTooShort: '&cThe delay must be at least {min}!'
-    DelayNegative: '&cPositive delay expected!'
+    NotOwner: 'You are not the owner of this auction!'
+    DelayTooLong: 'You can only shorten your auction!'
+    DelayTooShort: 'The delay must be at least {min}!'
+    DelayNegative: 'Positive delay expected!'
   cancel:
-    NotOwner: '&cYou are not the owner of this auction!'
-    Running: '&cYou cannot cancel a running auction!'
-    Canceled: '&cThis auction is already canceled!'
-    Ended: '&cThis auction is over!'
+    NotOwner: 'You are not the owner of this auction!'
+    Running: 'You cannot cancel a running auction!'
+    Canceled: 'This auction is already canceled!'
+    Ended: 'This auction is over!'
   fake:
-    Fail: '&cCreating fake auction failed'
-    Success: '&3Created fake auction successfully'
+    Fail: 'Creating fake auction failed'
+    Success: 'Created fake auction successfully'
 # Error messages from auctions
 # Environment (where applicable):
 #   id - the auction id
@@ -95,69 +95,69 @@ commands:
 #   fee - the total fee
 auction:
   create:
-    QueueFull: '&cWait until other auctions have ended!'
-    NotEnoughItems: '&cYou do not have enough &4{itemdesc}&c!'
-    FeeTooHigh: '&cYou cannot afford the fee of &4{fee}&4!'
-    FeeDebited: '&3Your account has been debited &b{fee}&3.'
-    OwnerCooldown: '&cYou have to wait &4{cooldown}&c!'
+    QueueFull: 'Wait until other auctions have ended!'
+    NotEnoughItems: 'You do not have enough {itemdesc}!'
+    FeeTooHigh: 'You cannot afford the fee of {fee}!'
+    FeeDebited: 'Your account has been debited {fee}.'
+    OwnerCooldown: 'You have to wait {cooldown}!'
   start:
-    Announce: '&b{owner}&3 is auctioning &b{amount}&3x&b{itemdesc}&3 for &b{minbid}&3. &bClick here.'
+    Announce: '{owner} is auctioning {amount}x{itemdesc} for {minbid}. Click here.'
   gui:
     ChestTitle: 'Items for auction'
-    ItemsNotEqual: '&cAll items must be identical!'
-    Success: '&3Your auction for &b{amount}&3x&b{itemdesc}&3 will start soon!'
+    ItemsNotEqual: 'All items must be identical!'
+    Success: 'Your auction for {amount}x{itemdesc} will start soon!'
   state:
     Queued: Queued
     Running: Running
     Canceled: Canceled
     Ended: Ended
   info:
-    Header: '&eAuction Information'
-    Owner: '&3Auctioneer: &b{owner}'
-    RealItem: '&3Item: &b{totalamount}&3x&b{item}&3 &b{iteminfo}&3'
-    FakeItem: '&3Item: &b{item}'
-    Winner: '&3Winning: &b{winner}&3 for &b{price}'
-    NoWinner: '&3Minimal bid: &b{minbid}'
-    Self: '&3Your bid: &b{maxbid}'
-    Time: '&3Time left: &b{timeleft}'
-    State: '&3State: &b{state}'
-    Fee: '&3Fee: &b{fee}'
-    Help: '&3Type &b/auc ?&3 for a list of commands.'
+    Header: 'Auction Information'
+    Owner: 'Auctioneer: {owner}'
+    RealItem: 'Item: {totalamount}x{item} {iteminfo}'
+    FakeItem: 'Item: {item}'
+    Winner: 'Winning: {winner} for {price}'
+    NoWinner: 'Minimal bid: {minbid}'
+    Self: 'Your bid: {maxbid}'
+    Time: 'Time left: {timeleft}'
+    State: 'State: {state}'
+    Fee: 'Fee: {fee}'
+    Help: 'Type /auc ? for a list of commands.'
   reminder:
-    NoWinner: '&3Auction for &b{amount}&3x&b{itemdesc}&3 ends in &b{timeleft}&3. Price: &b{minbid}&3. &bClick here.'
-    Winner: '&b{winner}&3 wins &b{amount}&3x&b{itemdesc}&3 for &b{price}&3 in &b{timeleft}&3. &bClick here.'
+    NoWinner: 'Auction for {amount}x{itemdesc} ends in {timeleft}. Price: {minbid}. Click here.'
+    Winner: '{winner} wins {amount}x{itemdesc} for {price} in {timeleft}. Click here.'
   countdown:
-    NoWinner: '&3Auction for &b{amount}&3x&b{itemdesc}&3 ends in &b{timeleft}&3!'
-    Winner: '&b{winner}&3 wins &b{amount}&3x&b{itemdesc}&3 in &b{timeleft}&3!'
+    NoWinner: 'Auction for {amount}x{itemdesc} ends in {timeleft}!'
+    Winner: '{winner} wins {amount}x{itemdesc} in {timeleft}!'
   bid:
-    IsOwner: "&cYou can't bid on your own auction!"
-    UnderbidSelf: '&cYou have already made a larger bid!'
-    DoubleBid: '&cYou cannot bid twice in a row!'
-    BidTooSmall: '&cYou must bid at least &4{minbid}&c!'
-    TooPoor: '&cYou do not have enough money!'
-    Win: '&3You are now winning this auction for &b{price}&3!'
-    Fail: '&b{winner}&3 is still winning but you raised the price to &b{price}&3!'
-    ToLoser: '&3{winner} just beat you with {price}!'
-    NewPrice: '&3Price for &b{amount}&3x&b{itemdesc}&3 is now &b{price}&3 for &b{winner}&3'
-    NewWinner: '&b{winner}&3 beats {oldwinner}. Price &b{price}'
-    UnderBid: '&3{player} raises but &b{winner}&3 is higher. Price &b{price}'
-    Still: '&3You are still winning this auction for &b{price}&3.'
+    IsOwner: "You can't bid on your own auction!"
+    UnderbidSelf: 'You have already made a larger bid!'
+    DoubleBid: 'You cannot bid twice in a row!'
+    BidTooSmall: 'You must bid at least {minbid}!'
+    TooPoor: 'You do not have enough money!'
+    Win: 'You are now winning this auction for {price}!'
+    Fail: '{winner} is still winning but you raised the price to {price}!'
+    ToLoser: '{winner} just beat you with {price}!'
+    NewPrice: 'Price for {amount}x{itemdesc} is now {price} for {winner}'
+    NewWinner: '{winner} beats {oldwinner}. Price {price}'
+    UnderBid: '{player} raises but {winner} is higher. Price {price}'
+    Still: 'You are still winning this auction for {price}.'
   end:
-    ToWinner: '&3Enjoy your &b{amount}&3x&b{itemdesc}&3 for &b{price}&3!'
-    OwnerSell: '&3Your &b{amount}&3x&b{itemdesc}&3 has been sold to &b{winner}&3 for &b{price}&3.'
-    OwnerReturn: '&3Your &b{amount}&3x&b{itemdesc}&3 has been returned to you.'
-    OwnerPaymentError: '&cError processing payment. Auction canceled.'
-    Winner: '&b{winner}&3 buys &b{amount}&3x&b{itemdesc}&3 for &b{price}&3.'
-    WinnerPaymentError: '&cError processing payment. Auction canceled.'
-    PaymentError: '&4{winner}&c cannot afford the &4{price}&c he bid. Punish him!'
-    NoBid: '&3Auction for &b{amount}&3x&b{itemdesc}&3 ended with no bids.'
-    Manual: '&b{player}&3 ended the auction.'
+    ToWinner: 'Enjoy your {amount}x{itemdesc} for {price}!'
+    OwnerSell: 'Your {amount}x{itemdesc} has been sold to {winner} for {price}.'
+    OwnerReturn: 'Your {amount}x{itemdesc} has been returned to you.'
+    OwnerPaymentError: 'Error processing payment. Auction canceled.'
+    Winner: '{winner} buys {amount}x{itemdesc} for {price}.'
+    WinnerPaymentError: 'Error processing payment. Auction canceled.'
+    PaymentError: '{winner} cannot afford the {price} he bid. Punish him!'
+    NoBid: 'Auction for {amount}x{itemdesc} ended with no bids.'
+    Manual: '{player} ended the auction.'
   cancel:
-    Announce: '&4Auction canceled by &c{player}&4!'
-    ToOwner: '&cYour auction has been canceled!'
-    FeeReturn: '&3Your fee of &b{fee}&3 has been returned to you.'
+    Announce: 'Auction canceled by {player}!'
+    ToOwner: 'Your auction has been canceled!'
+    FeeReturn: 'Your fee of {fee} has been returned to you.'
   time:
-    Change: '&b{player}&3 set the remaining time to &b{newtimeleft}&3.'
+    Change: '{player} set the remaining time to {newtimeleft}.'
 # Special item describing strings not covered by Vault
 item:
   damaged:
@@ -192,10 +192,10 @@ item:
 # Display of the history.
 # Environment: see auction.*
 history:
-  Header: '&eAuction History'
-  Queue: '&8[{id}] {owner} &b{totalamount}&3x&b{itemdesc}'
-  Current: '&e[{id}] {owner} &b{totalamount}&3x&b{itemdesc}'
-  History: '&3[&b{id}&3] {owner} &b{totalamount}&3x&b{itemdesc}'
+  Header: 'Auction History'
+  Queue: '[{id}] {owner} {totalamount}x{itemdesc}'
+  Current: '[{id}] {owner} {totalamount}x{itemdesc}'
+  History: '[{id}] {owner} {totalamount}x{itemdesc}'
 log:
-  Header: '&eAuction Log [{id}]'
-  Log: '&4{log}'
+  Header: 'Auction Log [{id}]'
+  Log: '{log}'

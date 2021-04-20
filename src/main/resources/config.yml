@@ -40,17 +40,18 @@ denydoublebid: false
 debug: false
 # DefaultChat configuration
 defaultchat:
-        # Are players listening by default?
-        autojoin: true
+  # Are players listening by default?
+  autojoin: true
 # Colors
 colors:
-        default: dark_aqua
-        header: yellow
-        highlight: aqua
-        shadow: dark_gray
-        shortcut: white
-        admin: dark_red
-        adminhigh: red
-        error: dark_red
-        warn: red
-        warnhigh: dark_red
+  default: dark_aqua
+  header: yellow
+  highlight: aqua
+  shadow: dark_gray
+  shortcut: white
+  admin: dark_red
+  adminhigh: red
+  error: dark_red
+  warn: red
+  warnhigh: dark_red
+  money: gold

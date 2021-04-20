@@ -169,17 +169,17 @@ public final class CraftBayPlugin extends JavaPlugin {
     public void warn(CommandSender sender, Message msg) {
         sender.sendMessage(TextComponent.ofChildren(Component.text(tag, Color.ERROR.getTextColor()),
                                                     Component.space(),
-                                                    msg.compile()));
+                                                    msg.compile()).color(Color.WARN.getTextColor()));
     }
 
     public void msg(CommandSender sender, Component component) {
-        sender.sendMessage(TextComponent.ofChildren(Component.text(tag, Color.ERROR.getTextColor()),
+        sender.sendMessage(TextComponent.ofChildren(Component.text(tag, Color.HIGHLIGHT.getTextColor()),
                                                     Component.space(),
-                                                    component));
+                                                    component).color(Color.DEFAULT.getTextColor()));
     }
 
     public void msg(CommandSender sender, Message msg) {
-        sender.sendMessage(msg.compile());
+        msg(sender, msg.compile());
     }
 
     public String getTag() {
@@ -197,9 +197,9 @@ public final class CraftBayPlugin extends JavaPlugin {
     public void broadcast(Message msg) {
         Component txt = msg.compile();
         if (Component.empty().equals(txt)) return;
-        Component c = TextComponent.ofChildren(Component.text(tag, Color.DEFAULT.getTextColor()),
+        Component c = TextComponent.ofChildren(Component.text(tag, Color.HIGHLIGHT.getTextColor()),
                                                Component.space(),
-                                               txt);
+                                               txt).color(Color.DEFAULT.getTextColor());
         chatPlugin.broadcast(c);
     }
 

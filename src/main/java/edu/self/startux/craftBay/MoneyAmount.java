@@ -1,5 +1,5 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright 2012 StarTux
+ * Copyright 2012-2021 StarTux
  *
  * This file is part of CraftBay.
  *
@@ -19,7 +19,9 @@
 
 package edu.self.startux.craftBay;
 
+import edu.self.startux.craftBay.locale.Color;
 import lombok.Value;
+import net.kyori.adventure.text.Component;
 
 @Value
 public final class MoneyAmount implements Comparable<MoneyAmount> {
@@ -69,5 +71,9 @@ public final class MoneyAmount implements Comparable<MoneyAmount> {
         } catch (RuntimeException e) {
             return "" + amount;
         }
+    }
+
+    public Component toComponent() {
+        return Component.text(toString(), Color.MONEY.getTextColor());
     }
 }
