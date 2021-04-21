@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -397,7 +398,7 @@ public final class RealItem implements Item {
         } else {
             itemName = Component.text(stack.getI18NDisplayName());
         }
-        return itemName.hoverEvent(stack.asHoverEvent())
+        return TextComponent.ofChildren(itemName).hoverEvent(stack.asHoverEvent())
             .clickEvent(ClickEvent.runCommand("/auc preview"));
     }
 }

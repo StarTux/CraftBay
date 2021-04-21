@@ -19,7 +19,6 @@
 
 package edu.self.startux.craftBay;
 
-import edu.self.startux.craftBay.locale.Color;
 import lombok.Value;
 import net.kyori.adventure.text.Component;
 
@@ -74,6 +73,6 @@ public final class MoneyAmount implements Comparable<MoneyAmount> {
     }
 
     public Component toComponent() {
-        return Component.text(toString(), Color.MONEY.getTextColor());
+        return Component.text(toString());
     }
 }

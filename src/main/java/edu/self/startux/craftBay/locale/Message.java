@@ -34,18 +34,27 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import lombok.Value;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public final class Message {
     private static Object endl = new Object();
-    private static class Variable {
-        private String key;
+
+    @Value
+    private static final class Variable {
+        private final String key;
+        private final Style style;
     }
-    private static class Escape {
+
+    private static final class Escape {
         private String sequence;
         @Override
         public String toString() {
@@ -152,10 +161,40 @@ public final class Message {
             while (matcher.find()) {
                 iter.add(string.substring(lastIndex, matcher.start()));
                 lastIndex = matcher.end();
-                Variable var = new Variable();
-                var.key = matcher.group(1);
-                environment.put(var.key, "{" + matcher.group(1) + "}");
-                iter.add(var);
+                String name = matcher.group(1);
+                Style.Builder style = Style.style();
+                String[] split = name.split("#");
+                if (split.length > 1) {
+                    name = split[0];
+                    for (int i = 1; i < split.length; i += 1) {
+                        String it = split[i];
+                        TextDecoration td = TextDecoration.NAMES.value(it);
+                        if (td != null) {
+                            style.decorate(td);
+                            continue;
+                        }
+                        try {
+                            TextColor textColor = TextColor.fromHexString("#" + it);
+                            style.color(textColor);
+                        } catch (IllegalArgumentException iae) {
+                            CraftBayPlugin.getInstance().getLogger().warning("Invalid color code: " + it);
+                        }
+                    }
+                }
+                while (name.length() >= 2) {
+                    if (name.charAt(0) != ChatColor.COLOR_CHAR) break;
+                    ChatColor chatColor = ChatColor.getByChar(name.charAt(1));
+                    if (chatColor == null) break;
+                    name = name.substring(2);
+                    if (chatColor.isColor()) {
+                        style.color(NamedTextColor.NAMES.value(chatColor.name().toLowerCase()));
+                    } else if (chatColor.isFormat()) {
+                        style.decorate(TextDecoration.NAMES.value(chatColor.name().toLowerCase()));
+                    }
+                }
+                environment.put(name, "{" + name + "}");
+                Variable variable = new Variable(name, style.build());
+                iter.add(variable);
             }
             iter.add(string.substring(lastIndex, string.length()));
         }
@@ -170,12 +209,13 @@ public final class Message {
                 Variable variable = (Variable) o;
                 Object object = environment.get(variable.key);
                 if (object instanceof Component) {
-                    cb.append((Component) object);
+                    Component component = (Component) object;
+                    cb.append(component.style(variable.style));
                 } else if (object instanceof MoneyAmount) {
-                    cb.append(((MoneyAmount) object).toComponent());
+                    cb.append(((MoneyAmount) object).toComponent().style(variable.style));
                 } else {
                     String string = object != null ? object.toString() : "";
-                    cb.append(Component.text(string));
+                    cb.append(Component.text(string, variable.style));
                 }
             } else {
                 cb.append(Component.text(o.toString()));

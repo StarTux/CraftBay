@@ -37,7 +37,6 @@ public final class Color {
     public static final Color ERROR = new Color(new String[]{"ERROR", "ERR"}, NamedTextColor.DARK_RED);
     public static final Color WARN = new Color(new String[]{"WARNING", "WARN", "WRN"}, NamedTextColor.RED);
     public static final Color WARNHIGHLIGHT = new Color(new String[]{"WARNINGHIGHLIGHT", "WARNINGHIGH", "WARNHIGH", "WARNHI", "WRNHI"}, NamedTextColor.DARK_RED);
-    public static final Color MONEY = new Color(new String[]{"MONEY"}, NamedTextColor.GOLD);
 
     private static Map<String, Color> nameMap;
     private TextColor textColor;
