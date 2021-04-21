@@ -210,9 +210,13 @@ public final class Message {
                 Object object = environment.get(variable.key);
                 if (object instanceof Component) {
                     Component component = (Component) object;
-                    cb.append(component.style(variable.style));
+                    component = component.style(variable.style.merge(component.style()));
+                    cb.append(component);
                 } else if (object instanceof MoneyAmount) {
-                    cb.append(((MoneyAmount) object).toComponent().style(variable.style));
+                    MoneyAmount moneyAmount = (MoneyAmount) object;
+                    Component component = moneyAmount.toComponent();
+                    component = component.style(variable.style.merge(component.style()));
+                    cb.append(component);
                 } else {
                     String string = object != null ? object.toString() : "";
                     cb.append(Component.text(string, variable.style));
