@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
@@ -127,37 +128,33 @@ public final class AuctionInventory implements Listener {
         if (data.preview) return;
         Inventory inventory = data.inventory;
         if (inventory == null) return;
-        ItemStack[] items = inventory.getContents();
-        ItemStack stack = null;
-        for (ItemStack slot : items) {
-            if (slot != null) stack = slot;
+        List<ItemStack> items = new ArrayList<>();
+        for (ItemStack item : inventory.getContents()) {
+            if (item != null && item.getType() != Material.AIR) {
+                items.add(item);
+            }
         }
-        if (stack == null) return;
+        if (items.isEmpty()) return;
+        ItemStack stack = items.get(0).clone();
         int amount = 0;
         PlayerMerchant merchant = PlayerMerchant.getByPlayer(player);
-        for (ItemStack slot : items) {
-            if (slot == null) continue;
-            if (RealItem.canMerge(slot, stack)) {
-                amount += slot.getAmount();
+        for (ItemStack item : items) {
+            if (RealItem.canMerge(item, stack)) {
+                amount += item.getAmount();
             } else {
-                for (ItemStack drop : items) {
-                    if (drop != null) {
-                        player.getWorld().dropItem(player.getLocation(), drop);
-                    }
+                for (ItemStack drop : player.getInventory().addItem(items.toArray(new ItemStack[0])).values()) {
+                    player.getWorld().dropItem(player.getEyeLocation(), drop);
                 }
                 plugin.warn(player, plugin.getMessage("auction.gui.ItemsNotEqual"));
                 return;
             }
         }
-        stack = stack.clone();
         Item item = null;
         try {
             item = new RealItem(stack, amount);
         } catch (IllegalArgumentException iae) {
-            for (ItemStack drop : items) {
-                if (drop != null) {
-                    player.getWorld().dropItem(player.getLocation(), drop);
-                }
+            for (ItemStack drop : player.getInventory().addItem(items.toArray(new ItemStack[0])).values()) {
+                player.getWorld().dropItem(player.getEyeLocation(), drop);
             }
             plugin.warn(player, plugin.getMessage("auction.gui.ItemsNotEqual"));
             return;
@@ -165,12 +162,9 @@ public final class AuctionInventory implements Listener {
         MoneyAmount minbid = data.minbid;
         Auction auction = plugin.getAuctionHouse().createAuction(merchant, item, minbid);
         if (auction == null) {
-            for (ItemStack retour : items) {
-                if (retour == null) continue;
-                for (ItemStack drop : player.getInventory().addItem(retour).values()) {
-                    player.getWorld().dropItem(player.getEyeLocation(), drop);
-                }
-           }
+            for (ItemStack drop : player.getInventory().addItem(items.toArray(new ItemStack[0])).values()) {
+                player.getWorld().dropItem(player.getEyeLocation(), drop);
+            }
         } else {
             PlayerMerchant.getByPlayer(player).msg(plugin.getMessage("auction.gui.Success").set(auction, merchant));
         }

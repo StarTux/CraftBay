@@ -287,9 +287,14 @@ public final class AuctionCommand extends AuctionParameters implements CommandEx
             plugin.warn(player, plugin.getMessage("commands.start.CreativeDenial").set(player));
             return;
         }
+        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+        if (itemInMainHand == null || itemInMainHand.getType() == Material.AIR) {
+            plugin.warn(player, plugin.getMessage("commands.start.HandEmpty"));
+            return;
+        }
         RealItem item;
         try {
-            item = new RealItem(player.getInventory().getItemInMainHand());
+            item = new RealItem(itemInMainHand);
         } catch (IllegalArgumentException iae) {
             plugin.warn(player, plugin.getMessage("commands.start.HandEmpty"));
             return;

@@ -58,11 +58,10 @@ public final class RealItem implements Item {
     }
 
     public RealItem(final ItemStack stack, final int amount) {
-        if (stack.getType() == Material.AIR || stack.getAmount() == 0) {
-            this.stack = new ItemStack(Material.STICK);
-        } else {
-            this.stack = stack.clone();
+        if (stack == null || stack.getType() == Material.AIR) {
+            throw new IllegalArgumentException("item is empty");
         }
+        this.stack = stack.clone();
         this.amount = amount;
         this.stack.setAmount(1);
     }
