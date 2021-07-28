@@ -73,10 +73,6 @@ public final class RealItem implements Item {
 
     @Override
     public String getName() {
-        if (CraftBayPlugin.getInstance().getGenericEventsHandler() != null) {
-            String result = CraftBayPlugin.getInstance().getGenericEventsHandler().getItemName(stack);
-            if (result != null) return result;
-        }
         return niceEnumName(stack.getType().name());
     }
 
@@ -95,10 +91,6 @@ public final class RealItem implements Item {
 
     @Override
     public String getDescription() {
-        if (CraftBayPlugin.getInstance().getGenericEventsHandler() != null) {
-            String result = CraftBayPlugin.getInstance().getGenericEventsHandler().getItemName(stack);
-            if (result != null) return result;
-        }
         StringBuilder sb = new StringBuilder();
         if (canBeDamaged() && stack.getDurability() > 0) {
             sb.append(CraftBayPlugin.getInstance().getMessage("item.damaged.Singular").toString());
@@ -165,10 +157,6 @@ public final class RealItem implements Item {
 
     @Override
     public String getItemInfo() {
-        if (CraftBayPlugin.getInstance().getGenericEventsHandler() != null) {
-            String result = CraftBayPlugin.getInstance().getGenericEventsHandler().getItemName(stack);
-            if (result != null) return result;
-        }
         StringBuffer result = new StringBuffer();
         if (canBeDamaged() && stack.getDurability() > 0) {
             int durability = stack.getType().getMaxDurability() - stack.getDurability();

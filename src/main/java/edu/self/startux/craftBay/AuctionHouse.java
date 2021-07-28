@@ -92,7 +92,7 @@ public final class AuctionHouse implements Listener {
                 owner.warn(plugin.getMessage("auction.create.FeeTooHigh").set(owner).set("fee", feetax));
                 return null;
             }
-            if (!owner.takeAmount(feetax)) {
+            if (!owner.takeAmount(feetax, "Auction Tax")) {
                 owner.warn(plugin.getMessage("auction.create.FeeTooHigh").set(owner).set("fee", feetax));
                 return null;
             }
@@ -134,12 +134,12 @@ public final class AuctionHouse implements Listener {
             plugin.getServer().getPluginManager().callEvent(event);
             ItemDelivery.schedule(auction.getOwner(), auction.getItem(), auction);
         } else {
-            if (!auction.getWinner().takeAmount(auction.getWinningBid())) {
+            if (!auction.getWinner().takeAmount(auction.getWinningBid(), "Auction win: " + auction.getItem().getName())) {
                 event.setPaymentError(true);
                 ItemDelivery.schedule(auction.getOwner(), auction.getItem(), auction);
             }
             plugin.getServer().getPluginManager().callEvent(event);
-            auction.getOwner().giveAmount(auction.getWinningBid());
+            auction.getOwner().giveAmount(auction.getWinningBid(), "Auctioned: " + auction.getItem().getName());
             ItemDelivery.schedule(auction.getWinner(), auction.getItem(), auction);
         }
     }
@@ -147,7 +147,7 @@ public final class AuctionHouse implements Listener {
     public void cancelAuction(Auction auction) {
         ItemDelivery.schedule(auction.getOwner(), auction.getItem(), auction);
         if (auction.getFee().getDouble() > 0.0) {
-            auction.getOwner().giveAmount(auction.getFee());
+            auction.getOwner().giveAmount(auction.getFee(), "Auction Fee");
             auction.getOwner().msg(plugin.getMessage("auction.cancel.FeeReturn").set(auction));
         }
     }

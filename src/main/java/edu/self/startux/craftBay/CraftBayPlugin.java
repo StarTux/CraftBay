@@ -22,6 +22,7 @@ package edu.self.startux.craftBay;
 import edu.self.startux.craftBay.chat.BukkitChat;
 import edu.self.startux.craftBay.chat.ChatPlugin;
 import edu.self.startux.craftBay.command.AuctionCommand;
+import edu.self.startux.craftBay.economy.Economy;
 import edu.self.startux.craftBay.locale.Color;
 import edu.self.startux.craftBay.locale.Language;
 import edu.self.startux.craftBay.locale.Message;
@@ -29,15 +30,12 @@ import java.util.ArrayList;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class CraftBayPlugin extends JavaPlugin {
     private String tag = "[CraftBay]";
-    private Economy economy;
     private ChatPlugin chatPlugin;
     private AuctionAnnouncer announcer;
     private AuctionHouse house;
@@ -50,14 +48,10 @@ public final class CraftBayPlugin extends JavaPlugin {
     private static CraftBayPlugin instance;
     private boolean denyDoubleBid = false;
     private boolean debugMode = false;
-    private GenericEventsHandler genericEventsHandler = null;
+    private Economy economy;
 
     public static CraftBayPlugin getInstance() {
         return instance;
-    }
-
-    public GenericEventsHandler getGenericEventsHandler() {
-        return genericEventsHandler;
     }
 
     public void onEnable() {
@@ -71,9 +65,6 @@ public final class CraftBayPlugin extends JavaPlugin {
             getLogger().severe("Failed to setup economy. CraftBay is not enabled!");
             setEnabled(false);
             return;
-        }
-        if (getServer().getPluginManager().getPlugin("GenericEvents") != null) {
-            genericEventsHandler = new GenericEventsHandler();
         }
         announcer = new AuctionAnnouncer(this);
         house = new AuctionHouse(this);
@@ -134,12 +125,9 @@ public final class CraftBayPlugin extends JavaPlugin {
         } while (false);
     }
 
-    private Boolean setupEconomy() {
-        RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
-        if (economyProvider != null) {
-            economy = economyProvider.getProvider();
-        }
-        return (economy != null);
+    private boolean setupEconomy() {
+        this.economy = Economy.get(this).setup();
+        return this.economy != null;
     }
 
     public Economy getEco() {

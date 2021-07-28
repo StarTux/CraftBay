@@ -53,11 +53,10 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- GenericEvents -->
     <dependency>
-      <groupId>com.winthier.generic_events</groupId>
-      <artifactId>generic_events</artifactId>
-      <version>0.1</version>
+      <groupId>com.cavetale.money</groupId>
+      <artifactId>money</artifactId>
+      <version>0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
@@ -72,8 +71,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.2</version>
         <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
+          <source>16</source>
+          <target>16</target>
           <showDeprecation>true</showDeprecation>
           <showWarnings>true</showWarnings>
           <compilerArgs>

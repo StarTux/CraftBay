@@ -53,12 +53,12 @@ public class BankMerchant implements Merchant {
     }
 
     @Override
-    public boolean giveAmount(MoneyAmount amount) {
+    public boolean giveAmount(MoneyAmount amount, String message) {
         return true;
     }
 
     @Override
-    public boolean takeAmount(MoneyAmount amount) {
+    public boolean takeAmount(MoneyAmount amount, String message) {
         return true;
     }
 
