@@ -19,11 +19,13 @@
 
 package edu.self.startux.craftBay;
 
+import edu.self.startux.craftBay.item.ItemManager;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -72,8 +74,8 @@ public final class RealItem implements Item {
     }
 
     @Override
-    public String getName() {
-        return niceEnumName(stack.getType().name());
+    public Component getName() {
+        return getDisplayName(stack);
     }
 
     private static String capitalName(String in) {
@@ -90,17 +92,15 @@ public final class RealItem implements Item {
     }
 
     @Override
-    public String getDescription() {
-        StringBuilder sb = new StringBuilder();
+    public Component getDescription() {
+        TextComponent.Builder result = Component.text();
         if (canBeDamaged() && stack.getDurability() > 0) {
-            sb.append(CraftBayPlugin.getInstance().getMessage("item.damaged.Singular").toString());
-            sb.append(" ");
+            result.append(Component.text(CraftBayPlugin.getInstance().getMessage("item.damaged.Singular").toString() + " "));
         }
         if (!stack.getEnchantments().isEmpty()) {
-            sb.append(CraftBayPlugin.getInstance().getMessage("item.enchanted.Singular").toString());
-            sb.append(" ");
+            result.append(Component.text(CraftBayPlugin.getInstance().getMessage("item.enchanted.Singular").toString() + " "));
         }
-        sb.append(getName());
+        result.append(getDisplayName(stack));
         Map<Enchantment, Integer> enchantments = stack.getEnchantments();
         ItemMeta meta = stack.getItemMeta();
         if (enchantments == null || enchantments.isEmpty()) {
@@ -109,7 +109,7 @@ public final class RealItem implements Item {
             }
         }
         if (enchantments != null && !enchantments.isEmpty()) {
-            sb.append(" (");
+            StringBuilder sb = new StringBuilder(" (");
             int i = 0;
             for (Enchantment enchantment : enchantments.keySet()) {
                 if (i++ > 0) sb.append(", ");
@@ -118,15 +118,17 @@ public final class RealItem implements Item {
                 sb.append(roman(enchantments.get(enchantment)));
             }
             sb.append(")");
+            result.append(Component.text(sb.toString()));
         }
         if (meta instanceof SkullMeta) {
             SkullMeta skull = (SkullMeta) meta;
             if (skull.hasOwner()) {
-                sb.append(" <").append(skull.getOwner()).append(">");
+                result.append(Component.text(" <" + skull.getOwner() + ">"));
             }
         }
         if (meta instanceof PotionMeta) {
             PotionMeta potions = (PotionMeta) meta;
+            StringBuilder sb = new StringBuilder();
             try {
                 PotionData data = potions.getBasePotionData();
                 if (data != null && data.getType() != PotionType.UNCRAFTABLE) {
@@ -146,8 +148,9 @@ public final class RealItem implements Item {
                     }
                 }
             }
+            result.append(Component.text(sb.toString()));
         }
-        return sb.toString();
+        return result.build();
     }
 
     @Override
@@ -156,7 +159,11 @@ public final class RealItem implements Item {
     }
 
     @Override
-    public String getItemInfo() {
+    public Component getItemInfo() {
+        for (ItemManager itemManager : CraftBayPlugin.getInstance().getItemManagers()) {
+            if (!itemManager.isManaged(stack)) continue;
+            return itemManager.getItemInfo(stack);
+        }
         StringBuffer result = new StringBuffer();
         if (canBeDamaged() && stack.getDurability() > 0) {
             int durability = stack.getType().getMaxDurability() - stack.getDurability();
@@ -261,7 +268,7 @@ public final class RealItem implements Item {
                 result.append(" - ").append("\"").append(ChatColor.stripColor(lore.get(i))).append("\"");
             }
         }
-        return result.toString();
+        return Component.text(result.toString());
     }
 
     public ItemStack getItemStack() {
@@ -375,16 +382,27 @@ public final class RealItem implements Item {
 
     @Override
     public Component toComponent() {
-        Component itemName;
-        if (stack.hasItemMeta()) {
-            ItemMeta itemMeta = stack.getItemMeta();
-            itemName = itemMeta.hasDisplayName()
-                ? itemMeta.displayName()
-                : Component.text(stack.getI18NDisplayName());
-        } else {
-            itemName = Component.text(stack.getI18NDisplayName());
-        }
-        return itemName.hoverEvent(stack.asHoverEvent())
+        return getDisplayName(stack)
+            .hoverEvent(stack.asHoverEvent())
             .clickEvent(ClickEvent.runCommand("/auc preview"));
+    }
+
+    public static Component getDisplayName(ItemStack itemStack) {
+        for (ItemManager itemManager : CraftBayPlugin.getInstance().getItemManagers()) {
+            if (!itemManager.isManaged(itemStack)) continue;
+            return itemManager.getDisplayName(itemStack);
+        }
+        if (CraftBayPlugin.getInstance().isShowCustomItemNames()) {
+            if (itemStack.hasItemMeta()) {
+                ItemMeta meta = itemStack.getItemMeta();
+                if (meta.hasDisplayName()) {
+                    Component displayName = meta.displayName();
+                    if (!Component.empty().equals(displayName)) {
+                        return displayName;
+                    }
+                }
+            }
+        }
+        return Component.text(itemStack.getI18NDisplayName());
     }
 }

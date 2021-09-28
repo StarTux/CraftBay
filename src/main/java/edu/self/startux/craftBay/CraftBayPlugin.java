@@ -23,11 +23,13 @@ import edu.self.startux.craftBay.chat.BukkitChat;
 import edu.self.startux.craftBay.chat.ChatPlugin;
 import edu.self.startux.craftBay.command.AuctionCommand;
 import edu.self.startux.craftBay.economy.Economy;
+import edu.self.startux.craftBay.item.ItemManager;
 import edu.self.startux.craftBay.locale.Color;
 import edu.self.startux.craftBay.locale.Language;
 import edu.self.startux.craftBay.locale.Message;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.command.CommandSender;
@@ -48,7 +50,9 @@ public final class CraftBayPlugin extends JavaPlugin {
     private static CraftBayPlugin instance;
     private boolean denyDoubleBid = false;
     private boolean debugMode = false;
+    @Getter private boolean showCustomItemNames = false;
     private Economy economy;
+    @Getter private final List<ItemManager> itemManagers = new ArrayList<>();
 
     public static CraftBayPlugin getInstance() {
         return instance;
@@ -66,6 +70,7 @@ public final class CraftBayPlugin extends JavaPlugin {
             setEnabled(false);
             return;
         }
+        itemManagers.addAll(ItemManager.getList(this));
         announcer = new AuctionAnnouncer(this);
         house = new AuctionHouse(this);
         scheduler = new AuctionScheduler(this);
@@ -111,6 +116,7 @@ public final class CraftBayPlugin extends JavaPlugin {
         Color.configure(getConfig().getConfigurationSection("colors"));
         denyDoubleBid = getConfig().getBoolean("denydoublebid");
         debugMode = getConfig().getBoolean("debug");
+        showCustomItemNames = getConfig().getBoolean("show-custom-item-names");
         announcer.reloadConfig();
         setupChat();
     }

@@ -6,7 +6,7 @@ author: StarTux
 website: https://github.com/StarTux/CraftBay
 description: Auction off your precious items
 depend: [Vault]
-softdepend: [Money]
+softdepend: [Money, Mytems]
 commands:
   auction:
     description: Auction interface

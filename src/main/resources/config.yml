@@ -42,6 +42,8 @@ debug: false
 defaultchat:
   # Are players listening by default?
   autojoin: true
+# Show item display names?
+show-custom-item-names: false
 # Colors
 colors:
   default: dark_aqua

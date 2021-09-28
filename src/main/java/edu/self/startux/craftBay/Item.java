@@ -30,11 +30,11 @@ public interface Item extends ConfigurationSerializable {
      * Get the simple name.
      * @return the name
      */
-    String getName();
-    String getDescription();
+    Component getName();
+    Component getDescription();
 
     ItemAmount getAmount();
-    String getItemInfo();
+    Component getItemInfo();
 
     /**
      * Check if a merchant has this item.

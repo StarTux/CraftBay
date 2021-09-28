@@ -39,13 +39,13 @@ public final class FakeItem implements Item {
     }
 
     @Override
-    public String getName() {
-        return name;
+    public Component getName() {
+        return Component.text(name);
     }
 
     @Override
-    public String getDescription() {
-        return getName();
+    public Component getDescription() {
+        return Component.text(name);
     }
 
     @Override
@@ -54,8 +54,8 @@ public final class FakeItem implements Item {
     }
 
     @Override
-    public String getItemInfo() {
-        return "";
+    public Component getItemInfo() {
+        return Component.empty();
     }
 
     @Override

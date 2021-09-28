@@ -53,9 +53,18 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- Money -->
     <dependency>
       <groupId>com.cavetale.money</groupId>
       <artifactId>money</artifactId>
+      <version>0.1-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Mytems -->
+    <dependency>
+      <groupId>com.cavetale.mytems</groupId>
+      <artifactId>mytems</artifactId>
       <version>0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
@@ -65,7 +74,6 @@
     <finalName>${project.name}</finalName>
     <plugins>
 
-      <!-- Java 8 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
