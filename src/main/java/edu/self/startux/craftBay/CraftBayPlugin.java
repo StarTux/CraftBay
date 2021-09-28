@@ -65,11 +65,7 @@ public final class CraftBayPlugin extends JavaPlugin {
         executor = new AuctionCommand(this);
         getCommand("auction").setExecutor(executor);
         getCommand("bid").setExecutor(executor);
-        if (!setupEconomy()) {
-            getLogger().severe("Failed to setup economy. CraftBay is not enabled!");
-            setEnabled(false);
-            return;
-        }
+        this.economy = Economy.get(this);
         itemManagers.addAll(ItemManager.getList(this));
         announcer = new AuctionAnnouncer(this);
         house = new AuctionHouse(this);
@@ -129,11 +125,6 @@ public final class CraftBayPlugin extends JavaPlugin {
             chatPlugin.enable(getConfig().getConfigurationSection("defaultchat"));
             getLogger().info("Falling back to default chat");
         } while (false);
-    }
-
-    private boolean setupEconomy() {
-        this.economy = Economy.get(this).setup();
-        return this.economy != null;
     }
 
     public Economy getEco() {

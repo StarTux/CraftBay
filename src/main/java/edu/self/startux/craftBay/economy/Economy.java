@@ -23,6 +23,14 @@ public interface Economy {
         } catch (Throwable t) {
             t.printStackTrace();
         }
-        return new VaultEconomy(plugin).setup();
+        try {
+            if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
+                return new VaultEconomy(plugin).setup();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+        plugin.getLogger().warning("No economy provider found! Falling back to NullEconomy");
+        return new NullEconomy();
     }
 }
