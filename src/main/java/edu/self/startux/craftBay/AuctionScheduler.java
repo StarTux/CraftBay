@@ -28,19 +28,22 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 public class AuctionScheduler implements Runnable {
     private CraftBayPlugin plugin;
     private LinkedList<Auction> queue = new LinkedList<Auction>();
     private LinkedList<Auction> history = new LinkedList<Auction>();
     private Auction current;
-    private int taskid = -1;
     private FileConfiguration conf;
     private int nextAuctionId = 0;
     private LinkedList<ItemDelivery> deliveries = new LinkedList<ItemDelivery>();
     private Map<Integer, Auction> idMap = new HashMap<Integer, Auction>();
+    private BukkitTask task;
 
     private File getSaveFile() {
         File folder = plugin.getDataFolder();
@@ -48,18 +51,19 @@ public class AuctionScheduler implements Runnable {
         return new File(folder, "auctions.yml");
     }
 
-
     public AuctionScheduler(CraftBayPlugin plugin) {
         this.plugin = plugin;
     }
 
     public void enable() {
         load();
+        task = Bukkit.getScheduler().runTaskTimer(plugin, this::run, 0L, 0L);
     }
 
     public void disable() {
         if (current != null) current.stop();
         save();
+        task.cancel();
     }
 
     private void addAuction(Auction auction) {
@@ -78,41 +82,15 @@ public class AuctionScheduler implements Runnable {
         auction.setId(nextAuctionId++);
         addAuction(auction);
         queue.addFirst(auction);
-        soon();
     }
 
     public boolean unqueueAuction(Auction auction) {
         return queue.remove(auction);
     }
 
-    public void soon(long delay) {
-        if (taskid != -1) return;
-        taskid = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, this, delay);
-        if (taskid == -1) {
-            plugin.getLogger().severe("AuctionScheduler failed scheduleSyncDelayedTask()");
-        }
-    }
-
-    public void soon() {
-        soon(0l);
-    }
-
     @Override
     public void run() {
-        taskid = -1;
-        schedule();
-    }
-
-    private void historyAuction(Auction auction) {
-        history.addFirst(auction);
-        int maxHistory = plugin.getConfig().getInt("maxhistory");
-        while (history.size() > maxHistory) {
-            removeAuction(history.removeLast());
-        }
-    }
-
-    public void schedule() {
-        ItemDelivery.deliverAll();
+        checkDeliveries();
         boolean dirty = false;
         if (current != null) {
             if (current.getState() == AuctionState.ENDED) {
@@ -128,10 +106,6 @@ public class AuctionScheduler implements Runnable {
                 current.start();
                 dirty = true;
             }
-            // current may have changed
-            if (current == null) {
-                soon(plugin.getConfig().getLong("auctionpause") * 20l);
-            }
         } else {
             while (current == null && !queue.isEmpty()) {
                 Auction next = queue.removeLast();
@@ -146,6 +120,14 @@ public class AuctionScheduler implements Runnable {
         }
         if (dirty) {
             save();
+        }
+    }
+
+    private void historyAuction(Auction auction) {
+        history.addFirst(auction);
+        int maxHistory = plugin.getConfig().getInt("maxhistory");
+        while (history.size() > maxHistory) {
+            removeAuction(history.removeLast());
         }
     }
 
@@ -183,13 +165,36 @@ public class AuctionScheduler implements Runnable {
         long currentDate = System.currentTimeMillis();
         for (Iterator<ItemDelivery> it = deliveries.iterator(); it.hasNext();) {
             ItemDelivery delivery = it.next();
-            if (delivery.deliver()) {
+            long age = Math.max(0, currentDate - delivery.getCreationDate().getTime());
+            long days = TimeUnit.MILLISECONDS.toDays(age);
+            if (days > plugin.getConfig().getLong("itemexpiry")) {
+                plugin.getLogger().info(String.format("DROP recipient='%s' item='%s' created='%s'",
+                                                      delivery.getRecipient().getName(),
+                                                      delivery.getItem().toString(),
+                                                      delivery.getCreationDate().toString()));
                 it.remove();
+            } else if (delivery.getRecipient().isPlayer()) {
+                delivery.remind(delivery.getRecipient().getPlayer());
             } else {
-                if (TimeUnit.MILLISECONDS.toDays(Math.max(0, currentDate - delivery.getCreationDate().getTime())) > plugin.getConfig().getLong("itemexpiry")) {
-                    plugin.getLogger().info(String.format("DROP recipient='%s' item='%s' created='%s'", delivery.getRecipient().getName(), delivery.getItem().toString(), delivery.getCreationDate().toString()));
-                    it.remove();
-                }
+                it.remove();
+            }
+        }
+    }
+
+    public boolean hasDeliveryWaiting(Player player) {
+        for (ItemDelivery delivery : deliveries) {
+            if (delivery.getRecipient().isPlayer(player)) return true;
+        }
+        return false;
+    }
+
+    public void deliver(Player player) {
+        for (Iterator<ItemDelivery> iter = deliveries.iterator(); iter.hasNext();) {
+            ItemDelivery delivery = iter.next();
+            if (delivery.getRecipient().isPlayer(player)) {
+                iter.remove();
+                delivery.deliver(player);
+                return;
             }
         }
     }

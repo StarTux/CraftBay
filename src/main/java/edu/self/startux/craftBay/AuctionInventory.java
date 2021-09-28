@@ -28,6 +28,8 @@ import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.Tag;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
@@ -57,15 +59,15 @@ public final class AuctionInventory implements Listener {
         }
     }
 
-    public void setPlayer(Player player, MoneyAmount minbid, Inventory inventory, boolean preview) {
+    public void setPlayer(Player player, MoneyAmount minbid, Inventory inventory, Type type) {
         PlayerData data = playerData.get(player.getUniqueId());
         if (data == null) {
-            data = new PlayerData(minbid, inventory, preview);
+            data = new PlayerData(minbid, inventory, type);
             playerData.put(player.getUniqueId(), data);
         } else {
             data.minbid = minbid;
             data.inventory = inventory;
-            data.preview = preview;
+            data.type = type;
         }
     }
 
@@ -74,7 +76,7 @@ public final class AuctionInventory implements Listener {
         if (title.length() > 32) title = title.substring(0, 32);
         Inventory inventory = Bukkit.createInventory(null, 54, title);
         player.openInventory(inventory);
-        setPlayer(player, minbid, inventory, false);
+        setPlayer(player, minbid, inventory, Type.CREATE);
     }
 
     public boolean initPreview(Player player, Auction auction) {
@@ -97,8 +99,19 @@ public final class AuctionInventory implements Listener {
         Inventory inventory = Bukkit.createInventory(null, invSize, name);
         for (ItemStack stack: items) inventory.addItem(stack);
         player.openInventory(inventory);
-        setPlayer(player, new MoneyAmount(0.0), inventory, true);
+        setPlayer(player, new MoneyAmount(0.0), inventory, Type.PREVIEW);
         return true;
+    }
+
+    public void initDelivery(Player player, List<ItemStack> items) {
+        int size = 9 * Math.min(6, ((items.size() - 1) / 9 + 1));
+        Inventory inventory = Bukkit.createInventory(null, size, Component.text("Item Delivery"));
+        for (ItemStack item : items) {
+            inventory.addItem(item);
+        }
+        player.openInventory(inventory);
+        setPlayer(player, MoneyAmount.ZERO, inventory, Type.DELIVERY);
+        player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 1.0f, 1.0f);
     }
 
     public boolean initPreview(Player player, Inventory original) {
@@ -110,7 +123,7 @@ public final class AuctionInventory implements Listener {
             inventory.setItem(i, itemStack.clone());
         }
         player.openInventory(inventory);
-        setPlayer(player, new MoneyAmount(0.0), inventory, true);
+        setPlayer(player, new MoneyAmount(0.0), inventory, Type.PREVIEW);
         return true;
     }
 
@@ -125,48 +138,63 @@ public final class AuctionInventory implements Listener {
         PlayerData data = playerData.get(player.getUniqueId());
         if (data == null) return;
         deletePlayer(player);
-        if (data.preview) return;
-        Inventory inventory = data.inventory;
-        if (inventory == null) return;
-        List<ItemStack> items = new ArrayList<>();
-        for (ItemStack item : inventory.getContents()) {
-            if (item != null && item.getType() != Material.AIR) {
-                items.add(item);
+        if (data.type == Type.CREATE) {
+            Inventory inventory = data.inventory;
+            if (inventory == null) return;
+            List<ItemStack> items = new ArrayList<>();
+            for (ItemStack item : inventory.getContents()) {
+                if (item != null && item.getType() != Material.AIR) {
+                    items.add(item);
+                }
             }
-        }
-        if (items.isEmpty()) return;
-        ItemStack stack = items.get(0).clone();
-        int amount = 0;
-        PlayerMerchant merchant = PlayerMerchant.getByPlayer(player);
-        for (ItemStack item : items) {
-            if (RealItem.canMerge(item, stack)) {
-                amount += item.getAmount();
-            } else {
+            if (items.isEmpty()) return;
+            ItemStack stack = items.get(0).clone();
+            int amount = 0;
+            PlayerMerchant merchant = PlayerMerchant.getByPlayer(player);
+            for (ItemStack item : items) {
+                if (RealItem.canMerge(item, stack)) {
+                    amount += item.getAmount();
+                } else {
+                    for (ItemStack drop : player.getInventory().addItem(items.toArray(new ItemStack[0])).values()) {
+                        player.getWorld().dropItem(player.getEyeLocation(), drop);
+                    }
+                    plugin.warn(player, plugin.getMessage("auction.gui.ItemsNotEqual"));
+                    return;
+                }
+            }
+            Item item = null;
+            try {
+                item = new RealItem(stack, amount);
+            } catch (IllegalArgumentException iae) {
                 for (ItemStack drop : player.getInventory().addItem(items.toArray(new ItemStack[0])).values()) {
                     player.getWorld().dropItem(player.getEyeLocation(), drop);
                 }
                 plugin.warn(player, plugin.getMessage("auction.gui.ItemsNotEqual"));
                 return;
             }
-        }
-        Item item = null;
-        try {
-            item = new RealItem(stack, amount);
-        } catch (IllegalArgumentException iae) {
-            for (ItemStack drop : player.getInventory().addItem(items.toArray(new ItemStack[0])).values()) {
-                player.getWorld().dropItem(player.getEyeLocation(), drop);
+            MoneyAmount minbid = data.minbid;
+            Auction auction = plugin.getAuctionHouse().createAuction(merchant, item, minbid);
+            if (auction == null) {
+                for (ItemStack drop : player.getInventory().addItem(items.toArray(new ItemStack[0])).values()) {
+                    player.getWorld().dropItem(player.getEyeLocation(), drop);
+                }
+            } else {
+                PlayerMerchant.getByPlayer(player).msg(plugin.getMessage("auction.gui.Success").set(auction, merchant));
             }
-            plugin.warn(player, plugin.getMessage("auction.gui.ItemsNotEqual"));
             return;
         }
-        MoneyAmount minbid = data.minbid;
-        Auction auction = plugin.getAuctionHouse().createAuction(merchant, item, minbid);
-        if (auction == null) {
-            for (ItemStack drop : player.getInventory().addItem(items.toArray(new ItemStack[0])).values()) {
-                player.getWorld().dropItem(player.getEyeLocation(), drop);
+        if (data.type == Type.PREVIEW) return;
+        if (data.type == Type.DELIVERY) {
+            for (ItemStack item : data.inventory) {
+                if (item == null || item.getType() == Material.AIR) continue;
+                for (ItemStack drop : player.getInventory().addItem(item).values()) {
+                    player.getWorld().dropItem(player.getLocation(), drop);
+                }
             }
-        } else {
-            PlayerMerchant.getByPlayer(player).msg(plugin.getMessage("auction.gui.Success").set(auction, merchant));
+            Bukkit.getScheduler().runTaskLater(CraftBayPlugin.getInstance(), () -> {
+                    CraftBayPlugin.getInstance().getAuctionScheduler().checkDeliveries();
+                }, 20L);
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 0.25f, 2.0f);
         }
     }
 
@@ -175,7 +203,8 @@ public final class AuctionInventory implements Listener {
         final Player player = (Player) event.getWhoClicked();
         PlayerData data = playerData.get(player.getUniqueId());
         if (data == null) return;
-        if (data.preview) {
+        if (data.type == Type.CREATE) return;
+        if (data.type == Type.PREVIEW) {
             event.setCancelled(true);
             ItemStack itemStack = event.getCurrentItem();
             if (itemStack != null && Tag.SHULKER_BOXES.isTagged(itemStack.getType())) {
@@ -191,7 +220,9 @@ public final class AuctionInventory implements Listener {
             Bukkit.getScheduler().runTask(plugin, () -> {
                     player.closeInventory();
                 });
+            return;
         }
+        if (data.type == Type.DELIVERY) return;
     }
 
     @EventHandler
@@ -199,22 +230,32 @@ public final class AuctionInventory implements Listener {
         final Player player = (Player) event.getWhoClicked();
         PlayerData data = playerData.get(player.getUniqueId());
         if (data == null) return;
-        if (!data.preview) return;
-        event.setCancelled(true);
-        Bukkit.getScheduler().runTask(plugin, () -> {
-                player.closeInventory();
-            });
+        if (data.type == Type.CREATE) return;
+        if (data.type == Type.PREVIEW) {
+            event.setCancelled(true);
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                    player.closeInventory();
+                });
+            return;
+        }
+        if (data.type == Type.DELIVERY) return;
+    }
+
+    public enum Type {
+        CREATE,
+        PREVIEW,
+        DELIVERY;
     }
 
     private static class PlayerData {
         private MoneyAmount minbid;
         private Inventory inventory;
-        private boolean preview;
+        private Type type;
 
-        PlayerData(final MoneyAmount minbid, final Inventory inventory, final boolean preview) {
+        PlayerData(final MoneyAmount minbid, final Inventory inventory, final Type type) {
             this.minbid = minbid;
             this.inventory = inventory;
-            this.preview = preview;
+            this.type = type;
         }
     }
 }

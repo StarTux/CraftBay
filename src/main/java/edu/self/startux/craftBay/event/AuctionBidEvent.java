@@ -22,9 +22,6 @@ package edu.self.startux.craftBay.event;
 import edu.self.startux.craftBay.Auction;
 import edu.self.startux.craftBay.Merchant;
 import edu.self.startux.craftBay.MoneyAmount;
-import org.bukkit.command.CommandSender;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**

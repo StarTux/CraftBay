@@ -20,8 +20,10 @@
 package edu.self.startux.craftBay;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import net.kyori.adventure.text.Component;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Represents a fake item that is nothing but a name.
@@ -67,8 +69,8 @@ public final class FakeItem implements Item {
     }
 
     @Override
-    public boolean give(Merchant merchant) {
-        return true;
+    public List<ItemStack> toItemStackList() {
+        return List.of();
     }
 
     @Override

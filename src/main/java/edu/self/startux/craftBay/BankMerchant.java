@@ -21,10 +21,9 @@ package edu.self.startux.craftBay;
 
 import edu.self.startux.craftBay.locale.Message;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class BankMerchant implements Merchant {
@@ -115,5 +114,25 @@ public class BankMerchant implements Merchant {
     @Override
     public Merchant clone() {
         return new BankMerchant();
+    }
+
+    @Override
+    public boolean isPlayer() {
+        return false;
+    }
+
+    @Override
+    public boolean isPlayer(Player player) {
+        return false;
+    }
+
+    @Override
+    public boolean isOnline() {
+        return true;
+    }
+
+    @Override
+    public Player getPlayer() {
+        return null;
     }
 }

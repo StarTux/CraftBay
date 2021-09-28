@@ -24,14 +24,8 @@ import edu.self.startux.craftBay.event.AuctionEndEvent;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
 
-public final class AuctionHouse implements Listener {
+public final class AuctionHouse {
     private CraftBayPlugin plugin;
     private Map<String, Date> lastAuctions = new HashMap<String, Date>();
 
@@ -39,9 +33,7 @@ public final class AuctionHouse implements Listener {
         this.plugin = plugin;
     }
 
-    public void enable() {
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
-    }
+    public void enable() { }
 
     public boolean checkCooldown(Merchant merchant) {
         int cooldown = plugin.getConfig().getInt("auctioneercooldown");
@@ -109,21 +101,6 @@ public final class AuctionHouse implements Listener {
         return auction;
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        ItemDelivery.deliverAll();
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
-        ItemDelivery.deliverAll();
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerRespawn(PlayerRespawnEvent event) {
-        ItemDelivery.deliverAll();
-    }
-
     public void endAuction(Auction auction) {
         AuctionEndEvent event = new AuctionEndEvent(auction);
         if (auction.getWinner() == null) {
@@ -139,7 +116,7 @@ public final class AuctionHouse implements Listener {
                 ItemDelivery.schedule(auction.getOwner(), auction.getItem(), auction);
             }
             plugin.getServer().getPluginManager().callEvent(event);
-            auction.getOwner().giveAmount(auction.getWinningBid(), "Auctioned: " + auction.getItem().getName());
+            auction.getOwner().giveAmount(auction.getWinningBid(), "Auctioned: " + auction.getItem().getStringName());
             ItemDelivery.schedule(auction.getWinner(), auction.getItem(), auction);
         }
     }

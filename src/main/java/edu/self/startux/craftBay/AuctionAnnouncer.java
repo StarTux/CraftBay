@@ -26,7 +26,6 @@ import edu.self.startux.craftBay.event.AuctionStartEvent;
 import edu.self.startux.craftBay.event.AuctionTickEvent;
 import edu.self.startux.craftBay.event.AuctionTimeChangeEvent;
 import edu.self.startux.craftBay.locale.Message;
-import java.util.Date;
 import java.util.List;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

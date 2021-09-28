@@ -20,6 +20,7 @@
 package edu.self.startux.craftBay;
 
 import edu.self.startux.craftBay.item.ItemManager;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -32,7 +33,6 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -281,37 +281,25 @@ public final class RealItem implements Item {
     }
 
     @Override
-    public boolean give(Merchant merchant) {
-        if (merchant instanceof PlayerMerchant) {
-            PlayerMerchant playerMerchant = (PlayerMerchant) merchant;
-            Player player = playerMerchant.getPlayer();
-            if (player == null) return false;
-            int due = amount;
-            int stackSize = stack.getMaxStackSize();
-            if (stackSize < 1) {
-                stackSize = 1;
-            }
-            while (due > 0) {
-                ItemStack other = stack.clone();
-                if (due < stackSize) {
-                    other.setAmount(due);
-                    due = 0;
-                } else {
-                    other.setAmount(stackSize);
-                    due -= stackSize;
-                }
-                Map<Integer, ItemStack> ret = player.getInventory().addItem(other);
-                for (ItemStack item : ret.values()) {
-                    player.getWorld().dropItem(player.getLocation(), item);
-                }
-            }
-            if (!player.isOnline()) {
-                player.saveData();
-            }
-            return true;
-        } else {
-            return true;
+    public List<ItemStack> toItemStackList() {
+        List<ItemStack> result = new ArrayList<>();
+        int due = amount;
+        int stackSize = stack.getMaxStackSize();
+        if (stackSize < 1) {
+            stackSize = 1;
         }
+        while (due > 0) {
+            ItemStack other = stack.clone();
+            if (due < stackSize) {
+                other.setAmount(due);
+                due = 0;
+            } else {
+                other.setAmount(stackSize);
+                due -= stackSize;
+            }
+            result.add(other);
+        }
+        return result;
     }
 
     @Override

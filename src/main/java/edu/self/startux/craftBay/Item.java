@@ -19,8 +19,12 @@
 
 package edu.self.startux.craftBay;
 
+import java.util.List;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * This class represents an item that is for auction.
@@ -44,13 +48,15 @@ public interface Item extends ConfigurationSerializable {
     boolean has(Merchant merchant);
 
     /**
-     * Give this item to a merchant.
-     * @param merchant the merchant
-     * @return true if the item could be given to merchant, false otherwise
+     * Produce a list of item stacks.
      */
-    boolean give(Merchant merchant);
+    List<ItemStack> toItemStackList();
 
     Item clone();
 
     Component toComponent();
+
+    default String getStringName() {
+        return ChatColor.stripColor(PlainTextComponentSerializer.plainText().serialize(getName()));
+    }
 }

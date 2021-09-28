@@ -20,7 +20,6 @@
 package edu.self.startux.craftBay.command;
 
 import edu.self.startux.craftBay.CraftBayPlugin;
-import java.lang.Class;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;

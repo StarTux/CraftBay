@@ -20,13 +20,10 @@
 package edu.self.startux.craftBay;
 import edu.self.startux.craftBay.locale.Message;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -52,8 +49,9 @@ public class PlayerMerchant implements Merchant {
         return Bukkit.getServer().getOfflinePlayer(playerUuid);
     }
 
+    @Override
     public Player getPlayer() {
-        return Bukkit.getServer().getPlayer(playerUuid);
+        return Bukkit.getPlayer(playerUuid);
     }
 
     private static CraftBayPlugin getPlugin() {
@@ -217,5 +215,20 @@ public class PlayerMerchant implements Merchant {
     @Override
     public Merchant clone() {
         return new PlayerMerchant(playerUuid, playerName);
+    }
+
+    @Override
+    public boolean isPlayer() {
+        return true;
+    }
+
+    @Override
+    public boolean isPlayer(Player other) {
+        return other.getUniqueId().equals(playerUuid);
+    }
+
+    @Override
+    public boolean isOnline() {
+        return Bukkit.getPlayer(playerUuid) != null;
     }
 }

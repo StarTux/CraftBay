@@ -19,7 +19,6 @@
 
 package edu.self.startux.craftBay;
 
-import java.util.logging.Level;
 import java.util.List;
 import java.util.LinkedList;
 

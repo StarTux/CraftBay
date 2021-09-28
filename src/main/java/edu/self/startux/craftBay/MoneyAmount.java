@@ -24,6 +24,7 @@ import net.kyori.adventure.text.Component;
 
 @Value
 public final class MoneyAmount implements Comparable<MoneyAmount> {
+    public static MoneyAmount ZERO = new MoneyAmount(0.0);
     private final double amount;
 
     public MoneyAmount(final double amount) {

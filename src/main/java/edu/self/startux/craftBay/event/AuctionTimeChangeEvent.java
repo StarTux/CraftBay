@@ -21,7 +21,6 @@ package edu.self.startux.craftBay.event;
 
 import edu.self.startux.craftBay.Auction;
 import org.bukkit.command.CommandSender;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 public class AuctionTimeChangeEvent extends AuctionEvent {

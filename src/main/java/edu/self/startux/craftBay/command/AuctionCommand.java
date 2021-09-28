@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -237,6 +238,10 @@ public final class AuctionCommand extends AuctionParameters implements CommandEx
             plugin.warn(player, plugin.getMessage("commands.start.CreativeDenial").set(player));
             return;
         }
+        if (plugin.getAuctionScheduler().hasDeliveryWaiting(player)) {
+            plugin.warn(player, plugin.getMessage("commands.start.DeliveryWaiting").set(player));
+            return;
+        }
         double startingbid = plugin.getConfig().getDouble("startingbid");
         if (price == null) price = new MoneyAmount(startingbid);
         if (price.getDouble() < startingbid) {
@@ -287,6 +292,10 @@ public final class AuctionCommand extends AuctionParameters implements CommandEx
             plugin.warn(player, plugin.getMessage("commands.start.CreativeDenial").set(player));
             return;
         }
+        if (plugin.getAuctionScheduler().hasDeliveryWaiting(player)) {
+            plugin.warn(player, plugin.getMessage("commands.start.DeliveryWaiting").set(player));
+            return;
+        }
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         if (itemInMainHand == null || itemInMainHand.getType() == Material.AIR) {
             plugin.warn(player, plugin.getMessage("commands.start.HandEmpty"));
@@ -332,7 +341,7 @@ public final class AuctionCommand extends AuctionParameters implements CommandEx
             List<Component> out = new ArrayList<>(msgs.size() + 1);
             out.add(plugin.getMessage("history.Header").set(sender).compile());
             for (Message msg : msgs) out.add(msg.compile());
-            plugin.msg(sender, Component.join(Component.newline(), out));
+            plugin.msg(sender, Component.join(JoinConfiguration.separator(Component.newline()), out));
             return;
         }
         Auction auction = plugin.getAuctionScheduler().getById(id);
@@ -394,7 +403,7 @@ public final class AuctionCommand extends AuctionParameters implements CommandEx
         for (String log : auction.getLog()) {
             lines.add(plugin.getMessage("log.Log").set(auction, sender).set("log", log).compile());
         }
-        plugin.msg(sender, Component.join(Component.newline(), lines));
+        plugin.msg(sender, Component.join(JoinConfiguration.separator(Component.newline()), lines));
     }
 
     @SubCommand(perm = "admin", optional = 2)
@@ -409,5 +418,10 @@ public final class AuctionCommand extends AuctionParameters implements CommandEx
         }
         auction.setTimeLeft(duration);
         plugin.msg(sender, plugin.getMessage("commands.fake.Success").set(sender));
+    }
+
+    @SubCommand(perm = "deliver", shortcut = false, optional = 0)
+    public void deliver(Player player) {
+        plugin.getScheduler().deliver(player);
     }
 }

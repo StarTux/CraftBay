@@ -64,6 +64,7 @@ commands:
     CreativeDenial: 'You cannot start auctions in creative mode!'
     Success: 'Your auction for {amount}x{itemdesc} will start soon!'
     StartingBidTooLow: 'Starting bid must be at least {startingbid}!'
+    DeliveryWaiting: 'Pick up your delivery first!'
   end:
     NotOwner: 'You are not the owner of this auction!'
     DelayTooLong: 'You can only shorten your auction!'
@@ -199,3 +200,6 @@ history:
 log:
   Header: 'Auction Log [{id}]'
   Log: '{log}'
+delivery:
+  Reminder: 'A delivery is waiting for you. Click here to receive it!'
+  ReminderTooltip: 'Click here to receive your delivery'

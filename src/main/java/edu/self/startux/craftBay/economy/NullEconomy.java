@@ -1,7 +1,5 @@
 package edu.self.startux.craftBay.economy;
 
-import edu.self.startux.craftBay.CraftBayPlugin;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 public final class NullEconomy implements Economy {

@@ -19,10 +19,8 @@
 
 package edu.self.startux.craftBay.command;
 
-import java.lang.Class;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Iterator;
 import org.bukkit.command.CommandSender;
 
 public class ParamAttribute {

@@ -20,7 +20,6 @@
 package edu.self.startux.craftBay;
 
 import java.util.List;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 public interface Auction extends ConfigurationSerializable {

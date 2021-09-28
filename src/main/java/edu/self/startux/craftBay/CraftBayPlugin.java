@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -41,7 +42,7 @@ public final class CraftBayPlugin extends JavaPlugin {
     private ChatPlugin chatPlugin;
     private AuctionAnnouncer announcer;
     private AuctionHouse house;
-    private AuctionScheduler scheduler;
+    @Getter private AuctionScheduler scheduler;
     private AuctionCommand executor;
     private Language language;
     private AuctionLogger auctionLogger;
@@ -72,7 +73,6 @@ public final class CraftBayPlugin extends JavaPlugin {
         scheduler = new AuctionScheduler(this);
         auctionLogger = new AuctionLogger(this);
         inventory = new AuctionInventory(this);
-        scheduler.soon();
         saveDefaultConfig();
         reloadAuctionConfig();
         auctionLogger.enable();
@@ -152,15 +152,19 @@ public final class CraftBayPlugin extends JavaPlugin {
     }
 
     public void warn(CommandSender sender, Message msg) {
-        sender.sendMessage(TextComponent.ofChildren(Component.text(tag, Color.ERROR.getTextColor()),
-                                                    Component.space(),
-                                                    msg.compile()).color(Color.WARN.getTextColor()));
+        sender.sendMessage(Component.join(JoinConfiguration.noSeparators(), new Component[] {
+                    Component.text(tag, Color.ERROR.getTextColor()),
+                    Component.space(),
+                    msg.compile(),
+                }).color(Color.WARN.getTextColor()));
     }
 
     public void msg(CommandSender sender, Component component) {
-        sender.sendMessage(TextComponent.ofChildren(Component.text(tag, Color.HIGHLIGHT.getTextColor()),
-                                                    Component.space(),
-                                                    component).color(Color.DEFAULT.getTextColor()));
+        sender.sendMessage(Component.join(JoinConfiguration.noSeparators(), new Component[] {
+                    Component.text(tag, Color.HIGHLIGHT.getTextColor()),
+                    Component.space(),
+                    component,
+                }).color(Color.DEFAULT.getTextColor()));
     }
 
     public void msg(CommandSender sender, Message msg) {
@@ -182,9 +186,11 @@ public final class CraftBayPlugin extends JavaPlugin {
     public void broadcast(Message msg) {
         Component txt = msg.compile();
         if (Component.empty().equals(txt)) return;
-        Component c = TextComponent.ofChildren(Component.text(tag, Color.HIGHLIGHT.getTextColor()),
-                                               Component.space(),
-                                               txt).color(Color.DEFAULT.getTextColor());
+        Component c = Component.join(JoinConfiguration.noSeparators(), new Component[] {
+                Component.text(tag, Color.HIGHLIGHT.getTextColor()),
+                Component.space(),
+                txt,
+            }).color(Color.DEFAULT.getTextColor());
         chatPlugin.broadcast(c);
     }
 

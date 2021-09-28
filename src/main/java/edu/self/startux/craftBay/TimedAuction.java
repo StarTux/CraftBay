@@ -22,20 +22,13 @@ package edu.self.startux.craftBay;
 import edu.self.startux.craftBay.event.AuctionBidEvent;
 import edu.self.startux.craftBay.event.AuctionStartEvent;
 import edu.self.startux.craftBay.event.AuctionTickEvent;
-import edu.self.startux.craftBay.locale.Message;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class TimedAuction extends AbstractAuction {
     private int timeLeft;
@@ -96,7 +89,6 @@ public class TimedAuction extends AbstractAuction {
     public void end() {
         setState(AuctionState.ENDED);
         stop();
-        getPlugin().getAuctionScheduler().soon();
     }
 
     @Override
@@ -109,7 +101,6 @@ public class TimedAuction extends AbstractAuction {
         if (getState() != AuctionState.RUNNING && getState() != AuctionState.QUEUED) return;
         setState(AuctionState.CANCELED);
         stop();
-        getPlugin().getAuctionScheduler().soon();
     }
 
     @Override

@@ -20,10 +20,9 @@
 package edu.self.startux.craftBay;
 
 import edu.self.startux.craftBay.locale.Message;
-import java.util.List;
 import java.util.UUID;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -104,4 +103,9 @@ public interface Merchant extends ConfigurationSerializable {
 
     public boolean isListening();
     public Merchant clone();
+
+    boolean isPlayer();
+    boolean isPlayer(Player player);
+    boolean isOnline();
+    Player getPlayer();
 }
