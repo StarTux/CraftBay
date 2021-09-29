@@ -173,7 +173,7 @@ public class AuctionScheduler implements Runnable {
                                                       delivery.getItem().toString(),
                                                       delivery.getCreationDate().toString()));
                 it.remove();
-            } else if (delivery.getRecipient().isPlayer()) {
+            } else if (delivery.getRecipient().isPlayer() && delivery.getRecipient().isOnline()) {
                 delivery.remind(delivery.getRecipient().getPlayer());
             } else {
                 it.remove();
