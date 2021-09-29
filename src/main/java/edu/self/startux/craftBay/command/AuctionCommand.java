@@ -420,7 +420,7 @@ public final class AuctionCommand extends AuctionParameters implements CommandEx
         plugin.msg(sender, plugin.getMessage("commands.fake.Success").set(sender));
     }
 
-    @SubCommand(perm = "deliver", shortcut = false, optional = 0)
+    @SubCommand(perm = "receive", shortcut = false, optional = 0)
     public void deliver(Player player) {
         plugin.getScheduler().deliver(player);
     }
