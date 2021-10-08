@@ -25,16 +25,21 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -94,15 +99,17 @@ public final class RealItem implements Item {
     @Override
     public Component getDescription() {
         TextComponent.Builder result = Component.text();
-        if (canBeDamaged() && stack.getDurability() > 0) {
-            result.append(Component.text(CraftBayPlugin.getInstance().getMessage("item.damaged.Singular").toString() + " "));
+        ItemMeta meta = stack.getItemMeta();
+        if (meta instanceof Damageable damageable) {
+            if (damageable.hasDamage()) {
+                result.append(Component.text(CraftBayPlugin.getInstance().getMessage("item.damaged.Singular").toString() + " "));
+            }
         }
         if (!stack.getEnchantments().isEmpty()) {
             result.append(Component.text(CraftBayPlugin.getInstance().getMessage("item.enchanted.Singular").toString() + " "));
         }
         result.append(getDisplayName(stack));
         Map<Enchantment, Integer> enchantments = stack.getEnchantments();
-        ItemMeta meta = stack.getItemMeta();
         if (enchantments == null || enchantments.isEmpty()) {
             if (meta instanceof EnchantmentStorageMeta) {
                 enchantments = ((EnchantmentStorageMeta) meta).getStoredEnchants();
@@ -123,7 +130,10 @@ public final class RealItem implements Item {
         if (meta instanceof SkullMeta) {
             SkullMeta skull = (SkullMeta) meta;
             if (skull.hasOwner()) {
-                result.append(Component.text(" <" + skull.getOwner() + ">"));
+                OfflinePlayer owner = skull.getOwningPlayer();
+                if (owner != null) {
+                    result.append(Component.text(" <" + owner.getName() + ">"));
+                }
             }
         }
         if (meta instanceof PotionMeta) {
@@ -165,17 +175,21 @@ public final class RealItem implements Item {
             return itemManager.getItemInfo(stack);
         }
         StringBuffer result = new StringBuffer();
-        if (canBeDamaged() && stack.getDurability() > 0) {
-            int durability = stack.getType().getMaxDurability() - stack.getDurability();
+        ItemMeta meta = stack.getItemMeta();
+        if (meta instanceof Damageable damageable) {
+            int durability = (int) stack.getType().getMaxDurability() - damageable.getDamage();
             durability = durability * 100 / stack.getType().getMaxDurability();
             if (durability < 0) durability = 0;
             if (durability > 100) durability = 100;
             result.append(durability).append("%");
         }
-        ItemMeta meta = stack.getItemMeta();
         if (meta.hasDisplayName()) {
             if (result.length() > 0) result.append(" ");
-            result.append("\"").append(ChatColor.stripColor(meta.getDisplayName())).append("\"");
+            Component displayName = meta.displayName();
+            if (displayName != null) {
+                String plain = PlainTextComponentSerializer.plainText().serialize(displayName);
+                result.append("\"").append(plain).append("\"");
+            }
         }
         if (meta instanceof BookMeta) {
             BookMeta book = (BookMeta) meta;
@@ -214,8 +228,11 @@ public final class RealItem implements Item {
         if (meta instanceof SkullMeta) {
             SkullMeta skull = (SkullMeta) meta;
             if (skull.hasOwner()) {
-                if (result.length() > 0) result.append(" ");
-                result.append("<").append(skull.getOwner()).append(">");
+                OfflinePlayer owner = skull.getOwningPlayer();
+                if (owner != null) {
+                    if (result.length() > 0) result.append(" ");
+                    result.append("<").append(owner.getName()).append(">");
+                }
             }
         }
         do {
@@ -258,16 +275,6 @@ public final class RealItem implements Item {
                 }
             }
         }
-        if (meta.hasLore()) {
-            List<String> lore = meta.getLore();
-            if (lore.size() > 0) {
-                if (result.length() > 0) result.append(" ");
-                result.append("\"").append(ChatColor.stripColor(lore.get(0))).append("\"");
-            }
-            for (int i = 1; i < lore.size(); ++i) {
-                result.append(" - ").append("\"").append(ChatColor.stripColor(lore.get(i))).append("\"");
-            }
-        }
         return Component.text(result.toString());
     }
 
@@ -302,6 +309,12 @@ public final class RealItem implements Item {
         return result;
     }
 
+    private static String enumToCamelCase(String in) {
+        return Stream.of(in.split("_"))
+            .map(w -> w.substring(0, 1).toUpperCase() + w.substring(1).toLowerCase())
+            .collect(Collectors.joining(" "));
+    }
+
     @Override
     public String toString() {
         String name = "";
@@ -318,7 +331,7 @@ public final class RealItem implements Item {
                 }
                 Enchantment enchantment = entry.getKey();
                 int level = entry.getValue();
-                name += enchantment.getName() + ":" + roman(level);
+                name += enumToCamelCase(enchantment.getKey().getKey()) + ":" + roman(level);
             }
         }
         return name;
@@ -326,10 +339,6 @@ public final class RealItem implements Item {
 
     public static boolean canMerge(ItemStack a, ItemStack b) {
         return a.isSimilar(b);
-    }
-
-    private boolean canBeDamaged() {
-        return stack.getType().getMaxDurability() > 0;
     }
 
     private boolean between(int pivot, int lower, int upper) {

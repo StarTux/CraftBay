@@ -41,7 +41,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -303,6 +303,6 @@ public final class Message {
 
     @Override
     public String toString() {
-        return PlainComponentSerializer.plain().serialize(compile());
+        return PlainTextComponentSerializer.plainText().serialize(compile());
     }
 }

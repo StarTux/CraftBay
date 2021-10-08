@@ -61,7 +61,7 @@ public final class MoneyAmount implements Comparable<MoneyAmount> {
 
     @Override
     public int compareTo(MoneyAmount other) {
-        return new Double(amount).compareTo(other.amount);
+        return Double.compare(amount, other.amount);
     }
 
     @Override

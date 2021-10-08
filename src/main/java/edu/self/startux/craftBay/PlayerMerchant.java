@@ -194,12 +194,6 @@ public class PlayerMerchant implements Merchant {
 
     @SuppressWarnings("unchecked")
     public static PlayerMerchant deserialize(Map<String, Object> map) {
-        // Legacy
-        Object o = map.get("player");
-        if (o instanceof String) {
-            return new PlayerMerchant(Bukkit.getServer().getOfflinePlayer((String)o));
-        }
-        //
         UUID uuid = UUID.fromString((String)map.get("uuid"));
         String name = (String)map.get("name");
         return new PlayerMerchant(uuid, name);
