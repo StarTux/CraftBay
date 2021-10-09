@@ -177,11 +177,14 @@ public final class RealItem implements Item {
         StringBuffer result = new StringBuffer();
         ItemMeta meta = stack.getItemMeta();
         if (meta instanceof Damageable damageable) {
-            int durability = (int) stack.getType().getMaxDurability() - damageable.getDamage();
-            durability = durability * 100 / stack.getType().getMaxDurability();
-            if (durability < 0) durability = 0;
-            if (durability > 100) durability = 100;
-            result.append(durability).append("%");
+            int maxDurability = stack.getType().getMaxDurability();
+            if (maxDurability > 0) {
+                int durability = (int) stack.getType().getMaxDurability() - damageable.getDamage();
+                durability = (durability * 100) / maxDurability;
+                if (durability < 0) durability = 0;
+                if (durability > 100) durability = 100;
+                result.append(durability).append("%");
+            }
         }
         if (meta.hasDisplayName()) {
             if (result.length() > 0) result.append(" ");
