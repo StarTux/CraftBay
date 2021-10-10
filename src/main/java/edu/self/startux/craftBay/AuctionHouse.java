@@ -111,7 +111,7 @@ public final class AuctionHouse {
             plugin.getServer().getPluginManager().callEvent(event);
             ItemDelivery.schedule(auction.getOwner(), auction.getItem(), auction);
         } else {
-            if (!auction.getWinner().takeAmount(auction.getWinningBid(), "Auction win: " + auction.getItem().getName())) {
+            if (!auction.getWinner().takeAmount(auction.getWinningBid(), "Auction win: " + auction.getItem().getStringName())) {
                 event.setPaymentError(true);
                 ItemDelivery.schedule(auction.getOwner(), auction.getItem(), auction);
             }
