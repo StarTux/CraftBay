@@ -175,8 +175,6 @@ public class AuctionScheduler implements Runnable {
                 it.remove();
             } else if (delivery.getRecipient().isPlayer() && delivery.getRecipient().isOnline()) {
                 delivery.remind(delivery.getRecipient().getPlayer());
-            } else {
-                it.remove();
             }
         }
     }
