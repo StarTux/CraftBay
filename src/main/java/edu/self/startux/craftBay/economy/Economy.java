@@ -14,9 +14,9 @@ public interface Economy {
 
     static Economy get(CraftBayPlugin plugin) {
         try {
-            if (Bukkit.getPluginManager().isPluginEnabled("Money")) {
-                if (Bukkit.getPluginManager().getPlugin("Money").getClass().getName().equals("com.cavetale.money.MoneyPlugin")) {
-                    Economy result = new MoneyEconomy(plugin).setup();
+            if (Bukkit.getPluginManager().isPluginEnabled("Core")) {
+                if (Bukkit.getPluginManager().getPlugin("Core").getClass().getName().equals("com.cavetale.core.CorePlugin")) {
+                    Economy result = new CoreEconomy(plugin).setup();
                     if (result != null) return result;
                 }
             }

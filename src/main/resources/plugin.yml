@@ -5,7 +5,7 @@ api-version: 1.17
 author: StarTux
 website: https://github.com/StarTux/CraftBay
 description: Auction off your precious items
-softdepend: [Money, Mytems, Vault]
+softdepend: [Core, Vault]
 commands:
   auction:
     description: Auction interface

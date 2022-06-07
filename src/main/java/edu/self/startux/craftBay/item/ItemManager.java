@@ -31,10 +31,10 @@ public interface ItemManager {
     static List<ItemManager> getList(CraftBayPlugin plugin) {
         List<ItemManager> result = new ArrayList<>();
         try {
-            if (Bukkit.getPluginManager().isPluginEnabled("Mytems")) {
-                if (Bukkit.getPluginManager().getPlugin("Mytems").getClass().getName().equals("com.cavetale.mytems.MytemsPlugin")) {
-                    result.add(new MytemsItemManager());
-                    plugin.getLogger().info("Mytems plugin found!");
+            if (Bukkit.getPluginManager().isPluginEnabled("Core")) {
+                if (Bukkit.getPluginManager().getPlugin("Core").getClass().getName().equals("com.cavetale.core.CorePlugin")) {
+                    result.add(new CoreItemManager());
+                    plugin.getLogger().info("Core plugin found!");
                 }
             }
         } catch (Throwable t) {
