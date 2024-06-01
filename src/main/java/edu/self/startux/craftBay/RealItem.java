@@ -141,7 +141,7 @@ public final class RealItem implements Item {
             StringBuilder sb = new StringBuilder();
             try {
                 PotionData data = potions.getBasePotionData();
-                if (data != null && data.getType() != PotionType.UNCRAFTABLE) {
+                if (data != null && data.getType() != PotionType.AWKWARD) {
                     sb.append(" ");
                     sb.append(niceEnumName(data.getType().name()));
                     if (data.isExtended()) sb.append(" Ext");
